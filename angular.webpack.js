@@ -1,6 +1,6 @@
 /**
  * Custom angular webpack configuration
- */
+*/
 
 module.exports = (config, options) => {
     config.target = 'electron-renderer';
@@ -22,3 +22,25 @@ module.exports = (config, options) => {
 
     return config;
 }
+
+module.exports = {
+  module: {
+    rules: [
+    {
+      test: /\.scss$/,
+      loader: 'postcss-loader',
+      options: {
+        postcssOptions: {
+          ident: 'postcss',
+          syntax: 'postcss-scss',
+          plugins: [
+            require('postcss-import'),
+            require('tailwindcss'),
+            require('autoprefixer'),
+          ],
+        },
+      },
+    },
+    ],
+  },
+};
