@@ -22,7 +22,9 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": [],
+            "scripts": [
+              "node_modules/p5/lib/p5.js"
+            ],
             "customWebpackConfig": {
               "path": "./angular.webpack.js"
             }
@@ -111,7 +113,9 @@
             "polyfills": "src/polyfills-test.ts",
             "tsConfig": "src/tsconfig.spec.json",
             "karmaConfig": "src/karma.conf.js",
-            "scripts": [],
+            "scripts": [
+              "node_modules/p5/lib/p5.js"
+            ],
             "styles": [
               "src/styles.scss"
             ],
