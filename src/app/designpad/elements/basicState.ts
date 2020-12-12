@@ -3,24 +3,34 @@ import {Draggable} from "../interactions/draggable";
 import {Drawable, Updatable} from "../interactions/p5Core";
 
 export class BasicState extends Draggable implements Drawable, Updatable{
+  protected _type = 'basic';
+  protected _drawLevel = 1;
+
+  public get type() {
+    return this._type;
+  }
+
   protected get p5(): P5 {
     return this.pad;
   }
   protected get xPos(): number {
     return this.x;
   }
+
   protected get yPos(): number {
     return this.y;
   }
-
-  private type = 'basic';
   private _isHover = false;
 
-  constructor(private pad: P5, private title: string, private x: number, private y: number, private w: number) {
+  public set drawLevel(drawLevel: number) {
+    this._drawLevel = drawLevel;
+  }
+
+  constructor(protected pad: P5, private title: string, private x: number, private y: number, private w: number) {
     super();
   }
 
-  public draw(): void {
+  public draw(zoomLevel: number): void {
     this.pad.push();
 
     if (this.isSelected)
@@ -36,7 +46,7 @@ export class BasicState extends Draggable implements Drawable, Updatable{
     this._isHover = this.isTarget(this.pad.mouseX, this.pad.mouseY);
   }
 
-  public getCenterOfEdge(side: string): {x: number, y: number} {
+  public getCenterOfEdge(side: 't'|'r'|'b'|'l'): {x: number, y: number} {
     let xEdgeCenter;
     let yEdgeCenter;
 

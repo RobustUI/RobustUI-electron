@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ElectronService } from './core/services';
 import { TranslateService } from '@ngx-translate/core';
 import { AppConfig } from '../environments/environment';
+import {BasicState} from "./designpad/elements/basicState";
 
 @Component({
   selector: 'app-root',

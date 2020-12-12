@@ -1,5 +1,5 @@
 export interface Drawable {
-  draw(): void;
+  draw(zoomLevel: number): void;
 }
 
 export interface Updatable {
@@ -16,4 +16,8 @@ export interface OnPressed {
 
 export interface OnReleased {
   releasedEvent(): void;
+}
+
+export interface DoubleClickable {
+  doubleClickEvent(): void;
 }

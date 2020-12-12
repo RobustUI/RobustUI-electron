@@ -3,13 +3,10 @@ import { CommonModule } from '@angular/common';
 import { PadControllerComponent } from './pad-controller/pad-controller.component';
 import { DesignpadComponent } from './designpad/designpad.component';
 
-
-
-
 @NgModule({
   declarations: [PadControllerComponent, DesignpadComponent],
   exports: [
-    DesignpadComponent
+    DesignpadComponent,
   ],
   imports: [
     CommonModule
