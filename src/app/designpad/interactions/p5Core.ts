@@ -1,23 +1,27 @@
+import {Point} from "../elements/point";
+import {Triple} from "../elements/triple";
+import {Event} from "../eventDispatcher";
+
 export interface Drawable {
-  draw(zoomLevel: number): void;
+  draw(cameraPosition: Triple): void;
 }
 
 export interface Updatable {
-  update(): void;
+  update(cameraPosition: Triple, events: Event[]): void;
 }
 
 export interface Clickable {
-  clickEvent(): void;
+  clickEvent(cameraPosition: Triple): void;
 }
 
 export interface OnPressed {
-  pressedEvent(): void;
+  pressedEvent(cameraPosition: Triple): void;
 }
 
 export interface OnReleased {
-  releasedEvent(): void;
+  releasedEvent(cameraPosition: Triple): void;
 }
 
 export interface DoubleClickable {
-  doubleClickEvent(): void;
+  doubleClickEvent(cameraPosition: Triple): void;
 }

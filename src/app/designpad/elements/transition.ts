@@ -2,6 +2,7 @@ import {BasicState} from "./basicState";
 import {Clickable, Drawable, Updatable} from "../interactions/p5Core";
 import * as P5 from "p5";
 import {Point} from "./point";
+import {Triple} from "./triple";
 
 export interface PointConnection {
   from: Point,
@@ -21,7 +22,7 @@ export class Transition implements Drawable, Updatable, Clickable{
     this.calculatePositions();
   }
 
-  public draw(zoomLevel: number): void {
+  public draw(cameraPostion: Triple): void {
     this.pad.push();
     if (this.selected)
       this.highlight();
