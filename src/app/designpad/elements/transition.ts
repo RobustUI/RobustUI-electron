@@ -17,25 +17,35 @@ export class Transition implements Drawable, Updatable, Clickable{
   private lineLengthX: number;
   private lineLengthY: number;
   private selected = false;
+  private _drawLevel = 1;
 
-  constructor(private pad: P5, private event: string, private from: BasicState, private to: BasicState) {
-    this.calculatePositions();
+  public set drawLevel(drawLevel: number) {
+    this._drawLevel = drawLevel;
   }
 
-  public draw(cameraPostion: Triple): void {
+  constructor(private pad: P5, private event: string, private from: BasicState, private to: BasicState) {
+  }
+
+  public draw(cameraPosition: Triple): void {
+    this.calculatePositions(cameraPosition);
     this.pad.push();
     if (this.selected)
       this.highlight();
 
-    this.pad.line(this.connection.from.x, this.connection.from.y, this.connection.to.x, this.connection.to.y);
+    this.pad.line(
+      this.connection.from.x,
+      this.connection.from.y,
+      this.connection.to.x,
+      this.connection.to.y
+    );
 
     this.drawEventName();
     this.drawTriangle();
     this.pad.pop();
   }
 
-  public update(): void {
-    this.calculatePositions();
+  public update(cameraPosition: Triple): void {
+
   }
 
   public clickEvent(): void {
@@ -43,10 +53,10 @@ export class Transition implements Drawable, Updatable, Clickable{
   }
 
 
-  private calculatePositions(): void {
+  private calculatePositions(cameraPosition: Triple): void {
     this.connection = null;
-    const fromPoints = Transition.getPoints(this.from);
-    const toPoints = Transition.getPoints(this.to);
+    const fromPoints = Transition.getPoints(this.from, cameraPosition);
+    const toPoints = Transition.getPoints(this.to, cameraPosition);
 
     this.connection = this.getNearestConnectionPoint(fromPoints, toPoints);
     this.angle = this.calculateAngle();
@@ -54,12 +64,12 @@ export class Transition implements Drawable, Updatable, Clickable{
     this.lineLengthY = this.calculateLineLengthY();
   }
 
-  private static getPoints(target: BasicState) {
+  private static getPoints(target: BasicState, cameraPosition: Triple) {
     return [
-      target.getCenterOfEdge('t'),
-      target.getCenterOfEdge('b'),
-      target.getCenterOfEdge('l'),
-      target.getCenterOfEdge('r')
+      target.getCenterOfEdge('t', cameraPosition),
+      target.getCenterOfEdge('b', cameraPosition),
+      target.getCenterOfEdge('l', cameraPosition),
+      target.getCenterOfEdge('r', cameraPosition)
     ];
   }
 
@@ -93,7 +103,14 @@ export class Transition implements Drawable, Updatable, Clickable{
     this.pad.fill(0, 0, 0);
     this.pad.translate(this.connection.to.x, this.connection.to.y);
     this.pad.rotate(this.angle - this.pad.HALF_PI);
-    this.pad.triangle(-this.offset * 0.5, this.offset, this.offset * 0.5, this.offset, 0, -this.offset/2);
+    this.pad.triangle(
+      (-this.offset * 0.5) / this._drawLevel,
+      this.offset / this._drawLevel,
+      (this.offset * 0.5) / this._drawLevel,
+      this.offset / this._drawLevel,
+      0,
+      (-this.offset/2) / this._drawLevel
+    );
     this.pad.pop();
   }
 

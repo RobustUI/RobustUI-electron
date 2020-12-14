@@ -59,15 +59,8 @@ export class BasicState extends Draggable implements Drawable, Updatable{
   }
 
   public draw(cameraPosition: Triple): void {
-    this.pad.push();
-
-    if (this.isSelected)
-      this._highlight();
-    else if (this._isHover)
-      this._hover();
-
-    this._draw();
-    this.pad.pop();
+    this._drawState();
+    this._drawLabel();
   }
 
   public update(cameraPosition: Triple, events: Event[]): void {
@@ -75,25 +68,25 @@ export class BasicState extends Draggable implements Drawable, Updatable{
     this._isHover = this.isTarget(this.pad.mouseX, this.pad.mouseY, cameraPosition);
   }
 
-  public getCenterOfEdge(side: 't'|'r'|'b'|'l'): {x: number, y: number} {
+  public getCenterOfEdge(side: 't'|'r'|'b'|'l', cameraPosition: Triple): Point {
     let xEdgeCenter;
     let yEdgeCenter;
 
     if (side === 't') {
-      xEdgeCenter = this.x + this.w/2;
-      yEdgeCenter = this.y;
+      xEdgeCenter = this.xPos + this.width/2;
+      yEdgeCenter = this.yPos;
     }
     else if(side === 'r') {
-      xEdgeCenter = this.x + this.w;
-      yEdgeCenter = this.y + this.w/2;
+      xEdgeCenter = this.xPos + this.width;
+      yEdgeCenter = this.yPos + this.height/2;
     }
     else if (side === 'b') {
-      xEdgeCenter = this.x + this.w/2;
-      yEdgeCenter = this.y + this.w;
+      xEdgeCenter = this.xPos + this.width/2;
+      yEdgeCenter = this.yPos + this.height;
     }
     else if (side === 'l') {
-      xEdgeCenter = this.x;
-      yEdgeCenter = this.y + this.w/2;
+      xEdgeCenter = this.xPos;
+      yEdgeCenter = this.yPos + this.width/2;
     } else {
       throw new Error("You didn't specify a recognizable side!");
     }
@@ -110,8 +103,8 @@ export class BasicState extends Draggable implements Drawable, Updatable{
 
   protected isTarget(mouseX: number, mouseY: number, cameraPosition: Triple): boolean {
     const bottomLeftCorner: Point = {
-      x: ((this.xPos + cameraPosition.x)) * cameraPosition.z,
-      y: ((this.yPos + cameraPosition.y)) * cameraPosition.z
+      x: (this.xPos + cameraPosition.x) * cameraPosition.z,
+      y: (this.yPos + cameraPosition.y) * cameraPosition.z
     };
 
     const topRightCorner: Point = {
@@ -127,9 +120,20 @@ export class BasicState extends Draggable implements Drawable, Updatable{
     this.y = yPos;
   }
 
-  private _draw() {
-    this.pad.textAlign(this.pad.CENTER);
+  private _drawState() {
+    this.pad.push();
+
+    if (this.isSelected)
+      this._highlight();
+    else if (this._isHover)
+      this._hover();
+
     this.pad.rect(this.xPos, this.yPos, this.width, this.height, 5);
+    this.pad.pop();
+  }
+
+  private _drawLabel() {
+    this.pad.textAlign(this.pad.CENTER);
     this.pad.text(this.title, this.xPos + this.width/2, this.yPos + this.height/2);
   }
 

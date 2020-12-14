@@ -27,6 +27,7 @@ export class XorState extends BasicState implements DoubleClickable{
     this.defaultSize = w;
     this.childrenDrawLevel = this._drawLevel + 1;
     this.setDrawLevelAndCalculateExpandedDimensions();
+    this.transitions.forEach(t => t.drawLevel = this.childrenDrawLevel);
     this._type = 'xor';
   }
 
@@ -34,8 +35,9 @@ export class XorState extends BasicState implements DoubleClickable{
     super.draw(cameraPosition);
     if (this.shouldDrawChildren) {
       this.pad.push();
-      this.pad.translate(this.xPos, this.yPos);
+      this.pad.translate(this.xPos + 5, this.yPos + 5);
       this.subStates.forEach(e => e.draw(cameraPosition));
+      this.transitions.forEach(e => e.draw(cameraPosition));
       this.pad.pop();
     }
   }
@@ -80,24 +82,25 @@ export class XorState extends BasicState implements DoubleClickable{
   }
 
   private setDrawLevelAndCalculateExpandedDimensions() {
-    let width = 0;
-    let height = 0;
+    let maxWidth = 0;
+    let maxHeight = 0;
     let minX = Infinity;
     let maxX = 0;
     let minY = Infinity;
     let maxY = 0;
     this.subStates.forEach((e) => {
       e.drawLevel = this.childrenDrawLevel;
-
+      /*
       width += e.width;
       height += e.height;
-
+      */
       if (e.xPos < minX) {
         minX = e.xPos;
       }
 
       if (e.xPos > maxX) {
         maxX = e.xPos;
+        maxWidth = e.width;
       }
 
       if (e.yPos < minY) {
@@ -106,9 +109,10 @@ export class XorState extends BasicState implements DoubleClickable{
 
       if (e.yPos > maxY) {
         maxY = e.yPos;
+        maxHeight = e.height;
       }
     });
-    this.expandedWidth = width + minX + (maxX-minX);
-    this.expandedHeight = height + minY + (maxY-minY);
+    this.expandedWidth = 10 + maxX-minX + maxWidth;
+    this.expandedHeight = 10 + maxY-minY + maxHeight;
   }
 }

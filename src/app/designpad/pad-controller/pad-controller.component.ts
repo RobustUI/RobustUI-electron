@@ -55,7 +55,7 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
 
 
     const third = new BasicState(this.p5, "third", 0, 0, 50);
-    const fourth = new BasicState(this.p5, "fourth", 10, 60, 50);
+    const fourth = new BasicState(this.p5, "fourth", 100, 60, 50);
     const fifth = new BasicState(this.p5, "fifth", 500, 200, 50);
     const otherTransition = new Transition(this.p5, "hover", third, fourth);
     const xor = new XorState(this.p5, "Xor-state", [fourth, third, fifth], [otherTransition], 300, 150, 50);
