@@ -10,7 +10,7 @@ export interface PointConnection {
   distance: number
 }
 
-export class Transition implements Drawable, Updatable, Clickable{
+export class Transition implements Drawable, Clickable{
   private connection: PointConnection;
   private offset = 10;
   private angle: number;
@@ -44,14 +44,9 @@ export class Transition implements Drawable, Updatable, Clickable{
     this.pad.pop();
   }
 
-  public update(cameraPosition: Triple): void {
-
-  }
-
   public clickEvent(): void {
     this.selected = this.isTarget(this.pad.mouseX, this.pad.mouseY);
   }
-
 
   private calculatePositions(cameraPosition: Triple): void {
     this.connection = null;

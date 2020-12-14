@@ -95,12 +95,6 @@ export class BasicState extends Draggable implements Drawable, Updatable{
     return {x: xEdgeCenter, y: yEdgeCenter };
   }
 
-
-  public toJsonObj(): any {
-    return { "name": this.title, "type": "BASICSTATE"};
-  }
-
-
   protected isTarget(mouseX: number, mouseY: number, cameraPosition: Triple): boolean {
     const bottomLeftCorner: Point = {
       x: (this.xPos + cameraPosition.x) * cameraPosition.z,
