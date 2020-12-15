@@ -1,30 +1,37 @@
-import {AfterViewInit, Component, Input, OnDestroy} from '@angular/core';
+import {AfterViewInit, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import * as P5 from 'p5';
-import {BasicState} from "../elements/basicState";
 import {
-  implementsClickable, implementsDoubleClickable, implementsDraggable,
+  implementsClickable,
+  implementsDoubleClickable,
+  implementsDraggable,
   implementsDrawable,
   implementsOnPressed,
   implementsOnReleased,
   implementsUpdatable
 } from "../implements";
-import {Transition} from "../elements/transition";
-import {XorState} from "../elements/xorState";
 import {Point} from "../elements/point";
 import {Triple} from "../elements/triple";
 import {Event, EventDispatcher} from "../eventDispatcher";
-import {Subscription} from "rxjs";
+import {Observable, Subscription} from "rxjs";
+import {RobustUiComponent} from "../../entities/robust-ui-component";
+import {RobustUiStateTypes} from "../../entities/robust-ui-state-types";
+import {BasicState} from "../elements/basicState";
+import {Transition} from "../elements/transition";
+import {SimpleComponent} from "../elements/simpleComponent";
 
 @Component({
   selector: 'app-pad-controller',
   templateUrl: './pad-controller.component.html',
   styleUrls: ['./pad-controller.component.scss']
 })
-export class PadControllerComponent implements AfterViewInit, OnDestroy {
+export class PadControllerComponent implements OnChanges, AfterViewInit, OnDestroy {
   public p5: P5;
 
   @Input()
-  private parent: HTMLElement;
+  public parent: HTMLElement;
+
+  @Input()
+  public component: RobustUiComponent;
 
   private zMin = 1;
   private zMax = 9.00;
@@ -44,25 +51,14 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
     });
   }
 
+  public ngOnChanges(changes: SimpleChanges): void {
+    this.cameraPos = {x: 0, y:0, z: 1};
+    this.convertComponent();
+  }
+
   public ngAfterViewInit(): void {
     this.p5 = new P5(this.sketch.bind(this));
-
-    const first = new BasicState(this.p5, "Hello", 200, 50, 50);
-    const second = new BasicState(this.p5, "World", 200, 200, 50);
-    const foo = new BasicState(this.p5, "Foo", 400, 200, 50);
-    const transition = new Transition(this.p5, "click", first, second);
-
-
-
-    const third = new BasicState(this.p5, "third", 0, 0, 50);
-    const fourth = new BasicState(this.p5, "fourth", 100, 60, 50);
-    const fifth = new BasicState(this.p5, "fifth", 500, 200, 50);
-    const otherTransition = new Transition(this.p5, "hover", third, fourth);
-    const xor = new XorState(this.p5, "Xor-state", [fourth, third, fifth], [otherTransition], 300, 150, 50);
-
-    this.elements.push(...[
-      first, second, transition, xor, foo
-    ]);
+    this.convertComponent();
   }
 
   public ngOnDestroy(): void {
@@ -148,4 +144,38 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
 
     return false;
   }
+
+  private convertComponent() {
+    this.elements = [];
+    if (this.component == null) {
+      return;
+    }
+    if (this.component.type === RobustUiStateTypes.simpleComponent) {
+      const states = new Map<string, BasicState>();
+      let i = 1;
+      this.component.states.forEach(state => {
+        states.set(state.label, new BasicState(this.p5, state.label, (i === 1) ? 0 : 50, ((i === 1) ? 0 : 50) * i, 50));
+        i += 3;
+      });
+
+      const transitions = [];
+      this.component.transitions.forEach(transition => {
+        transitions.push(
+          new Transition(this.p5, transition.label, states.get(transition.from), states.get(transition.to))
+        );
+      });
+
+      this.elements.push(new SimpleComponent(
+        this.p5,
+        this.component.label,
+        Array.from(states.values()),
+        Array.from(transitions.values()),
+        10,
+        10,
+        50
+      ));
+    }
+  }
+
+
 }

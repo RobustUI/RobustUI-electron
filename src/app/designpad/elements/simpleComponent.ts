@@ -5,7 +5,7 @@ import {DoubleClickable} from "../interactions/p5Core";
 import {Triple} from "./triple";
 import {Event, EventDispatcher, EventType} from "../eventDispatcher";
 
-export class XorState extends BasicState implements DoubleClickable{
+export class SimpleComponent extends BasicState implements DoubleClickable{
 
   private childrenDrawLevel: number;
   private shouldDrawChildren = false;
@@ -90,10 +90,7 @@ export class XorState extends BasicState implements DoubleClickable{
     let maxY = 0;
     this.subStates.forEach((e) => {
       e.drawLevel = this.childrenDrawLevel;
-      /*
-      width += e.width;
-      height += e.height;
-      */
+
       if (e.xPos < minX) {
         minX = e.xPos;
       }
@@ -112,7 +109,7 @@ export class XorState extends BasicState implements DoubleClickable{
         maxHeight = e.height;
       }
     });
-    this.expandedWidth = 10 + maxX-minX + maxWidth;
-    this.expandedHeight = 10 + maxY-minY + maxHeight;
+    this.expandedWidth = 10 + maxX-minX + maxWidth + minX;
+    this.expandedHeight = 10 + maxY-minY + maxHeight + minY;
   }
 }
