@@ -4,29 +4,22 @@ import {RobustUiState} from "../entities/robust-ui-state";
 import {RobustUiStateTypes} from "../entities/robust-ui-state-types";
 import {RobustUiTransition} from "../entities/robust-ui-transition";
 
-export interface ChannelsUsed {
-  send: boolean;
+export interface ChannelWithSymbol {
   label: string;
+  symbol: string;
 }
-
 
 @Component({
   selector: 'app-model-checker',
   templateUrl: './model-checker.component.html',
   styleUrls: ['./model-checker.component.scss']
 })
-export class ModelCheckerComponent implements OnInit {
+export class ModelCheckerComponent {
   private channels: Map<string, string> = new Map<string, string>();
-  private missingChannels: Map<string, ChannelsUsed> = new Map<string, ChannelsUsed>();
+  private missingChannels: Map<string, ChannelWithSymbol> = new Map<string, ChannelWithSymbol>();
   private components: RobustUiComponent[] = [];
   private result = "";
   private counter = 0;
-
-  constructor() {
-  }
-
-  ngOnInit(): void {
-  }
 
   public generateModel(): void {
     const chatBox: RobustUiComponent = ModelCheckerComponent.demoChatBoxComponent("ChatBox");
@@ -49,11 +42,12 @@ export class ModelCheckerComponent implements OnInit {
 
     this.result += "\nactive proctype " + component.label + "() {\n";
     this.result += "goto " + component.initialState.label + ";\n";
+
     component.states.forEach((state: RobustUiState) => {
       this.result += state.label + ":\n";
-
       component.transitions.forEach((v) => {
         if (v.from === state.label) {
+          console.log(v);
           if (component.inputs.has(v.label)) {
             this.result += this.channels.get(v.label) + "?" + v.label + " -> goto " + v.to + "\n";
             this.addOrRemoveMissingChannel(v.label, true);
@@ -74,12 +68,12 @@ export class ModelCheckerComponent implements OnInit {
       if (send) {
         this.missingChannels.set(channel, {
           label: channel,
-          send: true
+          symbol: "!"
         });
       } else {
         this.missingChannels.set(channel, {
           label: channel,
-          send: false
+          symbol: "?"
         });
       }
     }
@@ -100,15 +94,9 @@ export class ModelCheckerComponent implements OnInit {
   }
 
   private generateEnvironment(): string {
-    console.log("Generate Environment");
-
     let environment = "\nactive proctype environment() {\nend:\nif\n";
     this.missingChannels.forEach((channel) => {
-      if (channel.send) {
-        environment +=  ":: " + this.channels.get(channel.label) + "!" + channel.label + " -> goto end;\n";
-      } else {
-        environment +=  ":: " + this.channels.get(channel.label) + "?" + channel.label + " -> goto end;\n";
-      }
+      environment +=  ":: " + this.channels.get(channel.label) + channel.symbol + channel.label + " -> goto end;\n";
     });
     environment += "fi\n}\n";
 
@@ -177,5 +165,4 @@ export class ModelCheckerComponent implements OnInit {
       new Set(transitions)
     );
   }
-
 }
