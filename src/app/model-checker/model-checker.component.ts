@@ -4,6 +4,13 @@ import {RobustUiState} from "../entities/robust-ui-state";
 import {RobustUiStateTypes} from "../entities/robust-ui-state-types";
 import {RobustUiTransition} from "../entities/robust-ui-transition";
 
+export interface ChannelsUsed {
+  input: boolean;
+  output: boolean;
+  label: string;
+}
+
+
 @Component({
   selector: 'app-model-checker',
   templateUrl: './model-checker.component.html',
@@ -11,6 +18,10 @@ import {RobustUiTransition} from "../entities/robust-ui-transition";
 })
 export class ModelCheckerComponent implements OnInit {
   private channels: Map<string, string> = new Map<string, string>();
+  private missingChannels: Map<string, string> = new Map<string, string>();
+  private deletedChannels: string[] = [];
+  private result = "";
+  private counter = 0;
 
   constructor() {
   }
@@ -21,63 +32,65 @@ export class ModelCheckerComponent implements OnInit {
   public generateModel(): void {
     const chatBox: RobustUiComponent = ModelCheckerComponent.demoChatBoxComponent("ChatBox");
     const messageServer: RobustUiComponent = ModelCheckerComponent.demoMessageServerComponent("MessageServer");
-    let model = this.createModelForComponent(chatBox);
-    model += this.createModelForComponent(messageServer);
-    console.log(model);
+    this.createModelForComponent(chatBox);
+    this.createModelForComponent(messageServer);
+
+    if (this.shouldGenerateEnvironment()) {
+      this.result += this.generateEnvironment();
+    }
+
+    console.log(this.result);
   }
 
-  private createModelForComponent(component: RobustUiComponent): string {
-    let result = "";
-    let counter = 0;
+  private createModelForComponent(component: RobustUiComponent) {
+    component.inputs.forEach(this.createChannelAndDefine.bind(this));
+    component.outputs.forEach(this.createChannelAndDefine.bind(this));
 
-    component.inputs.forEach((input: string) => {
-      if (!this.channels.has(input)) {
-        const channel = input + "Channel";
-        this.channels.set(input, channel);
-        result += "#define " + input + " " + counter.toString() + "\n";
-        result += "chan " + channel + " = [0] of { byte }\n";
-        counter++;
-      }
-    });
-    component.outputs.forEach((input: string) => {
-      if (!this.channels.has(input)) {
-        const channel = input + "Channel";
-        this.channels.set(input, channel);
-        result += "#define " + input + " " + counter.toString() + "\n";
-        result += "chan " + channel + " = [0] of { byte }\n";
-        counter++;
-      }
-    });
-
-    result += "\nactive proctype " + component.label + "() {\n";
-    result += "goto " + component.initialState.label + ";\n";
+    this.result += "\nactive proctype " + component.label + "() {\n";
+    this.result += "goto " + component.initialState.label + ";\n";
     component.states.forEach((state: RobustUiState) => {
-      result += state.label + ":\n";
+      this.result += state.label + ":\n";
 
       component.transitions.forEach((v) => {
         if (v.from === state.label) {
           if (component.inputs.has(v.label)) {
-            result += this.channels.get(v.label) + "?" + v.label + " -> goto " + v.to + "\n";
+            this.result += this.channels.get(v.label) + "?" + v.label + " -> goto " + v.to + "\n";
           } else if (component.outputs.has(v.label)) {
-            result += this.channels.get(v.label) + "!" + v.label +" -> goto " + v.to + "\n";
+            this.result += this.channels.get(v.label) + "!" + v.label + " -> goto " + v.to + "\n";
           }
         }
       });
     });
-    result += "}\n";
-    if (this.shouldGenerateEnvironment()) {
-      this.generateEnvironment();
-    }
+    this.result += "}\n";
+  }
 
-    return result;
+  private createChannelAndDefine(input: string) {
+    if (!this.channels.has(input)) {
+      const channel = input + "Channel";
+      this.channels.set(input, channel);
+      this.result += "#define " + input + " " + this.counter.toString() + "\n";
+      this.result += "chan " + channel + " = [0] of { byte }\n";
+      this.counter++;
+      
+      if (this.missingChannels.has(input)) {
+        this.missingChannels.delete(input);
+      } else {
+        this.missingChannels.set(input, input);
+      }
+    }
   }
 
   private shouldGenerateEnvironment() {
-    return false;
+    return this.missingChannels.size > 0;
   }
 
-  private generateEnvironment() {
-
+  private generateEnvironment(): string {
+    let environment = "";
+    this.missingChannels.forEach((channel) => {
+      console.log(channel);
+    })
+    console.log("Generate Environment");
+    return environment;
   }
 
   private static demoChatBoxComponent(label: string): RobustUiComponent {
