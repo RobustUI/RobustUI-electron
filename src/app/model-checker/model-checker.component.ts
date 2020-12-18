@@ -5,8 +5,7 @@ import {RobustUiStateTypes} from "../entities/robust-ui-state-types";
 import {RobustUiTransition} from "../entities/robust-ui-transition";
 
 export interface ChannelsUsed {
-  input: boolean;
-  output: boolean;
+  send: boolean;
   label: string;
 }
 
@@ -18,8 +17,8 @@ export interface ChannelsUsed {
 })
 export class ModelCheckerComponent implements OnInit {
   private channels: Map<string, string> = new Map<string, string>();
-  private missingChannels: Map<string, string> = new Map<string, string>();
-  private deletedChannels: string[] = [];
+  private missingChannels: Map<string, ChannelsUsed> = new Map<string, ChannelsUsed>();
+  private components: RobustUiComponent[] = [];
   private result = "";
   private counter = 0;
 
@@ -32,6 +31,8 @@ export class ModelCheckerComponent implements OnInit {
   public generateModel(): void {
     const chatBox: RobustUiComponent = ModelCheckerComponent.demoChatBoxComponent("ChatBox");
     const messageServer: RobustUiComponent = ModelCheckerComponent.demoMessageServerComponent("MessageServer");
+    this.components.push(chatBox);
+    this.components.push(messageServer);
     this.createModelForComponent(chatBox);
     this.createModelForComponent(messageServer);
 
@@ -55,13 +56,33 @@ export class ModelCheckerComponent implements OnInit {
         if (v.from === state.label) {
           if (component.inputs.has(v.label)) {
             this.result += this.channels.get(v.label) + "?" + v.label + " -> goto " + v.to + "\n";
+            this.addOrRemoveMissingChannel(v.label, true);
           } else if (component.outputs.has(v.label)) {
             this.result += this.channels.get(v.label) + "!" + v.label + " -> goto " + v.to + "\n";
+            this.addOrRemoveMissingChannel(v.label, false);
           }
         }
       });
     });
     this.result += "}\n";
+  }
+
+  private addOrRemoveMissingChannel(channel: string, send: boolean) {
+    if (this.missingChannels.has(channel)) {
+      this.missingChannels.delete(channel);
+    } else {
+      if (send) {
+        this.missingChannels.set(channel, {
+          label: channel,
+          send: true
+        });
+      } else {
+        this.missingChannels.set(channel, {
+          label: channel,
+          send: false
+        });
+      }
+    }
   }
 
   private createChannelAndDefine(input: string) {
@@ -71,12 +92,6 @@ export class ModelCheckerComponent implements OnInit {
       this.result += "#define " + input + " " + this.counter.toString() + "\n";
       this.result += "chan " + channel + " = [0] of { byte }\n";
       this.counter++;
-      
-      if (this.missingChannels.has(input)) {
-        this.missingChannels.delete(input);
-      } else {
-        this.missingChannels.set(input, input);
-      }
     }
   }
 
@@ -85,30 +100,40 @@ export class ModelCheckerComponent implements OnInit {
   }
 
   private generateEnvironment(): string {
-    let environment = "";
-    this.missingChannels.forEach((channel) => {
-      console.log(channel);
-    })
     console.log("Generate Environment");
+
+    let environment = "\nactive proctype environment() {\nend:\nif\n";
+    this.missingChannels.forEach((channel) => {
+      if (channel.send) {
+        environment +=  ":: " + this.channels.get(channel.label) + "!" + channel.label + " -> goto end;\n";
+      } else {
+        environment +=  ":: " + this.channels.get(channel.label) + "?" + channel.label + " -> goto end;\n";
+      }
+    });
+    environment += "fi\n}\n";
+
     return environment;
   }
 
   private static demoChatBoxComponent(label: string): RobustUiComponent {
     const states: RobustUiState[] = [
       {label: label + '_Compose_Message', type: RobustUiStateTypes.baseState},
-      {label: label + '_Loading', type: RobustUiStateTypes.baseState}
+      {label: label + '_Loading', type: RobustUiStateTypes.baseState},
+      {label: label + '_Submit', type: RobustUiStateTypes.baseState}
     ];
 
     const events: string[] = [];
     const inputs: string[] = [
-      'ack'
+      'ack',
+      'submit'
     ];
     const outputs: string[] = [
       'msg'
     ];
 
     const transitions: RobustUiTransition[] = [
-      {from: label + '_Compose_Message', label: 'msg', to: label + '_Loading'},
+      {from: label + '_Compose_Message', label: 'submit', to: label + '_Submit'},
+      {from: label + '_Submit', label: 'msg', to: label + '_Loading'},
       {from: label + '_Loading', label: 'ack', to: label + '_Compose_Message'}
     ];
 
