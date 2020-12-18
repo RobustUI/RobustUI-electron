@@ -29,6 +29,7 @@ export class ModelCheckerComponent implements OnInit {
   private createModelForComponent(component: RobustUiComponent): string {
     let result = "";
     let counter = 0;
+
     component.inputs.forEach((input: string) => {
       if (!this.channels.has(input)) {
         const channel = input + "Channel";
@@ -48,7 +49,7 @@ export class ModelCheckerComponent implements OnInit {
       }
     });
 
-    result += "active proctype " + component.label + "() {\n";
+    result += "\nactive proctype " + component.label + "() {\n";
     result += "goto " + component.initialState.label + ";\n";
     component.states.forEach((state: RobustUiState) => {
       result += state.label + ":\n";
@@ -64,7 +65,19 @@ export class ModelCheckerComponent implements OnInit {
       });
     });
     result += "}\n";
+    if (this.shouldGenerateEnvironment()) {
+      this.generateEnvironment();
+    }
+
     return result;
+  }
+
+  private shouldGenerateEnvironment() {
+    return false;
+  }
+
+  private generateEnvironment() {
+
   }
 
   private static demoChatBoxComponent(label: string): RobustUiComponent {
