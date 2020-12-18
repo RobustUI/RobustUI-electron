@@ -59,6 +59,10 @@ export class RobustUiComponent implements RobustUiState {
     this._transitions = value;
   }
 
+  public copy(): RobustUiComponent {
+    return new RobustUiComponent(this._label, new Set(this._states.values()), this._initialState.label, this._events, this._inputs, this._outputs, new Set(this._transitions.values()));
+  }
+
   private _label: string;
   private _states = new Map<string, RobustUiState>();
   private _initialState: RobustUiState;

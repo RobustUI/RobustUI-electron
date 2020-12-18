@@ -1,7 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {RobustUiComponent} from "../../entities/robust-ui-component";
-import {BehaviorSubject, Observable, Subject} from "rxjs";
-import {tap} from "rxjs/operators";
+import {Subject} from "rxjs";
 
 @Component({
   selector: 'app-designpad',
@@ -11,14 +10,18 @@ import {tap} from "rxjs/operators";
 export class DesignpadComponent implements OnInit {
   @Input()
   public set component(value: RobustUiComponent) {
-    this.componentSubject.next(value);
+    this.activeComponent = value;
   }
 
-  private componentSubject = new BehaviorSubject<RobustUiComponent>(null);
-  public activeComponent: Observable<RobustUiComponent> = this.componentSubject.asObservable().pipe(tap(x => console.log(x)));
+  @Input()
+  public addComponentStream: Subject<RobustUiComponent>;
+
+  public activeComponent: RobustUiComponent;
   constructor() { }
 
-  ngOnInit(): void {
-
+  public ngOnInit(): void {
+    this.addComponentStream.subscribe((newComp: RobustUiComponent) => {
+      this.activeComponent.states.set(newComp.label, newComp);
+    });
   }
 }
