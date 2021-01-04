@@ -30,7 +30,6 @@ export class ModelCheckerComponent {
     this.subject = this.electron.event;
   }
 
-
   public generateModel(): void {
     this.createModelForComponent(this.components);
 

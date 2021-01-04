@@ -43,7 +43,7 @@
           <!-- Replace with your content -->
           <!-- <router-outlet></router-outlet> -->
           <div>
-            <app-model-checker></app-model-checker>
+            <app-model-checker [components]="activeComponent"></app-model-checker>
           </div>
           <div class="py-4 h-full">
             <app-designpad (drop)="onDrop($event)" (dragover)="onDragover($event)" [component]="activeComponent" [addComponentStream]="addComponentStream$"></app-designpad>
