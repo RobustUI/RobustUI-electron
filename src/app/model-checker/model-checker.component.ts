@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {RobustUiComponent} from "../entities/robust-ui-component";
 import {RobustUiState} from "../entities/robust-ui-state";
 import {RobustUiStateTypes} from "../entities/robust-ui-state-types";
@@ -18,7 +18,8 @@ export interface ChannelWithSymbol {
 })
 export class ModelCheckerComponent {
   public subject: BehaviorSubject<string> = new BehaviorSubject<string>("");
-  public components: RobustUiComponent[] = [];
+  @Input()
+  public components: RobustUiComponent;
 
   private channels: Map<string, string> = new Map<string, string>();
   private missingChannels: Map<string, ChannelWithSymbol> = new Map<string, ChannelWithSymbol>();
@@ -31,12 +32,7 @@ export class ModelCheckerComponent {
 
 
   public generateModel(): void {
-    const chatBox: RobustUiComponent = ModelCheckerComponent.demoChatBoxComponent("ChatBox");
-    //const messageServer: RobustUiComponent = ModelCheckerComponent.demoMessageServerComponent("MessageServer");
-    this.components.push(chatBox);
-    //this.components.push(messageServer);
-    this.createModelForComponent(chatBox);
-    //this.createModelForComponent(messageServer);
+    this.createModelForComponent(this.components);
 
     if (this.shouldGenerateEnvironment()) {
       this.result += this.generateEnvironment();
