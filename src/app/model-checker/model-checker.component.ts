@@ -18,10 +18,10 @@ export interface ChannelWithSymbol {
 })
 export class ModelCheckerComponent {
   public subject: BehaviorSubject<string> = new BehaviorSubject<string>("");
+  public components: RobustUiComponent[] = [];
 
   private channels: Map<string, string> = new Map<string, string>();
   private missingChannels: Map<string, ChannelWithSymbol> = new Map<string, ChannelWithSymbol>();
-  private components: RobustUiComponent[] = [];
   private result = "";
   private counter = 0;
 
@@ -32,11 +32,11 @@ export class ModelCheckerComponent {
 
   public generateModel(): void {
     const chatBox: RobustUiComponent = ModelCheckerComponent.demoChatBoxComponent("ChatBox");
-    const messageServer: RobustUiComponent = ModelCheckerComponent.demoMessageServerComponent("MessageServer");
+    //const messageServer: RobustUiComponent = ModelCheckerComponent.demoMessageServerComponent("MessageServer");
     this.components.push(chatBox);
-    this.components.push(messageServer);
+    //this.components.push(messageServer);
     this.createModelForComponent(chatBox);
-    this.createModelForComponent(messageServer);
+    //this.createModelForComponent(messageServer);
 
     if (this.shouldGenerateEnvironment()) {
       this.result += this.generateEnvironment();
@@ -55,21 +55,35 @@ export class ModelCheckerComponent {
 
     component.states.forEach((state: RobustUiState) => {
       this.result += state.label + ":\n";
-      //const transition = "";
+      const transitions: string[] = [];
       component.transitions.forEach((v) => {
         if (v.from === state.label) {
-          console.log(v);
           if (component.inputs.has(v.label)) {
-            this.result += this.channels.get(v.label) + "?" + v.label + " -> goto " + v.to + "\n";
+            transitions.push(this.channels.get(v.label) + "?" + v.label + " -> goto " + v.to + "\n");
             this.addOrRemoveMissingChannel(v.label, true);
           } else if (component.outputs.has(v.label)) {
-            this.result += this.channels.get(v.label) + "!" + v.label + " -> goto " + v.to + "\n";
+            transitions.push(this.channels.get(v.label) + "!" + v.label + " -> goto " + v.to + "\n");
             this.addOrRemoveMissingChannel(v.label, false);
           }
         }
       });
+      this.generateTransition(transitions);
     });
     this.result += "}\n";
+  }
+
+  private generateTransition(transitions: string[]) {
+    if (transitions.length > 1) {
+      this.result += "if\n";
+      transitions.forEach((value) => {
+        this.result += ":: " + value;
+      });
+      this.result += "fi\n";
+    } else {
+      transitions.forEach((value) => {
+        this.result += value;
+      });
+    }
   }
 
   private addOrRemoveMissingChannel(channel: string, send: boolean) {
@@ -116,32 +130,30 @@ export class ModelCheckerComponent {
 
   private static demoChatBoxComponent(label: string): RobustUiComponent {
     const states: RobustUiState[] = [
-      {label: label + '_Compose_Message', type: RobustUiStateTypes.baseState},
-      {label: label + '_Loading', type: RobustUiStateTypes.baseState},
-      {label: label + '_Submit', type: RobustUiStateTypes.baseState}
+      {label: label + '1', type: RobustUiStateTypes.baseState},
+      {label: label + '2', type: RobustUiStateTypes.baseState},
+      {label: label + '3', type: RobustUiStateTypes.baseState}
     ];
 
     const events: string[] = [];
     const inputs: string[] = [
-      'ack',
-      'submit',
-      'Test'
+      'a',
+      'b',
     ];
     const outputs: string[] = [
-      'msg'
+      'c'
     ];
 
     const transitions: RobustUiTransition[] = [
-      {from: label + '_Compose_Message', label: 'submit', to: label + '_Submit'},
-      {from: label + '_Compose_Message', label: 'Test', to: label + '_Loading'},
-      {from: label + '_Submit', label: 'msg', to: label + '_Loading'},
-      {from: label + '_Loading', label: 'ack', to: label + '_Compose_Message'}
+      {from: label + '1', label: 'a', to: label + '2'},
+      {from: label + '1', label: 'b', to: label + '3'},
+      {from: label + '2', label: 'c', to: label + '3'},
     ];
 
     return new RobustUiComponent(
       label,
       new Set(states),
-      label + '_Compose_Message',
+      label + '1',
       new Set(events),
       new Set(inputs),
       new Set(outputs),
