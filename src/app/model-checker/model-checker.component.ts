@@ -20,6 +20,7 @@ export class ModelCheckerComponent {
   @Input()
   public component: RobustUiComponent;
   public modelCheckerResult: BehaviorSubject<string> = new BehaviorSubject<string>("");
+  public model = false;
 
   private channels: Map<string, string> = new Map<string, string>();
   private missingChannels: Map<string, ChannelWithSymbol> = new Map<string, ChannelWithSymbol>();
@@ -31,7 +32,6 @@ export class ModelCheckerComponent {
   }
 
   public verifyComponent(): void {
-    this.reset();
     this.createModelForComponent(this.component);
 
     if (this.shouldGenerateEnvironment()) {
@@ -41,6 +41,12 @@ export class ModelCheckerComponent {
     this.electronService.writeModelToFile(this.modelString);
     this.electronService.executeSpinFlow();
   }
+
+  public closeModelAndReset(value: boolean): void {
+    this.model = value;
+    this.reset();
+  }
+
   private reset() {
     this.modelString = "";
     this.channels.clear();

@@ -13,7 +13,6 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { AppComponent } from './app.component';
 import {DesignpadModule} from "./designpad/designpad.module";
-import { ModelCheckerComponent } from './model-checker/model-checker.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -39,6 +38,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     })
   ],
   providers: [],
+  exports: [],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
