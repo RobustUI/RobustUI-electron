@@ -19,26 +19,26 @@ export interface ChannelWithSymbol {
 export class ModelCheckerComponent {
   public subject: BehaviorSubject<string> = new BehaviorSubject<string>("");
   @Input()
-  public components: RobustUiComponent;
+  public component: RobustUiComponent;
 
   private channels: Map<string, string> = new Map<string, string>();
   private missingChannels: Map<string, ChannelWithSymbol> = new Map<string, ChannelWithSymbol>();
   private result = "";
   private counter = 0;
 
-  constructor(private electron: ElectronService) {
-    this.subject = this.electron.event;
+  constructor(private electronService: ElectronService) {
+    this.subject = this.electronService.event;
   }
 
   public generateModel(): void {
-    this.createModelForComponent(this.components);
+    this.createModelForComponent(this.component);
 
     if (this.shouldGenerateEnvironment()) {
       this.result += this.generateEnvironment();
     }
     console.log(this.result);
-    this.electron.writeModelToFile(this.result);
-    this.electron.executeSpinFlow();
+    this.electronService.writeModelToFile(this.result);
+    this.electronService.executeSpinFlow();
   }
 
   private createModelForComponent(component: RobustUiComponent) {
@@ -59,6 +59,8 @@ export class ModelCheckerComponent {
           } else if (component.outputs.has(v.label)) {
             transitions.push(this.channels.get(v.label) + "!" + v.label + " -> goto " + v.to + "\n");
             this.addOrRemoveMissingChannel(v.label, false);
+          } else {
+            transitions.push("goto " + v.to + "\n");
           }
         }
       });
@@ -123,6 +125,7 @@ export class ModelCheckerComponent {
     return environment;
   }
 
+  // For testing purposes. Do not remove until everything is ready for deployment
   private static demoChatBoxComponent(label: string): RobustUiComponent {
     const states: RobustUiState[] = [
       {label: label + '1', type: RobustUiStateTypes.baseState},
@@ -130,10 +133,11 @@ export class ModelCheckerComponent {
       {label: label + '3', type: RobustUiStateTypes.baseState}
     ];
 
-    const events: string[] = [];
+    const events: string[] = [
+      'b'
+    ];
     const inputs: string[] = [
       'a',
-      'b',
     ];
     const outputs: string[] = [
       'c'
@@ -149,36 +153,6 @@ export class ModelCheckerComponent {
       label,
       new Set(states),
       label + '1',
-      new Set(events),
-      new Set(inputs),
-      new Set(outputs),
-      new Set(transitions)
-    );
-  }
-
-  private static demoMessageServerComponent(label: string): RobustUiComponent {
-    const states: RobustUiState[] = [
-      {label: label + '_WaitForMessage', type: RobustUiStateTypes.baseState},
-      {label: label + '_Loading', type: RobustUiStateTypes.baseState}
-    ];
-
-    const events: string[] = [];
-    const inputs: string[] = [
-      'msg'
-    ];
-    const outputs: string[] = [
-      'ack'
-    ];
-
-    const transitions: RobustUiTransition[] = [
-      {from: label + '_WaitForMessage', label: 'msg', to: label + '_Loading'},
-      {from: label + '_Loading', label: 'ack', to: label + '_WaitForMessage'}
-    ];
-
-    return new RobustUiComponent(
-      label,
-      new Set(states),
-      label + '_WaitForMessage',
       new Set(events),
       new Set(inputs),
       new Set(outputs),
