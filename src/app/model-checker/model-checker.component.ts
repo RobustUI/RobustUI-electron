@@ -3,6 +3,7 @@ import {RobustUiComponent} from "../entities/robust-ui-component";
 import {RobustUiState} from "../entities/robust-ui-state";
 import {RobustUiStateTypes} from "../entities/robust-ui-state-types";
 import {RobustUiTransition} from "../entities/robust-ui-transition";
+import {ElectronService} from "../core/services";
 
 export interface ChannelWithSymbol {
   label: string;
@@ -21,6 +22,9 @@ export class ModelCheckerComponent {
   private result = "";
   private counter = 0;
 
+  constructor(private electron: ElectronService) {
+  }
+
   public generateModel(): void {
     const chatBox: RobustUiComponent = ModelCheckerComponent.demoChatBoxComponent("ChatBox");
     const messageServer: RobustUiComponent = ModelCheckerComponent.demoMessageServerComponent("MessageServer");
@@ -34,6 +38,8 @@ export class ModelCheckerComponent {
     }
 
     console.log(this.result);
+    console.log(this.electron);
+    this.electron.writeModelToFile(this.result);
   }
 
   private createModelForComponent(component: RobustUiComponent) {
