@@ -5,6 +5,7 @@ import {Injectable} from '@angular/core';
 import {ipcRenderer, webFrame, remote} from 'electron';
 import * as childProcess from 'child_process';
 import * as fs from 'fs';
+import {BehaviorSubject} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,7 @@ export class ElectronService {
   remote: typeof remote;
   childProcess: typeof childProcess;
   fs: typeof fs;
+  public event: BehaviorSubject<string> = new BehaviorSubject<string>("");
 
   get isElectron(): boolean {
     return !!(window && window.process && window.process.type);
@@ -36,9 +38,20 @@ export class ElectronService {
 
   public writeModelToFile(value: string): void {
     try {
-      this.fs.writeFileSync('model.txt', value, 'utf-8');
+      this.fs.writeFileSync('model.pml', value, 'utf-8');
     } catch (e) {
       alert('Failed to save the file !');
     }
+  }
+
+  public executeSpinFlow(): void {
+    this.childProcess.exec("spin -a model.pml && gcc -o pan pan.c && pan.exe", (
+      (error, stdout) => {
+        if (error == null) {
+          this.event.next(stdout);
+        } else {
+          this.event.next("Something went wrong");
+        }
+      }));
   }
 }

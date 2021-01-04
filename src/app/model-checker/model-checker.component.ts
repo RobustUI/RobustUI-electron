@@ -4,6 +4,7 @@ import {RobustUiState} from "../entities/robust-ui-state";
 import {RobustUiStateTypes} from "../entities/robust-ui-state-types";
 import {RobustUiTransition} from "../entities/robust-ui-transition";
 import {ElectronService} from "../core/services";
+import {BehaviorSubject} from "rxjs";
 
 export interface ChannelWithSymbol {
   label: string;
@@ -16,6 +17,8 @@ export interface ChannelWithSymbol {
   styleUrls: ['./model-checker.component.scss']
 })
 export class ModelCheckerComponent {
+  public subject: BehaviorSubject<string> = new BehaviorSubject<string>("");
+
   private channels: Map<string, string> = new Map<string, string>();
   private missingChannels: Map<string, ChannelWithSymbol> = new Map<string, ChannelWithSymbol>();
   private components: RobustUiComponent[] = [];
@@ -23,7 +26,9 @@ export class ModelCheckerComponent {
   private counter = 0;
 
   constructor(private electron: ElectronService) {
+    this.subject = this.electron.event;
   }
+
 
   public generateModel(): void {
     const chatBox: RobustUiComponent = ModelCheckerComponent.demoChatBoxComponent("ChatBox");
@@ -36,10 +41,9 @@ export class ModelCheckerComponent {
     if (this.shouldGenerateEnvironment()) {
       this.result += this.generateEnvironment();
     }
-
     console.log(this.result);
-    console.log(this.electron);
     this.electron.writeModelToFile(this.result);
+    this.electron.executeSpinFlow();
   }
 
   private createModelForComponent(component: RobustUiComponent) {
@@ -51,6 +55,7 @@ export class ModelCheckerComponent {
 
     component.states.forEach((state: RobustUiState) => {
       this.result += state.label + ":\n";
+      //const transition = "";
       component.transitions.forEach((v) => {
         if (v.from === state.label) {
           console.log(v);
