@@ -27,7 +27,7 @@ export class ModelCheckerComponent {
   private counter = 0;
 
   constructor(private electronService: ElectronService) {
-    this.subject = this.electronService.event;
+    this.subject = this.electronService.result;
   }
 
   public generateModel(): void {

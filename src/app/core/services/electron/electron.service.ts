@@ -11,12 +11,13 @@ import {BehaviorSubject} from "rxjs";
   providedIn: 'root'
 })
 export class ElectronService {
+  public result: BehaviorSubject<string> = new BehaviorSubject<string>("");
+
   ipcRenderer: typeof ipcRenderer;
   webFrame: typeof webFrame;
   remote: typeof remote;
   childProcess: typeof childProcess;
   fs: typeof fs;
-  public event: BehaviorSubject<string> = new BehaviorSubject<string>("");
 
   get isElectron(): boolean {
     return !!(window && window.process && window.process.type);
@@ -48,9 +49,9 @@ export class ElectronService {
     this.childProcess.exec("spin -a model.pml && gcc -o pan pan.c && pan.exe", (
       (error, stdout) => {
         if (error == null) {
-          this.event.next(stdout);
+          this.result.next(stdout);
         } else {
-          this.event.next("Something went wrong");
+          this.result.next("Something went wrong");
         }
       }));
   }
