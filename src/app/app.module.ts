@@ -21,7 +21,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 }
 
 @NgModule({
-  declarations: [AppComponent, ModelCheckerComponent],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     DesignpadModule,

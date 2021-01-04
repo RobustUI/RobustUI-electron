@@ -22,7 +22,6 @@ import {RobustUiComponent} from "../../entities/robust-ui-component";
 import {RobustUiStateTypes} from "../../entities/robust-ui-state-types";
 import {BasicState} from "../elements/basicState";
 import {Transition} from "../elements/transition";
-import {SimpleComponent} from "../elements/simpleComponent";
 
 @Component({
   selector: 'app-pad-controller',
@@ -175,14 +174,17 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
         states.set(state.label, new BasicState(this.p5, state.label, (i === 1) ? 0 : 50, ((i === 1) ? 0 : 50) * i, 50));
         i += 3;
       });
-
+      const transitions: Transition[] = [];
       this._component.transitions.forEach(transition => {
-        this.elements.push(
+        transitions.push(
           new Transition(this.p5, transition.label, states.get(transition.from), states.get(transition.to))
         );
       });
 
-      states.forEach((state) => { this.elements.push(state); });
+      this.elements.push(
+        ...transitions,
+        ...Array.from(states.values())
+      );
     }
   }
 }

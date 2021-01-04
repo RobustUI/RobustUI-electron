@@ -12,6 +12,7 @@ import {BehaviorSubject} from "rxjs";
 })
 export class ElectronService {
   public modelCheckerResult: BehaviorSubject<string> = new BehaviorSubject<string>("");
+  private fileName = "model.pml";
 
   ipcRenderer: typeof ipcRenderer;
   webFrame: typeof webFrame;
@@ -39,14 +40,14 @@ export class ElectronService {
 
   public writeModelToFile(value: string): void {
     try {
-      this.fs.writeFileSync('model.pml', value, 'utf-8');
+      this.fs.writeFileSync(this.fileName, value, 'utf-8');
     } catch (e) {
       alert('Failed to save the file !');
     }
   }
 
   public executeSpinFlow(): void {
-    this.childProcess.exec("spin -a model.pml && gcc -o pan pan.c && pan.exe", (
+    this.childProcess.exec(`spin -a ${this.fileName} && gcc -o pan pan.c && pan.exe`, (
       (error, stdout) => {
         if (error == null) {
           this.modelCheckerResult.next(stdout);
