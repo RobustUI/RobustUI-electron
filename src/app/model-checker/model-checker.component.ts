@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {RobustUiComponent} from "../entities/robust-ui-component";
 import {RobustUiState} from "../entities/robust-ui-state";
 import {RobustUiStateTypes} from "../entities/robust-ui-state-types";
@@ -96,7 +96,7 @@ export class ModelCheckerComponent {
   private generateEnvironment(): string {
     let environment = "\nactive proctype environment() {\nend:\nif\n";
     this.missingChannels.forEach((channel) => {
-      environment +=  ":: " + this.channels.get(channel.label) + channel.symbol + channel.label + " -> goto end;\n";
+      environment += ":: " + this.channels.get(channel.label) + channel.symbol + channel.label + " -> goto end;\n";
     });
     environment += "fi\n}\n";
 
@@ -113,7 +113,8 @@ export class ModelCheckerComponent {
     const events: string[] = [];
     const inputs: string[] = [
       'ack',
-      'submit'
+      'submit',
+      'Test'
     ];
     const outputs: string[] = [
       'msg'
@@ -121,6 +122,7 @@ export class ModelCheckerComponent {
 
     const transitions: RobustUiTransition[] = [
       {from: label + '_Compose_Message', label: 'submit', to: label + '_Submit'},
+      {from: label + '_Compose_Message', label: 'Test', to: label + '_Loading'},
       {from: label + '_Submit', label: 'msg', to: label + '_Loading'},
       {from: label + '_Loading', label: 'ack', to: label + '_Compose_Message'}
     ];
