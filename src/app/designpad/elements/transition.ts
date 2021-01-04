@@ -1,5 +1,5 @@
 import {BasicState} from "./basicState";
-import {Clickable, Drawable, Updatable} from "../interactions/p5Core";
+import {Clickable, Drawable} from "../interactions/p5Core";
 import * as P5 from "p5";
 import {Point} from "./point";
 import {Triple} from "./triple";
@@ -114,12 +114,6 @@ export class Transition implements Drawable, Clickable{
     this.pad.rotate(angle);
     this.pad.text(this.event, 0, 10);
     this.pad.pop();
-    /*this.pad.push();
-    this.pad.translate(this.connection.from.x - this.lineLengthX/2, this.connection.from.y - this.lineLengthY/2);
-    this.pad.rotate(this.angle-this.pad.PI);
-    this.pad.textAlign(this.pad.CENTER);
-    this.pad.text(this.event, 0, -20);
-    this.pad.pop();*/
   }
 
   private drawTriangle(): void {

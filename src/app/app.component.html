@@ -26,7 +26,7 @@
   </div>
   <div class="flex flex-col w-0 flex-1 overflow-hidden">
     <main class="flex-1 relative z-0 overflow-y-auto focus:outline-none" tabindex="0" *ngIf="activeComponent">
-      <div class="pb-6 h-full flex flex-col">
+      <div class="h-full flex flex-col">
         <div class="w-full px-8 bg-gray-800 border-b-2 border-gray-500">
           <nav class="-mb-px flex gap-4 w-full h-10" aria-label="Tabs">
             <button (click)="openComponent(component)" *ngFor="let component of openComponents" [ngClass]="(component.label === activeComponent.label) ? 'border-purple-500 text-white bg-gray-700' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="py-4 px-1 text-center border-b-2 font-medium text-sm flex items-center gap-2">
@@ -39,10 +39,10 @@
             </button>
           </nav>
         </div>
-        <div class="w-full px-8 h-full">
+        <div class="w-full h-full">
           <!-- Replace with your content -->
           <!-- <router-outlet></router-outlet> -->
-          <div class="py-4 h-full">
+          <div class="h-full">
             <app-designpad (drop)="onDrop($event)" (dragover)="onDragover($event)" [component]="activeComponent" [addComponentStream]="addComponentStream$"></app-designpad>
           </div>
           <!-- /End replace -->
