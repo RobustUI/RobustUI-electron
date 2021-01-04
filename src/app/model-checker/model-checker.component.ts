@@ -17,27 +17,28 @@ export interface ChannelWithSymbol {
   styleUrls: ['./model-checker.component.scss']
 })
 export class ModelCheckerComponent {
-  public subject: BehaviorSubject<string> = new BehaviorSubject<string>("");
   @Input()
   public component: RobustUiComponent;
+  public modelCheckerResult: BehaviorSubject<string> = new BehaviorSubject<string>("");
+
 
   private channels: Map<string, string> = new Map<string, string>();
   private missingChannels: Map<string, ChannelWithSymbol> = new Map<string, ChannelWithSymbol>();
-  private result = "";
+  private modelString = "";
   private counter = 0;
 
   constructor(private electronService: ElectronService) {
-    this.subject = this.electronService.result;
+    this.modelCheckerResult = this.electronService.modelCheckerResult;
   }
 
-  public generateModel(): void {
+  public verifyComponent(): void {
     this.createModelForComponent(this.component);
 
     if (this.shouldGenerateEnvironment()) {
-      this.result += this.generateEnvironment();
+      this.modelString += this.generateEnvironment();
     }
-    console.log(this.result);
-    this.electronService.writeModelToFile(this.result);
+    console.log(this.modelString);
+    this.electronService.writeModelToFile(this.modelString);
     this.electronService.executeSpinFlow();
   }
 
@@ -45,11 +46,11 @@ export class ModelCheckerComponent {
     component.inputs.forEach(this.createChannelAndDefine.bind(this));
     component.outputs.forEach(this.createChannelAndDefine.bind(this));
 
-    this.result += "\nactive proctype " + component.label + "() {\n";
-    this.result += "goto " + component.initialState.label + ";\n";
+    this.modelString += "\nactive proctype " + component.label + "() {\n";
+    this.modelString += "goto " + component.initialState.label + ";\n";
 
     component.states.forEach((state: RobustUiState) => {
-      this.result += state.label + ":\n";
+      this.modelString += state.label + ":\n";
       const transitions: string[] = [];
       component.transitions.forEach((v) => {
         if (v.from === state.label) {
@@ -66,19 +67,19 @@ export class ModelCheckerComponent {
       });
       this.generateTransition(transitions);
     });
-    this.result += "}\n";
+    this.modelString += "}\n";
   }
 
   private generateTransition(transitions: string[]) {
     if (transitions.length > 1) {
-      this.result += "if\n";
+      this.modelString += "if\n";
       transitions.forEach((value) => {
-        this.result += ":: " + value;
+        this.modelString += ":: " + value;
       });
-      this.result += "fi\n";
+      this.modelString += "fi\n";
     } else {
       transitions.forEach((value) => {
-        this.result += value;
+        this.modelString += value;
       });
     }
   }
@@ -105,8 +106,8 @@ export class ModelCheckerComponent {
     if (!this.channels.has(input)) {
       const channel = input + "Channel";
       this.channels.set(input, channel);
-      this.result += "#define " + input + " " + this.counter.toString() + "\n";
-      this.result += "chan " + channel + " = [0] of { byte }\n";
+      this.modelString += "#define " + input + " " + this.counter.toString() + "\n";
+      this.modelString += "chan " + channel + " = [0] of { byte }\n";
       this.counter++;
     }
   }
@@ -123,40 +124,5 @@ export class ModelCheckerComponent {
     environment += "fi\n}\n";
 
     return environment;
-  }
-
-  // For testing purposes. Do not remove until everything is ready for deployment
-  private static demoChatBoxComponent(label: string): RobustUiComponent {
-    const states: RobustUiState[] = [
-      {label: label + '1', type: RobustUiStateTypes.baseState},
-      {label: label + '2', type: RobustUiStateTypes.baseState},
-      {label: label + '3', type: RobustUiStateTypes.baseState}
-    ];
-
-    const events: string[] = [
-      'b'
-    ];
-    const inputs: string[] = [
-      'a',
-    ];
-    const outputs: string[] = [
-      'c'
-    ];
-
-    const transitions: RobustUiTransition[] = [
-      {from: label + '1', label: 'a', to: label + '2'},
-      {from: label + '1', label: 'b', to: label + '3'},
-      {from: label + '2', label: 'c', to: label + '3'},
-    ];
-
-    return new RobustUiComponent(
-      label,
-      new Set(states),
-      label + '1',
-      new Set(events),
-      new Set(inputs),
-      new Set(outputs),
-      new Set(transitions)
-    );
   }
 }
