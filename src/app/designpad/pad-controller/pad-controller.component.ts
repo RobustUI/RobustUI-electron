@@ -1,4 +1,9 @@
-import {AfterViewInit, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  Input,
+  OnDestroy
+} from '@angular/core';
 import * as P5 from 'p5';
 import {
   implementsClickable,
@@ -12,7 +17,7 @@ import {
 import {Point} from "../elements/point";
 import {Triple} from "../elements/triple";
 import {Event, EventDispatcher} from "../eventDispatcher";
-import {Observable, Subscription} from "rxjs";
+import {Subscription} from "rxjs";
 import {RobustUiComponent} from "../../entities/robust-ui-component";
 import {RobustUiStateTypes} from "../../entities/robust-ui-state-types";
 import {BasicState} from "../elements/basicState";
@@ -24,15 +29,27 @@ import {SimpleComponent} from "../elements/simpleComponent";
   templateUrl: './pad-controller.component.html',
   styleUrls: ['./pad-controller.component.scss']
 })
-export class PadControllerComponent implements OnChanges, AfterViewInit, OnDestroy {
+export class PadControllerComponent implements AfterViewInit, OnDestroy {
   public p5: P5;
 
   @Input()
   public parent: HTMLElement;
 
   @Input()
-  public component: RobustUiComponent;
+  public set component(value: RobustUiComponent) {
+    this._component = value;
+    if (this.cameraPosForComponent.has(value.label)) {
+      this.cameraPos = this.cameraPosForComponent.get(value.label);
+    } else {
+      this.cameraPosForComponent.set(value.label, {x: 0, y: 0, z: 1} as Triple);
+      this.cameraPos = this.cameraPosForComponent.get(value.label);
+    }
+    this.convertComponent();
+  }
 
+
+  private cameraPosForComponent = new Map<string, Triple>();
+  private _component: RobustUiComponent;
   private zMin = 1;
   private zMax = 9.00;
   private sensativity = 0.005;
@@ -50,19 +67,18 @@ export class PadControllerComponent implements OnChanges, AfterViewInit, OnDestr
       this.eventSet.push(event);
     });
   }
-
-  public ngOnChanges(changes: SimpleChanges): void {
-    this.cameraPos = {x: 0, y:0, z: 1};
-    this.convertComponent();
-  }
-
   public ngAfterViewInit(): void {
-    this.p5 = new P5(this.sketch.bind(this));
+    console.log(this.elements);
+    this.p5 = new P5(() => {});
+    this.sketch(this.p5);
     this.convertComponent();
   }
 
   public ngOnDestroy(): void {
     this.eventDispatcherSubscription.unsubscribe();
+    if (this.p5 != null) {
+      this.p5.remove();
+    }
   }
 
   private sketch(p: P5) {
@@ -76,6 +92,8 @@ export class PadControllerComponent implements OnChanges, AfterViewInit, OnDestr
     p.doubleClicked = this.doubleClicked.bind(this);
     p.mouseWheel = this.mouseWheel.bind(this);
     p.draw = this.draw.bind(this);
+    p.preload();
+    p.setup();
   }
 
   private preload(): void {
@@ -147,35 +165,24 @@ export class PadControllerComponent implements OnChanges, AfterViewInit, OnDestr
 
   private convertComponent() {
     this.elements = [];
-    if (this.component == null) {
+    if (this._component == null) {
       return;
     }
-    if (this.component.type === RobustUiStateTypes.simpleComponent) {
+    if (this._component.type === RobustUiStateTypes.simpleComponent) {
       const states = new Map<string, BasicState>();
       let i = 1;
-      this.component.states.forEach(state => {
+      this._component.states.forEach(state => {
         states.set(state.label, new BasicState(this.p5, state.label, (i === 1) ? 0 : 50, ((i === 1) ? 0 : 50) * i, 50));
         i += 3;
       });
 
-      const transitions = [];
-      this.component.transitions.forEach(transition => {
-        transitions.push(
+      this._component.transitions.forEach(transition => {
+        this.elements.push(
           new Transition(this.p5, transition.label, states.get(transition.from), states.get(transition.to))
         );
       });
 
-      this.elements.push(new SimpleComponent(
-        this.p5,
-        this.component.label,
-        Array.from(states.values()),
-        Array.from(transitions.values()),
-        10,
-        10,
-        50
-      ));
+      states.forEach((state) => { this.elements.push(state); });
     }
   }
-
-
 }

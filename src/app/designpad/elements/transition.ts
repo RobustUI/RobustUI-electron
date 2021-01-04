@@ -19,6 +19,8 @@ export class Transition implements Drawable, Clickable{
   private selected = false;
   private _drawLevel = 1;
 
+  private clickAblePoints: Point[] = [];
+
   public set drawLevel(drawLevel: number) {
     this._drawLevel = drawLevel;
   }
@@ -31,15 +33,19 @@ export class Transition implements Drawable, Clickable{
     this.pad.push();
     if (this.selected)
       this.highlight();
-
-    this.pad.line(
+    this.pad.push();
+    this.pad.noFill();
+    const curve = this.curveBetween(
       this.connection.from.x,
       this.connection.from.y,
       this.connection.to.x,
-      this.connection.to.y
+      this.connection.to.y,
+      0.2,
+      0.1,
+      this.calculateCurvatureDirection()
     );
-
-    this.drawEventName();
+    this.pad.pop();
+    this.drawEventName(curve);
     this.drawTriangle();
     this.pad.pop();
   }
@@ -84,13 +90,36 @@ export class Transition implements Drawable, Clickable{
     return nearestPoints;
   }
 
-  private drawEventName(): void {
+  private drawEventName(curve: {xs: number[], ys: number[]}): void {
+    this.clickAblePoints = [];
+    const steps = 5;
+    const t = 2 / steps;
+    const x = this.pad.bezierPoint(curve.xs[0], curve.xs[1], curve.xs[2], curve.xs[3], t);
+    const y = this.pad.bezierPoint(curve.ys[0], curve.ys[1], curve.ys[2], curve.ys[3], t);
+    const tanX = this.pad.bezierTangent(curve.xs[0], curve.xs[1], curve.xs[2], curve.xs[3], t);
+    const tanY = this.pad.bezierTangent(curve.ys[0], curve.ys[1], curve.ys[2], curve.ys[3], t);
+
+    let angle = this.pad.atan2(tanY, tanX);
+
+    if (curve.xs[0] > curve.xs[3]) {
+      angle += this.pad.radians(180);
+    }
+
+    this.pad.circle(x,y,5);
+    this.clickAblePoints.push({x, y});
+    this.clickAblePoints.push({x, y: y + 10});
     this.pad.push();
+    this.pad.translate(x,y);
+    this.pad.textAlign(this.pad.CENTER, this.pad.CENTER);
+    this.pad.rotate(angle);
+    this.pad.text(this.event, 0, 10);
+    this.pad.pop();
+    /*this.pad.push();
     this.pad.translate(this.connection.from.x - this.lineLengthX/2, this.connection.from.y - this.lineLengthY/2);
     this.pad.rotate(this.angle-this.pad.PI);
     this.pad.textAlign(this.pad.CENTER);
     this.pad.text(this.event, 0, -20);
-    this.pad.pop();
+    this.pad.pop();*/
   }
 
   private drawTriangle(): void {
@@ -122,26 +151,53 @@ export class Transition implements Drawable, Clickable{
   }
 
   private isTarget(mouseX, mouseY) {
-    // get distance from the point to the two ends of the line
-    const d1 = this.pad.dist(mouseX,mouseY, this.connection.from.x, this.connection.from.y);
-    const d2 = this.pad.dist(mouseX,mouseY, this.connection.to.x, this.connection.to.y);
+    if (this.connection == null) {
+      return false;
+    }
 
-    // get the length of the line
-    const lineLen = this.pad.dist(this.connection.from.x, this.connection.from.y, this.connection.to.x, this.connection.to.y);
+    for (const point of this.clickAblePoints) {
+      const dist = this.pad.dist(mouseX, mouseY, point.x, point.y);
 
-    // since floats are so minutely accurate, add
-    // a little buffer zone that will give collision
-    const buffer = 0.5;    // higher # = less accurate
+      if (dist <= 5) {
+        return true;
+      }
+    }
 
-    // if the two distances are equal to the line's
-    // length, the point is on the line!
-    // note we use the buffer here to give a range,
-    // rather than one #
-    return d1 + d2 >= lineLen - buffer && d1 + d2 <= lineLen + buffer;
+    return false;
   }
 
   private highlight(): void {
     this.pad.stroke(255, 204, 0);
     this.pad.strokeWeight(4);
+  }
+
+  /*
+   inputs to curveBetween:
+   x1, y1, x2, y2: coordinates of start and end points
+   d: how wide curve is as percentage of distance between start and end points
+   h: how high curve is as percentage of distance between start and end points
+   flip: whether curve should be flipped up or down (0 or 1) ie. smile or frown!
+  */
+  private curveBetween(x1: number, y1: number, x2: number, y2: number, d: number, h: number, flip: boolean): {xs: number[], ys: number[]} {
+    const _flip = (flip) ? 1 : 0;
+    //find two control points off this line
+    const original = P5.Vector.sub(this.pad.createVector(x2, y2), this.pad.createVector(x1, y1));
+    const inline = original.copy().normalize().mult(original.mag() * d);
+    const rotated = inline.copy().rotate(this.pad.radians(90)+_flip*this.pad.radians(180)).normalize().mult(original.mag() * h);
+    const p1 = P5.Vector.add(P5.Vector.add(inline, rotated), this.pad.createVector(x1, y1));
+
+    rotated.mult(-1);
+    const p2 = P5.Vector.add(P5.Vector.add(inline, rotated).mult(-1), this.pad.createVector(x2, y2));
+
+    this.pad.bezier(x1, y1, p1.x, p1.y, p2.x, p2.y, x2, y2);
+
+    return {xs: [x1, p1.x, p2.x, x2], ys: [y1, p1.y, p2.y, y2]};
+  }
+
+  private calculateCurvatureDirection(): boolean {
+    //console.log(this.event, (this.connection.from.x > this.connection.to.x && this.connection.from.y < this.connection.to.y));
+
+    return (this.connection.from.x < this.connection.to.x && this.connection.from.y > this.connection.to.y) ||
+      (this.connection.from.x > this.connection.to.x && this.connection.from.y < this.connection.to.y);
   }
 }
