@@ -10,7 +10,7 @@
             Robust<span class="font-bold">UI</span>
           </div>
           <nav class="mt-5 flex-1 px-2 bg-gray-800 space-y-1">
-            <button *ngFor="let component of components" (click)="openComponent(component)" draggable="true" (dragstart)="onDrag($event, component)" class="w-full text-gray-300 hover:bg-gray-700 hover:text-white group flex items-center px-2 py-2 text-base font-medium rounded-md">
+            <button *ngFor="let component of (components$ | async)" (click)="openComponent(component.label)" draggable="true" (dragstart)="onDrag($event, component)" class="w-full text-gray-300 hover:bg-gray-700 hover:text-white group flex items-center px-2 py-2 text-base font-medium rounded-md">
               {{component.label}}
             </button>
             <button class="w-full text-gray-500 hover:bg-gray-700 hover:text-white group flex items-center px-2 py-2 text-base font-medium rounded-md">
@@ -25,12 +25,12 @@
     </div>
   </div>
   <div class="flex flex-col w-0 flex-1 overflow-hidden">
-    <main class="flex-1 relative z-0 overflow-y-auto focus:outline-none" tabindex="0" *ngIf="activeComponent">
+    <main class="flex-1 relative z-0 overflow-y-auto focus:outline-none" tabindex="0" *ngIf="(activeComponent$ | async) as activeComponent">
       <div class="h-full flex flex-col">
         <div class="w-full px-8 bg-gray-800 border-b-2 border-gray-500">
           <nav class="-mb-px flex gap-4 w-full h-10" aria-label="Tabs">
-            <button (click)="openComponent(component)" *ngFor="let component of openComponents" [ngClass]="(component.label === activeComponent.label) ? 'border-purple-500 text-white bg-gray-700' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="py-4 px-1 text-center border-b-2 font-medium text-sm flex items-center gap-2">
-              {{component.label}}
+            <button (click)="openComponent(component)" *ngFor="let component of openComponents" [ngClass]="(component === activeComponent.label) ? 'border-purple-500 text-white bg-gray-700' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="py-4 px-1 text-center border-b-2 font-medium text-sm flex items-center gap-2">
+              {{component}}
               <span class="rounded-full hover:bg-gray-500" (click)="closeComponent(component)">
                 <svg stroke="currentColor" class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
                   <path stroke-width="2.5" stroke-linecap="round" stroke-miterlimit="10" d="M15 15l10 10M25 15L15 25"/>

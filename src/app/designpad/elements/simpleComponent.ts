@@ -5,7 +5,7 @@ import {DoubleClickable} from "../interactions/p5Core";
 import {Triple} from "./triple";
 import {Event, EventDispatcher, EventType} from "../eventDispatcher";
 
-export class SimpleComponent extends BasicState implements DoubleClickable{
+export class SimpleComponent extends BasicState {
 
   private childrenDrawLevel: number;
   private shouldDrawChildren = false;
@@ -45,12 +45,6 @@ export class SimpleComponent extends BasicState implements DoubleClickable{
   public update(cameraPosition: Triple, events: Event[]) {
     super.update(cameraPosition, events);
     this.setDimensionsAndDrawLevel(cameraPosition.z);
-  }
-
-  public doubleClickEvent(cameraPosition: Triple): void {
-    if (this.isTarget(this.pad.mouseX, this.pad.mouseY, cameraPosition)) {
-      console.log("hello world!");
-    }
   }
 
   private setDimensionsAndDrawLevel(zoomLevel: number) {

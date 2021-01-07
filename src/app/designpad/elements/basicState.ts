@@ -1,11 +1,11 @@
 import * as P5 from 'p5';
 import {Draggable} from "../interactions/draggable";
-import {Drawable, Updatable} from "../interactions/p5Core";
+import {DoubleClickable, Drawable, Updatable} from "../interactions/p5Core";
 import {Point} from "./point";
 import {Triple} from "./triple";
 import {Event, EventType} from "../eventDispatcher";
 
-export class BasicState extends Draggable implements Drawable, Updatable{
+export class BasicState extends Draggable implements Drawable, Updatable, DoubleClickable {
   public get xPos(): number {
     return this.x / this._drawLevel;
   }
@@ -30,6 +30,14 @@ export class BasicState extends Draggable implements Drawable, Updatable{
     this.h = value;
   }
 
+  public get label(): string {
+    return this.title;
+  }
+
+  public set label(value: string) {
+    this.title = value;
+  }
+
   protected _type = 'basic';
   protected _drawLevel = 1;
 
@@ -50,8 +58,6 @@ export class BasicState extends Draggable implements Drawable, Updatable{
   private w: number;
   private h: number;
 
-
-
   constructor(protected pad: P5, private title: string, private x: number, private y: number, w: number) {
     super();
     this.w = w;
@@ -66,6 +72,14 @@ export class BasicState extends Draggable implements Drawable, Updatable{
   public update(cameraPosition: Triple, events: Event[]): void {
     events.forEach(e => this.handleEvent(e));
     this._isHover = this.isTarget(this.pad.mouseX, this.pad.mouseY, cameraPosition);
+  }
+
+  public selectEvent(cameraPosition: Triple): boolean {
+    return this.isTarget(this.pad.mouseX, this.pad.mouseY, cameraPosition);
+  }
+
+  public doubleClickEvent(cameraPosition: Triple): boolean {
+    return this.isTarget(this.pad.mouseX, this.pad.mouseY, cameraPosition);
   }
 
   public getCenterOfEdge(side: 't'|'r'|'b'|'l', cameraPosition: Triple): Point {

@@ -2,14 +2,16 @@ import * as P5 from 'p5';
 import {Clickable, OnPressed, OnReleased} from "./p5Core";
 import {Point} from "../elements/point";
 import {Triple} from "../elements/triple";
+import {SelectAble} from "./selectAble";
 
-export abstract class Draggable implements Clickable, OnPressed, OnReleased {
+export abstract class Draggable implements Clickable, OnPressed, OnReleased, SelectAble {
   protected _isSelected = false;
   protected _isDragging = false;
   protected xOffset = 0;
   protected yOffset = 0;
   protected constructor() {
   }
+
   public abstract get xPos(): number;
   public abstract get yPos(): number;
 
@@ -47,11 +49,13 @@ export abstract class Draggable implements Clickable, OnPressed, OnReleased {
     this.move(xTarget, yTarget);
   }
 
-  protected set selected(value: boolean) {
-    this._isSelected = value;
+  public get isSelected(): boolean {
+    return this._isSelected;
   }
 
-  protected get isSelected(): boolean {
-    return this._isSelected;
+  public abstract selectEvent(cameraPosition: Triple);
+
+  protected set selected(value: boolean) {
+    this._isSelected = value;
   }
 }

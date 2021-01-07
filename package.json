@@ -40,6 +40,7 @@
   },
   "dependencies": {
     "@types/p5": "^0.9.1",
+    "autoprefixer": "^10.1.0",
     "p5": "^1.1.9"
   },
   "devDependencies": {
@@ -62,6 +63,7 @@
     "@angular/router": "11.0.3",
     "@ngx-translate/core": "13.0.0",
     "@ngx-translate/http-loader": "6.0.0",
+    "@tailwindcss/forms": "^0.2.1",
     "@types/jasmine": "3.6.2",
     "@types/jasminewd2": "2.0.8",
     "@types/mocha": "8.0.4",

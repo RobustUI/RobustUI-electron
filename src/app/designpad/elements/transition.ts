@@ -1,8 +1,9 @@
 import {BasicState} from "./basicState";
-import {Clickable, Drawable} from "../interactions/p5Core";
+import {Clickable, DoubleClickable, Drawable} from "../interactions/p5Core";
 import * as P5 from "p5";
 import {Point} from "./point";
 import {Triple} from "./triple";
+import {SelectAble} from "../interactions/selectAble";
 
 export interface PointConnection {
   from: Point,
@@ -10,8 +11,8 @@ export interface PointConnection {
   distance: number
 }
 
-export class Transition implements Drawable, Clickable{
-  private connection: PointConnection;
+export class Transition implements Drawable, Clickable, DoubleClickable, SelectAble{
+  protected connection: PointConnection;
   private offset = 10;
   private angle: number;
   private lineLengthX: number;
@@ -25,7 +26,27 @@ export class Transition implements Drawable, Clickable{
     this._drawLevel = drawLevel;
   }
 
-  constructor(private pad: P5, private event: string, private from: BasicState, private to: BasicState) {
+  public set setEvent(value: string) {
+    this.event = value;
+  }
+
+  public get getEvent(): string {
+    return this.event;
+  }
+
+  public get getFrom(): BasicState {
+    return this.from;
+  }
+
+  public get getTo(): BasicState {
+    return this.to;
+  }
+
+  constructor(protected pad: P5, private event: string, private from: BasicState, private to: BasicState) {
+  }
+
+  public selectEvent(cameraPosition: Triple): boolean {
+    return this.isTarget(this.pad.mouseX, this.pad.mouseY, cameraPosition);
   }
 
   public draw(cameraPosition: Triple): void {
@@ -50,11 +71,19 @@ export class Transition implements Drawable, Clickable{
     this.pad.pop();
   }
 
-  public clickEvent(): void {
-    this.selected = this.isTarget(this.pad.mouseX, this.pad.mouseY);
+  public clickEvent(cameraPosition: Triple): void {
+    this.selected = this.isTarget(this.pad.mouseX, this.pad.mouseY, cameraPosition);
   }
 
-  private calculatePositions(cameraPosition: Triple): void {
+  public doubleClickEvent(cameraPosition: Triple): boolean {
+    return this.isTarget(this.pad.mouseX, this.pad.mouseY, cameraPosition);
+  }
+
+  public get isSelected(): boolean {
+    return this.selected;
+  }
+
+  protected calculatePositions(cameraPosition: Triple): void {
     this.connection = null;
     const fromPoints = Transition.getPoints(this.from, cameraPosition);
     const toPoints = Transition.getPoints(this.to, cameraPosition);
@@ -144,13 +173,18 @@ export class Transition implements Drawable, Clickable{
     return this.connection.from.y - this.connection.to.y;
   }
 
-  private isTarget(mouseX, mouseY) {
+  private isTarget(mouseX: number, mouseY: number, cameraPosition: Triple) {
     if (this.connection == null) {
       return false;
     }
 
     for (const point of this.clickAblePoints) {
-      const dist = this.pad.dist(mouseX, mouseY, point.x, point.y);
+      const dist = this.pad.dist(
+        mouseX,
+        mouseY,
+        ((point.x / this._drawLevel) + cameraPosition.x) * cameraPosition.z,
+        ((point.y / this._drawLevel) + cameraPosition.y) * cameraPosition.z
+      );
 
       if (dist <= 5) {
         return true;
@@ -189,8 +223,6 @@ export class Transition implements Drawable, Clickable{
   }
 
   private calculateCurvatureDirection(): boolean {
-    //console.log(this.event, (this.connection.from.x > this.connection.to.x && this.connection.from.y < this.connection.to.y));
-
     return (this.connection.from.x < this.connection.to.x && this.connection.from.y > this.connection.to.y) ||
       (this.connection.from.x > this.connection.to.x && this.connection.from.y < this.connection.to.y);
   }

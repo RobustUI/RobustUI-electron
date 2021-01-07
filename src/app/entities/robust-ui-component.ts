@@ -7,6 +7,10 @@ export class RobustUiComponent implements RobustUiState {
     return this._label;
   }
 
+  public set label(value: string) {
+    this._label = value;
+  }
+
   public get type(): RobustUiStateTypes {
     return RobustUiStateTypes.simpleComponent;
   }
@@ -60,7 +64,7 @@ export class RobustUiComponent implements RobustUiState {
   }
 
   public copy(): RobustUiComponent {
-    return new RobustUiComponent(this._label, new Set(this._states.values()), this._initialState.label, this._events, this._inputs, this._outputs, new Set(this._transitions.values()));
+    return new RobustUiComponent(this._label, new Set(this._states.values()), this._initialState.label, this._events, this._inputs, this._outputs, new Set(this._transitions.values()), this.positions);
   }
 
   private _label: string;
@@ -78,7 +82,8 @@ export class RobustUiComponent implements RobustUiState {
     events: Set<string>,
     inputs: Set<string>,
     outputs: Set<string>,
-    transitions: Set<RobustUiTransition>
+    transitions: Set<RobustUiTransition>,
+    public positions: Map<string, {x: number, y: number}>
   ) {
     this._label = label;
 

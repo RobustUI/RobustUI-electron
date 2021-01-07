@@ -1,0 +1,11 @@
+<div [formGroup]="form" class="p-4 flex flex-col gap-8">
+
+  <div class="flex gap-2 justify-between">
+    <h2 class="block font-medium text-gray-700">Label:</h2>
+    <input formControlName="label" type="text" name="event" id="event" class="w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+  </div>
+
+  <button type="button" (click)="saveChanges()" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+    Save changes!
+  </button>
+</div>

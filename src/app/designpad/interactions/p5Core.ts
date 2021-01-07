@@ -23,5 +23,5 @@ export interface OnReleased {
 }
 
 export interface DoubleClickable {
-  doubleClickEvent(cameraPosition: Triple): void;
+  doubleClickEvent(cameraPosition: Triple): boolean;
 }
