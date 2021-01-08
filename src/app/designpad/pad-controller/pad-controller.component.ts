@@ -16,6 +16,7 @@ import {AddTransitionTool} from "../toolings/add-transition-tool";
 import {SimpleComponent} from "../elements/simpleComponent";
 import {DesignPadToRobustUi} from "../converters/DesignPadToRobustUi";
 import {ComponentRepository} from "../../componentRepository";
+import {SettingsPane} from "./settingsPane";
 
 @Component({
   selector: 'app-pad-controller',
@@ -65,7 +66,7 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
     this.convertComponent();
   }
 
-  public settingsPane: {open: boolean, item: Transition | BasicState | null} = { open: false, item: null};
+  public settingsPane: SettingsPane = { open: false, item: null};
   public _component: RobustUiComponent;
 
   private cameraPosForComponent = new Map<string, Triple>();
@@ -216,20 +217,24 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
     switch (this.p5.keyCode) {
       case this.p5.DELETE:
         if (this.mouseActionInsidePad()) {
-          const deleteIndexes = [];
-          this.elements.filter(e => implementsSelectable(e)).filter(e => e.isSelected).forEach(e => {
-            deleteIndexes.push(this.elements.indexOf(e));
-          });
-
-          deleteIndexes.sort().reverse().forEach(e => {
-            this.elements.splice(e, 1);
-          });
+          this.deleteAllSelectedElements();
         }
         break;
       case 32:
         this.tempSetMoveTool();
         break;
     }
+  }
+
+  private deleteAllSelectedElements(): void {
+    const deleteIndexes = [];
+    this.elements.filter(e => implementsSelectable(e)).filter(e => e.isSelected).forEach(e => {
+      deleteIndexes.push(this.elements.indexOf(e));
+    });
+
+    deleteIndexes.sort().reverse().forEach(e => {
+      this.elements.splice(e, 1);
+    });
   }
 
   private keyReleased(): void {

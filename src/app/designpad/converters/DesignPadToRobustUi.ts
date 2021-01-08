@@ -49,13 +49,7 @@ export class DesignPadToRobustUi {
         to: e.getTo.label
       } as RobustUiTransition;
     });
-    /*label: string,
-    states: Set<RobustUiState>,
-    initialState: string,
-    events: Set<string>,
-    inputs: Set<string>,
-    outputs: Set<string>,
-    transitions: Set<RobustUiTransition>*/
+    
     return new RobustUiComponent(
       base.label,
       new Set(robustUiStates),
