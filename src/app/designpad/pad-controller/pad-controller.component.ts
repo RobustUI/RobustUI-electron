@@ -1,27 +1,22 @@
-import {
-  AfterViewInit,
-  Component,
-  Input,
-  OnDestroy
-} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, Input, OnDestroy, Output} from '@angular/core';
 import * as P5 from 'p5';
-import {
-  implementsClickable,
-  implementsDoubleClickable,
-  implementsDraggable,
-  implementsDrawable,
-  implementsOnPressed,
-  implementsOnReleased,
-  implementsUpdatable
-} from "../implements";
-import {Point} from "../elements/point";
+import {implementsDrawable, implementsSelectable, implementsUpdatable} from "../implements";
 import {Triple} from "../elements/triple";
-import {Event, EventDispatcher} from "../eventDispatcher";
+import {Event, EventDispatcher, EventType} from "../eventDispatcher";
 import {Subscription} from "rxjs";
 import {RobustUiComponent} from "../../entities/robust-ui-component";
 import {RobustUiStateTypes} from "../../entities/robust-ui-state-types";
 import {BasicState} from "../elements/basicState";
 import {Transition} from "../elements/transition";
+import {SelectTool} from "../toolings/select-tool";
+import {AddStateTool} from "../toolings/add-state-tool";
+import {Tool} from "../toolings/tool";
+import {MoveTool} from "../toolings/move-tool";
+import {AddTransitionTool} from "../toolings/add-transition-tool";
+import {SimpleComponent} from "../elements/simpleComponent";
+import {DesignPadToRobustUi} from "../converters/DesignPadToRobustUi";
+import {ComponentRepository} from "../../componentRepository";
+import {SettingsPane} from "./settingsPane";
 
 @Component({
   selector: 'app-pad-controller',
@@ -35,6 +30,30 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
   public parent: HTMLElement;
 
   @Input()
+  public set activeTool(value: ToolTypes) {
+    switch (value) {
+      case 'SelectTool':
+        this._tool = new SelectTool(this.p5);
+        break;
+      case 'AddStateTool':
+        this._tool = new AddStateTool(this.p5);
+        break;
+      case 'MoveTool':
+        this._tool = new MoveTool(this.p5);
+        break;
+      case "AddTransitionTool":
+        this._tool = new AddTransitionTool(this.p5);
+        break;
+    }
+  }
+
+  @Output()
+  public activeToolChange = new EventEmitter<ToolTypes>();
+
+  private _tool: Tool;
+  private _prevTool: ToolTypes = null;
+
+  @Input()
   public set component(value: RobustUiComponent) {
     this._component = value;
     if (this.cameraPosForComponent.has(value.label)) {
@@ -43,34 +62,49 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
       this.cameraPosForComponent.set(value.label, {x: 0, y: 0, z: 1} as Triple);
       this.cameraPos = this.cameraPosForComponent.get(value.label);
     }
+
     this.convertComponent();
   }
 
+  public settingsPane: SettingsPane = { open: false, item: null};
+  public _component: RobustUiComponent;
 
   private cameraPosForComponent = new Map<string, Triple>();
-  private _component: RobustUiComponent;
+  private temporaryComponent = new Map<string, any[]>();
   private zMin = 1;
   private zMax = 9.00;
   private sensativity = 0.005;
   private font: P5.Font;
   private cameraPos: Triple = {x: 0, y:0, z: 1};
-  private cameraOffset: Point = {x: 0, y: 0};
 
   private elements: any[] = [];
   private eventDispatcherSubscription: Subscription;
 
   private eventSet: Event[] = [];
 
-  constructor() {
+  constructor(private componentRepository: ComponentRepository) {
     this.eventDispatcherSubscription = EventDispatcher.getInstance().stream().subscribe((event: Event) => {
-      this.eventSet.push(event);
+      if(event.type === EventType.SWITCH_TOOL) {
+        this.setTool(event.data);
+      } else if (event.type === EventType.SHOW_SETTINGS) {
+        this.settingsPane = {open: true, item: event.data};
+      } else if (event.type === EventType.SAVE_COMPONENT) {
+        try {
+          const comp = DesignPadToRobustUi.convert(this.elements, event.data);
+          this.componentRepository.save(event.data.label, comp);
+        } catch (e) {
+          alert(e.message);
+        }
+      } else {
+        this.eventSet.push(event);
+      }
     });
   }
   public ngAfterViewInit(): void {
-    console.log(this.elements);
     this.p5 = new P5(() => {});
     this.sketch(this.p5);
     this.convertComponent();
+    this._tool = new SelectTool(this.p5);
   }
 
   public ngOnDestroy(): void {
@@ -78,6 +112,22 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
     if (this.p5 != null) {
       this.p5.remove();
     }
+  }
+
+  public checkType(item: any): string {
+    if (item instanceof Transition) {
+      return "Transition";
+    } else if (item instanceof BasicState) {
+      return "BasicState";
+    } else if (item instanceof SimpleComponent) {
+      return "SimpleComponent";
+    } else {
+      return "unknown";
+    }
+  }
+
+  public closeSettings(): void {
+    this.settingsPane = {open: false, item: null};
   }
 
   private sketch(p: P5) {
@@ -91,6 +141,8 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
     p.doubleClicked = this.doubleClicked.bind(this);
     p.mouseWheel = this.mouseWheel.bind(this);
     p.draw = this.draw.bind(this);
+    p.keyPressed = this.keyPressed.bind(this);
+    p.keyReleased = this.keyReleased.bind(this);
     p.preload();
     p.setup();
   }
@@ -121,38 +173,37 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
     const events = this.eventSet.slice();
     this.eventSet = [];
     this.elements.filter((e) => implementsUpdatable(e)).forEach(e => e.update(this.cameraPos, events));
+    this.storeInTemporaryObject();
   }
 
   private mouseClicked(): void {
-    this.elements.filter((e) => implementsClickable(e)).forEach(e => e.clickEvent(this.cameraPos));
+    if(this.mouseActionInsidePad()) {
+      this._tool.mouseClicked(this.elements, this.cameraPos, {x: this.p5.mouseX, y: this.p5.mouseY});
+    }
   }
 
   private mousePressed(): void {
-    if (this.p5.keyCode === 32) {
-      this.cameraOffset = {
-        x: (this.cameraPos.x * this.cameraPos.z) - this.p5.mouseX,
-        y: (this.cameraPos.y * this.cameraPos.z) - this.p5.mouseY
-      };
+    if(this.mouseActionInsidePad()) {
+      this._tool.mousePressed(this.elements, this.cameraPos, {x: this.p5.mouseX, y: this.p5.mouseY});
     }
-    this.elements.filter((e) => implementsOnPressed(e)).forEach(e => e.pressedEvent(this.cameraPos));
   }
 
   private mouseReleased(): void {
-    this.elements.filter((e) => implementsOnReleased(e)).forEach(e => e.releasedEvent());
+    if(this.mouseActionInsidePad()) {
+      this._tool.mouseReleased(this.elements, this.cameraPos, {x: this.p5.mouseX, y: this.p5.mouseY});
+    }
   }
 
   private mouseDragged(): void {
-    if (this.p5.keyIsDown(32)) {
-      this.cameraPos.x = (this.p5.mouseX + this.cameraOffset.x) / this.cameraPos.z;
-      this.cameraPos.y = (this.p5.mouseY + this.cameraOffset.y) / this.cameraPos.z;
-      return;
+    if(this.mouseActionInsidePad()) {
+      this._tool.mouseDragged(this.elements, this.cameraPos, {x: this.p5.mouseX, y: this.p5.mouseY});
     }
-
-    this.elements.filter((e) => implementsDraggable(e)).forEach(e => e.dragEvent(this.cameraPos));
   }
 
   private doubleClicked(): void {
-    this.elements.filter((e) => implementsDoubleClickable(e)).forEach(e => e.doubleClickEvent(this.cameraPos));
+    if(this.mouseActionInsidePad()) {
+      this._tool.doubleClicked(this.elements, this.cameraPos, {x: this.p5.mouseX, y: this.p5.mouseY});
+    }
   }
 
   private mouseWheel(event: WheelEvent) {
@@ -162,22 +213,82 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
     return false;
   }
 
+  private keyPressed(): void {
+    switch (this.p5.keyCode) {
+      case this.p5.DELETE:
+        if (this.mouseActionInsidePad()) {
+          this.deleteAllSelectedElements();
+        }
+        break;
+      case 32:
+        this.tempSetMoveTool();
+        break;
+    }
+  }
+
+  private deleteAllSelectedElements(): void {
+    const deleteIndexes = [];
+    this.elements.filter(e => implementsSelectable(e)).filter(e => e.isSelected).forEach(e => {
+      deleteIndexes.push(this.elements.indexOf(e));
+    });
+
+    deleteIndexes.sort().reverse().forEach(e => {
+      this.elements.splice(e, 1);
+    });
+  }
+
+  private keyReleased(): void {
+    this.removeTempTool();
+  }
+
+  private tempSetMoveTool() {
+    this._prevTool = this._tool.name;
+    this.setTool("MoveTool");
+  }
+
+  private removeTempTool() {
+    if (this._prevTool != null) {
+      this.setTool(this._prevTool);
+    }
+    this._prevTool = null;
+  }
+
+  private mouseActionInsidePad(): boolean {
+    return (this.p5.mouseX <= this.p5.width && this.p5.mouseX >= 0 && this.p5.mouseY <= this.p5.height && this.p5.mouseY >= 0);
+  }
+
+  private setTool(tool: ToolTypes): void {
+    this.activeTool = tool;
+    this.activeToolChange.emit(tool);
+  }
+
   private convertComponent() {
     this.elements = [];
+    if (this.temporaryComponent.has(this._component.label)) {
+      this.elements = this.temporaryComponent.get(this._component.label);
+      return;
+    }
     if (this._component == null) {
       return;
     }
     if (this._component.type === RobustUiStateTypes.simpleComponent) {
       const states = new Map<string, BasicState>();
-      let i = 1;
+
       this._component.states.forEach(state => {
-        states.set(state.label, new BasicState(this.p5, state.label, (i === 1) ? 0 : 50, ((i === 1) ? 0 : 50) * i, 50));
-        i += 3;
+        const position = this._component.positions.get(state.label);
+        states.set(state.label, new BasicState(this.p5, state.label, position.x, position.y, 50));
       });
       const transitions: Transition[] = [];
       this._component.transitions.forEach(transition => {
+        const isInput = this._component.inputs.has(transition.label);
+        const isOutput = this._component.outputs.has(transition.label);
+
+        let label = transition.label;
+        label += (isInput) ? '?' : '';
+        label += (isOutput) ? '!' : '';
+
         transitions.push(
-          new Transition(this.p5, transition.label, states.get(transition.from), states.get(transition.to))
+          new Transition(this.p5, label, states.get(transition.from), states.get(transition.to))
         );
       });
 
@@ -186,5 +297,9 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
         ...Array.from(states.values())
       );
     }
+  }
+
+  private storeInTemporaryObject(): void {
+    this.temporaryComponent.set(this._component.label, this.elements);
   }
 }

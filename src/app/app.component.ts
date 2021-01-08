@@ -2,11 +2,10 @@ import {Component} from '@angular/core';
 import {ElectronService} from './core/services';
 import {TranslateService} from '@ngx-translate/core';
 import {AppConfig} from '../environments/environment';
-import {RobustUiState} from "./entities/robust-ui-state";
-import {RobustUiStateTypes} from "./entities/robust-ui-state-types";
-import {RobustUiTransition} from "./entities/robust-ui-transition";
 import {RobustUiComponent} from "./entities/robust-ui-component";
-import {Subject} from "rxjs";
+import {Observable, Subject} from "rxjs";
+import {ComponentRepository} from "./componentRepository";
+import {map, tap} from "rxjs/operators";
 
 @Component({
   selector: 'app-root',
@@ -14,21 +13,20 @@ import {Subject} from "rxjs";
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  public components: RobustUiComponent[] = [];
-  public activeComponent: RobustUiComponent;
+  public components$: Observable<RobustUiComponent[]>;
+  public activeComponent$: Observable<RobustUiComponent>;
   public addComponentStream$ =  new Subject<RobustUiComponent>();
-  private _openComponents = new Map<string, RobustUiComponent>();
+  private _openComponents = new Map<string, Observable<RobustUiComponent>>();
 
-  public get openComponents(): RobustUiComponent[] {
-    return Array.from(this._openComponents.values());
+  public get openComponents(): string[] {
+    return Array.from(this._openComponents.keys());
   }
 
   constructor(
     private electronService: ElectronService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private componentRepository: ComponentRepository
   ) {
-    this.components.push(this.demoComponent("First"));
-    this.components.push(this.demoComponent("Second"));
     this.translate.setDefaultLang('en');
     console.log('AppConfig', AppConfig);
 
@@ -40,6 +38,8 @@ export class AppComponent {
     } else {
       console.log('Run in browser');
     }
+
+    this.components$ = this.componentRepository.getAll();
   }
 
   public onDrag(event, component): void {
@@ -47,58 +47,27 @@ export class AppComponent {
   }
 
   public onDrop(event: DragEvent): void {
-    this.addComponentStream$.next(this.components.find(s => s.label === event.dataTransfer.getData("text")));
+    // this.addComponentStream$.next(this.components$.find(s => s.label === event.dataTransfer.getData("text")));
   }
 
   public onDragover(event: DragEvent): void {
     event.preventDefault();
   }
 
-  public openComponent(component: RobustUiComponent): void {
-    if (!this._openComponents.has(component.label)) {
-      this._openComponents.set(component.label, component.copy());
+  public openComponent(name: string): void {
+    if (!this._openComponents.has(name)) {
+      this._openComponents.set(name, this.componentRepository.get(name));
     }
 
-    this.activeComponent = this._openComponents.get(component.label);
+    this.activeComponent$ = this._openComponents.get(name);
   }
 
-  public closeComponent(component: RobustUiComponent): void {
-    this._openComponents.delete(component.label);
+  public closeComponent(name: string): void {
+    this._openComponents.delete(name);
     if (this._openComponents.size > 0) {
-      this.activeComponent = this._openComponents.values().next().value;
+      this.activeComponent$ = this._openComponents.values().next().value;
     } else {
-      this.activeComponent = null;
+      this.activeComponent$ = null;
     }
-  }
-
-
-  private demoComponent(label: string): RobustUiComponent {
-    const states: RobustUiState[] = [
-      {label: label+'_A', type: RobustUiStateTypes.baseState},
-      {label: label+'_B', type: RobustUiStateTypes.baseState}
-    ];
-
-    const events: string[] = [];
-    const inputs: string[] = [
-      'awk'
-    ];
-    const outputs: string[] = [
-      'msg'
-    ];
-
-    const transitions: RobustUiTransition[] = [
-      {from: label+'_A', label: 'msg', to: label+'_B'},
-      {from: label+'_B', label: 'awk', to: label+'_A'}
-    ];
-
-    return new RobustUiComponent(
-      label,
-      new Set(states),
-      label+'_A',
-      new Set(events),
-      new Set(inputs),
-      new Set(outputs),
-      new Set(transitions)
-    );
   }
 }

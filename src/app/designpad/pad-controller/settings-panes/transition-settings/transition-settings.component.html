@@ -1,0 +1,37 @@
+<div [formGroup]="form" class="p-4 flex flex-col gap-8">
+  <div class="flex gap-2 justify-between">
+    <h2 class="block font-medium text-gray-700">Type:</h2>
+    <div class="flex flex-col items-center justify-center">
+      <input type="radio" id="Internal" name="type" value="Internal" formControlName="type">
+      <label for="Internal" class="block text-sm font-medium text-gray-700">Internal</label>
+    </div>
+    <div class="flex flex-col items-center justify-center">
+      <input type="radio" id="Input" name="type" value="Input" formControlName="type">
+      <label for="Input" class="block text-sm font-medium text-gray-700">Input</label>
+    </div>
+    <div class="flex flex-col items-center justify-center">
+      <input type="radio" id="Output" name="type" value="Output" formControlName="type">
+      <label for="Output" class="block text-sm font-medium text-gray-700">Output</label>
+    </div>
+  </div>
+  <div class="flex gap-2 justify-between">
+    <h2 class="block font-medium text-gray-700">Event:</h2>
+    <div [ngSwitch]="form.controls.type.value" class="w-full">
+      <input *ngSwitchCase="'Internal'" formControlName="event" type="text" name="event" id="event" class="w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+      <div *ngSwitchCase="'Input'" class="w-full">
+        <select formControlName="inputEvent" name="Input" class="w-full mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+          <option *ngFor="let event of inputEvents" value="{{event}}" >{{event}}</option>
+        </select>
+      </div>
+      <div *ngSwitchCase="'Output'" class="w-full">
+        <select formControlName="outputEvent" name="Input" class="w-full mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+          <option *ngFor="let event of outputEvents" value="{{event}}" >{{event}}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <button type="button" (click)="saveChanges()" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+    Save changes!
+  </button>
+</div>

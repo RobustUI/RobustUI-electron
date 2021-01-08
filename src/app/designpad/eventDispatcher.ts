@@ -2,7 +2,10 @@ import {Observable, Subject} from "rxjs";
 
 export enum EventType {
   STATE_EXPANSION,
-  STATE_SHRINK
+  STATE_SHRINK,
+  SWITCH_TOOL,
+  SHOW_SETTINGS,
+  SAVE_COMPONENT
 }
 
 export interface Event {

@@ -1,5 +1,6 @@
 import {Clickable, DoubleClickable, Drawable, OnPressed, OnReleased, Updatable} from "./interactions/p5Core";
 import {Draggable} from "./interactions/draggable";
+import {SelectAble} from "./interactions/selectAble";
 
 export function implementsDrawable(object: any): object is Drawable {
   return 'draw' in object;
@@ -27,4 +28,8 @@ export function implementsDraggable(object: any): object is Draggable {
 
 export function implementsDoubleClickable(object: any): object is DoubleClickable {
   return 'doubleClickEvent' in object;
+}
+
+export function implementsSelectable(object: any): object is SelectAble {
+  return 'selectEvent' in object;
 }
