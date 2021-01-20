@@ -68,7 +68,7 @@ export class RobustUiComponent implements RobustUiState {
   }
 
   public static factory(label: string): RobustUiComponent {
-    const initialStateLabel = "initial state";
+    const initialStateLabel = "initial_state";
     const initialState: RobustUiState = {
       label: initialStateLabel,
       type: RobustUiStateTypes.baseState
