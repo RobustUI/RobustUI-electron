@@ -6,7 +6,7 @@ import {TransitionSettingsComponent} from "./pad-controller/settings-panes/trans
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { BasicStateSettingsComponent } from './pad-controller/settings-panes/basic-state-settings/basic-state-settings.component';
 import {ModelCheckerComponent} from "../model-checker/model-checker.component";
-import {ModalComponent} from "../modal/modal.component";
+import {ModalComponent} from "../modals/modal/modal.component";
 
 @NgModule({
   declarations: [PadControllerComponent, DesignpadComponent, TransitionSettingsComponent, BasicStateSettingsComponent, ModelCheckerComponent, ModalComponent],

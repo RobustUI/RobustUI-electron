@@ -67,6 +67,19 @@ export class RobustUiComponent implements RobustUiState {
     return new RobustUiComponent(this._label, new Set(this._states.values()), this._initialState.label, this._events, this._inputs, this._outputs, new Set(this._transitions.values()), this.positions);
   }
 
+  public static factory(label: string): RobustUiComponent {
+    const initialStateLabel = "initial_state";
+    const initialState: RobustUiState = {
+      label: initialStateLabel,
+      type: RobustUiStateTypes.baseState
+    };
+    const newState = new Set<RobustUiState>();
+    const position = new Map<string, { x: number; y: number }>();
+    newState.add(initialState);
+    position.set(initialStateLabel, {x: 10, y: 10});
+    return new RobustUiComponent(label, newState, initialState.label, new Set(), new Set(), new Set(), new Set(), position);
+  }
+
   private _label: string;
   private _states = new Map<string, RobustUiState>();
   private _initialState: RobustUiState;
@@ -83,7 +96,7 @@ export class RobustUiComponent implements RobustUiState {
     inputs: Set<string>,
     outputs: Set<string>,
     transitions: Set<RobustUiTransition>,
-    public positions: Map<string, {x: number, y: number}>
+    public positions: Map<string, { x: number, y: number }>
   ) {
     this._label = label;
 
@@ -164,7 +177,7 @@ export class RobustUiComponent implements RobustUiState {
   }
 
   private isMutuallyExclusive(first: Set<string>, second: Set<string>): boolean {
-    if (first.size === 0 && second.size === 0)  {
+    if (first.size === 0 && second.size === 0) {
       return true;
     }
     const intersection = Array.from(first).filter(x => second.has(x));
