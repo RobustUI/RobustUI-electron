@@ -1,7 +1,12 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {RobustUiComponent} from "../../entities/robust-ui-component";
 import {Subject} from "rxjs";
 import {EventDispatcher, EventType} from "../eventDispatcher";
+
+export interface UpdateComponent {
+  newLabel: string;
+  component: RobustUiComponent
+}
 
 @Component({
   selector: 'app-designpad',
@@ -12,16 +17,22 @@ export class DesignpadComponent implements OnInit {
   @Input()
   public set component(value: RobustUiComponent) {
     this.activeComponent = value;
+    this.tempComponentLabel = value.label;
   }
+
+  @Output()
+  public updateComponentLabel: EventEmitter<UpdateComponent> = new EventEmitter<UpdateComponent>();
 
   @Input()
   public addComponentStream: Subject<RobustUiComponent>;
 
   public activeComponent: RobustUiComponent;
+  public tempComponentLabel;
 
   public activeTool: ToolTypes = 'SelectTool';
 
-  constructor() { }
+  constructor() {
+  }
 
   public ngOnInit(): void {
     this.addComponentStream.subscribe((newComp: RobustUiComponent) => {
@@ -50,4 +61,11 @@ export class DesignpadComponent implements OnInit {
   public save(): void {
     EventDispatcher.getInstance().emit({type: EventType.SAVE_COMPONENT, data: this.activeComponent});
   }
+
+  public updateValue(event: any): void {
+    if (event.key === "Enter") {
+      this.updateComponentLabel.emit({newLabel: this.tempComponentLabel, component: this.activeComponent});
+    }
+  }
+
 }

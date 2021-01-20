@@ -52,7 +52,7 @@
     <div>
       <label for="label" class="block text-sm font-medium text-gray-700">Label</label>
       <div class="mt-1">
-        <input type="text" name="label" id="label" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" [ngModel]="activeComponent?.label">
+        <input type="text" name="label" id="label" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" (keypress)="updateValue($event)" [(ngModel)]="tempComponentLabel">
       </div>
     </div>
     <div class="flex h-full">
