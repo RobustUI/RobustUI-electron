@@ -77,8 +77,6 @@ export class AppComponent {
 
   public createComponent(componentName: string): void {
     this.componentRepository.create(componentName);
-    this._openComponents.set(componentName, this.componentRepository.get(componentName));
-    this.activeComponent$ = this._openComponents.get(componentName);
     this.closeModal();
   }
 
