@@ -58,23 +58,24 @@ export class ModelCheckerComponent {
   private createModelForComponent(component: RobustUiComponent) {
     component.inputs.forEach(this.createChannelAndDefine.bind(this));
     component.outputs.forEach(this.createChannelAndDefine.bind(this));
-
-    this.modelString += "\nactive proctype " + component.label + "() {\n";
-    this.modelString += "goto " + component.initialState.label + ";\n";
+    this.modelString += "\nactive proctype " + ModelCheckerComponent.replaceSpace(component.label) + "() {\n";
+    this.modelString += "goto " + ModelCheckerComponent.replaceSpace(component.initialState.label) + ";\n";
 
     component.states.forEach((state: RobustUiState) => {
-      this.modelString += state.label + ":\n";
+      this.modelString += ModelCheckerComponent.replaceSpace(state.label) + ":\n";
       const transitions: string[] = [];
       component.transitions.forEach((v) => {
         if (v.from === state.label) {
           if (component.inputs.has(v.label)) {
-            transitions.push(this.channels.get(v.label) + "?" + v.label + " -> goto " + v.to + "\n");
+            const replacedLabel = this.channels.get(ModelCheckerComponent.replaceSpace(v.label));
+            transitions.push(replacedLabel + "?" + ModelCheckerComponent.replaceSpace(v.label) + " -> goto " + ModelCheckerComponent.replaceSpace(v.to) + "\n");
             this.addOrRemoveMissingChannel(v.label, true);
           } else if (component.outputs.has(v.label)) {
-            transitions.push(this.channels.get(v.label) + "!" + v.label + " -> goto " + v.to + "\n");
+            const replacedLabel = this.channels.get(ModelCheckerComponent.replaceSpace(v.label));
+            transitions.push(replacedLabel + "!" + ModelCheckerComponent.replaceSpace(v.label) + " -> goto " + ModelCheckerComponent.replaceSpace(v.to) + "\n");
             this.addOrRemoveMissingChannel(v.label, false);
           } else {
-            transitions.push("goto " + v.to + "\n");
+            transitions.push("goto " + ModelCheckerComponent.replaceSpace(v.to) + "\n");
           }
         }
       });
@@ -117,9 +118,10 @@ export class ModelCheckerComponent {
 
   private createChannelAndDefine(input: string) {
     if (!this.channels.has(input)) {
-      const channel = input + "Channel";
-      this.channels.set(input, channel);
-      this.modelString += "#define " + input + " " + this.counter.toString() + "\n";
+      const replacedInput = ModelCheckerComponent.replaceSpace(input);
+      const channel = replacedInput + "Channel";
+      this.channels.set(replacedInput, channel);
+      this.modelString += "#define " + replacedInput + " " + this.counter.toString() + "\n";
       this.modelString += "chan " + channel + " = [0] of { byte }\n";
       this.counter++;
     }
@@ -132,10 +134,15 @@ export class ModelCheckerComponent {
   private generateEnvironment(): string {
     let environment = "\nactive proctype environment() {\nend:\nif\n";
     this.missingChannels.forEach((channel) => {
-      environment += ":: " + this.channels.get(channel.label) + channel.symbol + channel.label + " -> goto end;\n";
+      const replacedLabel = this.channels.get(ModelCheckerComponent.replaceSpace(channel.label));
+      environment += ":: " + replacedLabel + channel.symbol + ModelCheckerComponent.replaceSpace(channel.label) + " -> goto end;\n";
     });
     environment += "fi\n}\n";
 
     return environment;
+  }
+
+  private static replaceSpace(value: string): string {
+    return value.split(' ').join('_');
   }
 }
