@@ -17,6 +17,8 @@ import {SimpleComponent} from "../elements/simpleComponent";
 import {DesignPadToRobustUi} from "../converters/DesignPadToRobustUi";
 import {ComponentRepository} from "../../componentRepository";
 import {SettingsPane} from "./settingsPane";
+import {ToolTypes} from "../toolings/toolTypes";
+import {SimulatorTool} from "../toolings/simulator-tool";
 
 @Component({
   selector: 'app-pad-controller',
@@ -31,19 +33,27 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
 
   @Input()
   public set activeTool(value: ToolTypes) {
-    switch (value) {
-      case 'SelectTool':
-        this._tool = new SelectTool(this.p5);
-        break;
-      case 'AddStateTool':
-        this._tool = new AddStateTool(this.p5);
-        break;
-      case 'MoveTool':
-        this._tool = new MoveTool(this.p5);
-        break;
-      case "AddTransitionTool":
-        this._tool = new AddTransitionTool(this.p5);
-        break;
+    if (this._tool == null || value != this._tool.name) {
+      if (this._tool != null) {
+        this._tool.onDestroy();
+      }
+      switch (value) {
+        case 'SelectTool':
+          this._tool = new SelectTool(this.p5);
+          break;
+        case 'AddStateTool':
+          this._tool = new AddStateTool(this.p5);
+          break;
+        case 'MoveTool':
+          this._tool = new MoveTool(this.p5);
+          break;
+        case "AddTransitionTool":
+          this._tool = new AddTransitionTool(this.p5);
+          break;
+        case "SimulatorTool":
+          this._tool = new SimulatorTool(this.p5, this.elements);
+          break;
+      }
     }
   }
 
@@ -276,7 +286,7 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
 
       this._component.states.forEach(state => {
         const position = this._component.positions.get(state.label);
-        states.set(state.label, new BasicState(this.p5, state.label, position.x, position.y, 50));
+        states.set(state.label, new BasicState(this.p5, state.label, position.x, position.y, 50, (state.label === this._component.initialState.label)));
       });
       const transitions: Transition[] = [];
       this._component.transitions.forEach(transition => {

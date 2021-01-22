@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {RobustUiComponent} from "../../entities/robust-ui-component";
 import {Subject} from "rxjs";
 import {EventDispatcher, EventType} from "../eventDispatcher";
+import {ToolTypes} from "../toolings/toolTypes";
 
 @Component({
   selector: 'app-designpad',
@@ -49,5 +50,10 @@ export class DesignpadComponent implements OnInit {
 
   public save(): void {
     EventDispatcher.getInstance().emit({type: EventType.SAVE_COMPONENT, data: this.activeComponent});
+  }
+
+  public activateSimulator(): void {
+    this.save();
+    this.activateTool('SimulatorTool');
   }
 }

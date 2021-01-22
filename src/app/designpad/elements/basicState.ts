@@ -49,6 +49,14 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
     return this._type;
   }
 
+  public get isInitial() {
+    return this._isInitial;
+  }
+
+  public set isInitial(value: boolean) {
+    this._isInitial = value;
+  }
+
   protected get p5(): P5 {
     return this.pad;
   }
@@ -58,10 +66,13 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
   private w: number;
   private h: number;
 
-  constructor(protected pad: P5, private title: string, private x: number, private y: number, w: number) {
+  private _isInitial: boolean;
+
+  constructor(protected pad: P5, private title: string, private x: number, private y: number, w: number, isInitial = false) {
     super();
     this.w = w;
     this.h = w;
+    this._isInitial = isInitial;
   }
 
   public draw(cameraPosition: Triple): void {
@@ -135,6 +146,9 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
       this._highlight();
     else if (this._isHover)
       this._hover();
+
+    if (this.isInitial)
+      this.pad.fill(190, 190, 190);
 
     this.pad.rect(this.xPos, this.yPos, this.width, this.height, 5);
     this.pad.pop();

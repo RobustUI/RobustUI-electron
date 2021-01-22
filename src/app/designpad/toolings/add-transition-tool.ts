@@ -6,6 +6,7 @@ import {BasicState} from "../elements/basicState";
 import {Transition} from "../elements/transition";
 import {EventDispatcher, EventType} from "../eventDispatcher";
 import {TempTransition} from "../elements/tempTransition";
+import {ToolTypes} from "./toolTypes";
 
 export class AddTransitionTool extends Tool{
   public readonly name: ToolTypes = 'AddTransitionTool';

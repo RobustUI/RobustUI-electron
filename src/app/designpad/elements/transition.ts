@@ -42,6 +42,14 @@ export class Transition implements Drawable, Clickable, DoubleClickable, SelectA
     return this.to;
   }
 
+  public get isSelected(): boolean {
+    return this.selected;
+  }
+
+  public set isSelected(value: boolean) {
+    this.selected = value;
+  }
+
   constructor(protected pad: P5, private event: string, private from: BasicState, private to: BasicState) {
   }
 
@@ -77,10 +85,6 @@ export class Transition implements Drawable, Clickable, DoubleClickable, SelectA
 
   public doubleClickEvent(cameraPosition: Triple): boolean {
     return this.isTarget(this.pad.mouseX, this.pad.mouseY, cameraPosition);
-  }
-
-  public get isSelected(): boolean {
-    return this.selected;
   }
 
   protected calculatePositions(cameraPosition: Triple): void {
