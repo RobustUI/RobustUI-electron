@@ -3,7 +3,8 @@ import {RobustUiState} from "./entities/robust-ui-state";
 import {RobustUiStateTypes} from "./entities/robust-ui-state-types";
 import {RobustUiTransition} from "./entities/robust-ui-transition";
 import {Injectable} from "@angular/core";
-import {BehaviorSubject, Observable, of} from "rxjs";
+import {BehaviorSubject, Observable} from "rxjs";
+import {UpdateComponent} from "./designpad/designpad/designpad.component";
 
 @Injectable({
   providedIn: "root"
@@ -22,7 +23,6 @@ export class ComponentRepository {
     this.save('Second', this.demoComponent('Second'));
   }
 
-
   public get(name: string): Observable<RobustUiComponent> {
     if (!this.singleComponentObservableMap.has(name)) {
       this.singleComponentObservableMap.set(name, new BehaviorSubject(this.components.get(name)));
@@ -36,6 +36,19 @@ export class ComponentRepository {
     if (this.singleComponentObservableMap.has(name)) {
       this.singleComponentObservableMap.get(name).next(component);
     }
+    this.allComponents$.next(Array.from(this.components.values()));
+  }
+
+  public create(componentName: string): void {
+    this.components.set(componentName, RobustUiComponent.factory(componentName));
+    this.allComponents$.next(Array.from(this.components.values()));
+  }
+
+  public update(component: UpdateComponent): void {
+    this.components.delete(component.component.label);
+    component.component.label = component.newLabel;
+    this.components.set(component.newLabel, component.component);
+    this.allComponents$.next(Array.from(this.components.values()));
   }
 
   public getAll(): Observable<RobustUiComponent[]> {

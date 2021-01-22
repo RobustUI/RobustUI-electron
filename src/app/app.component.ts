@@ -5,7 +5,7 @@ import {AppConfig} from '../environments/environment';
 import {RobustUiComponent} from "./entities/robust-ui-component";
 import {Observable, Subject} from "rxjs";
 import {ComponentRepository} from "./componentRepository";
-import {map, tap} from "rxjs/operators";
+import {UpdateComponent} from "./designpad/designpad/designpad.component";
 
 @Component({
   selector: 'app-root',
@@ -15,7 +15,8 @@ import {map, tap} from "rxjs/operators";
 export class AppComponent {
   public components$: Observable<RobustUiComponent[]>;
   public activeComponent$: Observable<RobustUiComponent>;
-  public addComponentStream$ =  new Subject<RobustUiComponent>();
+  public addComponentStream$ = new Subject<RobustUiComponent>();
+  public model = false;
   private _openComponents = new Map<string, Observable<RobustUiComponent>>();
 
   public get openComponents(): string[] {
@@ -69,5 +70,24 @@ export class AppComponent {
     } else {
       this.activeComponent$ = null;
     }
+  }
+
+  public openModal(): void {
+    this.model = true;
+  }
+
+  public createComponent(componentName: string): void {
+    this.componentRepository.create(componentName);
+    this.closeModal();
+  }
+
+  public closeModal(): void {
+    this.model = false;
+  }
+
+  public updateComponent(component: UpdateComponent): void {
+    this._openComponents.delete(component.component.label);
+    this.componentRepository.update(component);
+    this.openComponent(component.newLabel);
   }
 }

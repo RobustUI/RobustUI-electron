@@ -13,12 +13,16 @@
             <button *ngFor="let component of (components$ | async)" (click)="openComponent(component.label)" draggable="true" (dragstart)="onDrag($event, component)" class="w-full text-gray-300 hover:bg-gray-700 hover:text-white group flex items-center px-2 py-2 text-base font-medium rounded-md">
               {{component.label}}
             </button>
-            <button class="w-full text-gray-500 hover:bg-gray-700 hover:text-white group flex items-center px-2 py-2 text-base font-medium rounded-md">
+            <button class="w-full text-gray-500 hover:bg-gray-700 hover:text-white group flex items-center px-2 py-2 text-base font-medium rounded-md"
+            (click)="openModal()">
               <svg class="fill-current w-2 h-2" aria-hidden="true" data-icon="plus" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                 <path fill="currentColor" d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"/>
               </svg>
               <span class="ml-2">new component</span>
             </button>
+            <div *ngIf="model">
+              <app-new-component-modal (closeModal)="closeModal()" (newComponentName)="createComponent($event)"></app-new-component-modal>
+            </div>
           </nav>
         </div>
       </div>
@@ -43,7 +47,7 @@
           <!-- Replace with your content -->
           <!-- <router-outlet></router-outlet> -->
           <div class="h-full">
-            <app-designpad (drop)="onDrop($event)" (dragover)="onDragover($event)" [component]="activeComponent" [addComponentStream]="addComponentStream$"></app-designpad>
+            <app-designpad (updateComponentLabel)="updateComponent($event)" (drop)="onDrop($event)" (dragover)="onDragover($event)" [component]="activeComponent" [addComponentStream]="addComponentStream$"></app-designpad>
           </div>
           <!-- /End replace -->
         </div>

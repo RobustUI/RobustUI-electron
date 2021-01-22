@@ -13,6 +13,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { AppComponent } from './app.component';
 import {DesignpadModule} from "./designpad/designpad.module";
+import { NewComponentModalComponent } from './modals/new-component-modal/new-component-modal.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -20,7 +21,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 }
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, NewComponentModalComponent],
   imports: [
     BrowserModule,
     DesignpadModule,
