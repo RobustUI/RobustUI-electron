@@ -25,7 +25,6 @@ export class SimulatorTool extends Tool {
     if(initialState == null) {
       EventDispatcher.getInstance().emit({type: EventType.SWITCH_TOOL, data: 'SelectTool' as ToolTypes});
     } else {
-      console.log("Simulator");
       this.elements.forEach(e => e.isSelected = false);
       this.setConfiguration(initialState);
     }
