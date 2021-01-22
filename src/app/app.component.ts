@@ -5,6 +5,7 @@ import {AppConfig} from '../environments/environment';
 import {RobustUiComponent} from "./entities/robust-ui-component";
 import {Observable, Subject} from "rxjs";
 import {ComponentRepository} from "./componentRepository";
+import {UpdateComponent} from "./designpad/designpad/designpad.component";
 
 @Component({
   selector: 'app-root',
@@ -82,5 +83,11 @@ export class AppComponent {
 
   public closeModal(): void {
     this.model = false;
+  }
+
+  public updateComponent(component: UpdateComponent): void {
+    this._openComponents.delete(component.component.label);
+    this.componentRepository.update(component);
+    this.openComponent(component.newLabel);
   }
 }

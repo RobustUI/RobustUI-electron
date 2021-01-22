@@ -47,7 +47,7 @@
           <!-- Replace with your content -->
           <!-- <router-outlet></router-outlet> -->
           <div class="h-full">
-            <app-designpad (drop)="onDrop($event)" (dragover)="onDragover($event)" [component]="activeComponent" [addComponentStream]="addComponentStream$"></app-designpad>
+            <app-designpad (updateComponentLabel)="updateComponent($event)" (drop)="onDrop($event)" (dragover)="onDragover($event)" [component]="activeComponent" [addComponentStream]="addComponentStream$"></app-designpad>
           </div>
           <!-- /End replace -->
         </div>
