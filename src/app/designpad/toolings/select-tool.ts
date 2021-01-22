@@ -8,6 +8,7 @@ import {
 } from "../implements";
 import {Triple} from "../elements/triple";
 import {EventDispatcher, EventType} from "../eventDispatcher";
+import {ToolTypes} from "./toolTypes";
 
 export class SelectTool extends Tool {
   public readonly name: ToolTypes = 'SelectTool';

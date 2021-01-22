@@ -22,11 +22,11 @@ export abstract class Draggable implements Clickable, OnPressed, OnReleased, Sel
 
   public clickEvent(cameraPosition: Triple): void {
     if (this.p5.keyIsDown(this.p5.CONTROL) && this.isTarget(this.p5.mouseX, this.p5.mouseY, cameraPosition)) {
-      this.selected = true;
+      this.isSelected = true;
     } else if (!this.p5.keyIsDown(this.p5.CONTROL) && !this.isTarget(this.p5.mouseX, this.p5.mouseY, cameraPosition)) {
-      this.selected = false;
+      this.isSelected = false;
     } else if (!this.p5.keyIsDown(this.p5.CONTROL) && this.isTarget(this.p5.mouseX, this.p5.mouseY, cameraPosition)) {
-      this.selected = true;
+      this.isSelected = true;
     }
   }
 
@@ -53,9 +53,10 @@ export abstract class Draggable implements Clickable, OnPressed, OnReleased, Sel
     return this._isSelected;
   }
 
-  public abstract selectEvent(cameraPosition: Triple);
-
-  protected set selected(value: boolean) {
+  public set isSelected(value: boolean) {
     this._isSelected = value;
   }
+
+  public abstract selectEvent(cameraPosition: Triple);
+
 }

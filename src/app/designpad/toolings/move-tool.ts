@@ -1,6 +1,7 @@
 import {Tool} from "./tool";
 import {Point} from "../elements/point";
 import {Triple} from "../elements/triple";
+import {ToolTypes} from "./toolTypes";
 
 export class MoveTool extends Tool {
   public readonly name: ToolTypes = 'MoveTool';

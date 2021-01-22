@@ -36,6 +36,14 @@
       </svg>
       <span class="text-xs uppercase mt-2">New Transition</span>
     </button>
+    <button [class]="activeTool === 'SimulatorTool' ? 'border-yellow-600' : 'border-gray-400'"
+    class="w-20 h-20 bg-transparent border-2  flex flex-col items-center justify-center outline-none focus:outline-none"
+    (click)="activateSimulator()">
+      <svg aria-hidden="true" class="w-6 h-6 text-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+        <path fill="currentColor" d="M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z"/>
+      </svg>
+      <span class="text-xs uppercase mt-2">Simulator</span>
+    </button>
     <button
       class="w-20 h-20 bg-transparent border-2 border-gray-400 flex flex-col items-center justify-center outline-none focus:outline-none"
       (click)="save()">
@@ -52,7 +60,7 @@
     <div>
       <label for="label" class="block text-sm font-medium text-gray-700">Label</label>
       <div class="mt-1">
-        <input type="text" name="label" id="label" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" (keypress)="updateValue($event)" [(ngModel)]="tempComponentLabel">
+        <input [readOnly]="activeTool === 'SimulatorTool'" type="text" name="label" id="label" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" (keypress)="updateValue($event)" [(ngModel)]="tempComponentLabel">
       </div>
     </div>
     <div class="flex h-full">
@@ -73,7 +81,7 @@
             </svg>
           </div>
         </div>
-        <div class="h-16">
+        <div [class.hidden]="activeTool === 'SimulatorTool'" class="h-16">
           <input #newInputEvent type="text">
           <button (click)="addNewInput(newInputEvent.value); newInputEvent.value = ''">Add new Input</button>
         </div>
@@ -98,7 +106,7 @@
             </svg>
           </div>
         </div>
-        <div class="h-16">
+        <div [class.hidden]="activeTool === 'SimulatorTool'" class="h-16">
           <input #newOutputEvent type="text">
           <button (click)="addNewOutput(newOutputEvent.value); newOutputEvent.value = ''">Add new Output</button>
         </div>

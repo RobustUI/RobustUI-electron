@@ -3,6 +3,7 @@ import {Triple} from "../elements/triple";
 import {Point} from "../elements/point";
 import {BasicState} from "../elements/basicState";
 import {EventDispatcher, EventType} from "../eventDispatcher";
+import {ToolTypes} from "./toolTypes";
 
 export class AddStateTool extends Tool {
   public readonly name: ToolTypes = 'AddStateTool';

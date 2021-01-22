@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {RobustUiComponent} from "../../entities/robust-ui-component";
 import {Subject} from "rxjs";
 import {EventDispatcher, EventType} from "../eventDispatcher";
+import {ToolTypes} from "../toolings/toolTypes";
 
 export interface UpdateComponent {
   newLabel: string;
@@ -62,10 +63,15 @@ export class DesignpadComponent implements OnInit {
     EventDispatcher.getInstance().emit({type: EventType.SAVE_COMPONENT, data: this.activeComponent});
   }
 
+
+  public activateSimulator(): void {
+    this.save();
+    this.activateTool('SimulatorTool');
+  }
+
   public updateValue(event: any): void {
     if (event.key === "Enter") {
       this.updateComponentLabel.emit({newLabel: this.tempComponentLabel, component: this.activeComponent});
     }
   }
-
 }
