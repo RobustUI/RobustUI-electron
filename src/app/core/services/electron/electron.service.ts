@@ -7,6 +7,7 @@ import * as childProcess from 'child_process';
 import * as fs from 'fs';
 import {BehaviorSubject} from "rxjs";
 import {JsonRobustUIComponent} from "../../../interfaces/jsonRobustUIComponent";
+import {RobustUiComponent} from "../../../entities/robust-ui-component";
 
 @Injectable({
   providedIn: 'root'
@@ -46,6 +47,15 @@ export class ElectronService {
     } catch (e) {
       alert('Failed to read file');
     }
+  }
+
+  public writeComponentToJSON(component: RobustUiComponent, path: string): void {
+    console.log(RobustUiComponent.toJSON(component));
+    this.fs.writeFileSync(
+      path + "/component" + component.label + ".json",
+      RobustUiComponent.toJSON(component),
+      'utf-8'
+    );
   }
 
   public writeModelToFile(value: string): void {
