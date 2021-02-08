@@ -101,7 +101,6 @@ export class RobustUiComponent implements RobustUiState {
       "to": "${transition.to}"
       },`;
     });
-
     component.positions.forEach((position, key) => {
       positions += `{
       "label": "${key}",
@@ -109,17 +108,14 @@ export class RobustUiComponent implements RobustUiState {
       "y": ${position.y}
       },`;
     });
-
     component.events.forEach(event => {
       events += `"${event}",`;
-
     });
     component.inputs.forEach(input => {
       inputs += `"${input}",`;
     });
     component.outputs.forEach(output => {
       outputs += `"${output}",`;
-
     });
     states = states.slice(0, -1);
     events = events.slice(0, -1);
