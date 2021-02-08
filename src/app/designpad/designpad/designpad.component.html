@@ -70,7 +70,7 @@
         <div class="mt-1">
           <select name="initialState" id="initialState" (change)="updateInitialValue($event.target.value)"
                   class="w-full block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-            <option *ngFor="let event of activeComponent.states | keyvalue" value="{{event.value.label}}">{{event.value.label}}</option>
+            <option *ngFor="let event of activeComponent.states | keyvalue" value="{{event.value.label}}" [selected]="event.value.label == activeComponent.initialState.label">{{event.value.label}}</option>
           </select>
         </div>
       </div>
