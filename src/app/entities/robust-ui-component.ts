@@ -1,6 +1,7 @@
 import {RobustUiState} from "./robust-ui-state";
 import {RobustUiStateTypes} from "./robust-ui-state-types";
 import {RobustUiTransition} from "./robust-ui-transition";
+import {JsonRobustUIComponent} from "../interfaces/jsonRobustUIComponent";
 
 export class RobustUiComponent implements RobustUiState {
   public get label(): string {
@@ -78,6 +79,63 @@ export class RobustUiComponent implements RobustUiState {
     newState.add(initialState);
     position.set(initialStateLabel, {x: 10, y: 10});
     return new RobustUiComponent(label, newState, initialState.label, new Set(), new Set(), new Set(), new Set(), position);
+  }
+
+  public static fromJSON(json: JsonRobustUIComponent): RobustUiComponent {
+    const newState = new Set<RobustUiState>();
+    const newEvents = new Set<string>();
+    const newInput = new Set<string>();
+    const newOutput = new Set<string>();
+    const newTransition = new Set<RobustUiTransition>();
+    const newPosition = new Map<string, { x: number; y: number; }>();
+    json.states.forEach(state => {
+      newState.add({
+        label: state.label,
+        type: RobustUiComponent.fromStringToRobustUiStateTypesEnum(state.type)
+      });
+    });
+
+    json.events.forEach(event => {
+      newEvents.add(event);
+    });
+
+    json.inputs.forEach(input => {
+      newInput.add(input);
+    });
+
+    json.outputs.forEach(output => {
+      newOutput.add(output);
+    });
+
+    json.transitions.forEach(transition => {
+      newTransition.add(transition);
+    });
+
+    json.positions.forEach(position => {
+      newPosition.set(position.label, {x: position.x, y: position.y});
+    });
+
+    return new RobustUiComponent(
+      json.label,
+      newState,
+      json.initialState,
+      newEvents,
+      newInput,
+      newOutput,
+      newTransition,
+      newPosition
+    );
+  }
+
+  private static fromStringToRobustUiStateTypesEnum(state: string): RobustUiStateTypes {
+    switch (state) {
+      case "baseState":
+        return RobustUiStateTypes.baseState;
+      case "simpleComponent":
+        return RobustUiStateTypes.simpleComponent;
+      case "compositeComponent":
+        return RobustUiStateTypes.compositeComponent;
+    }
   }
 
   private _label: string;

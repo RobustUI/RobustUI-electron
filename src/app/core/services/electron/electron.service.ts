@@ -2,17 +2,18 @@ import {Injectable} from '@angular/core';
 
 // If you import a module but never use any of the imported values other than as TypeScript types,
 // the resulting javascript file will look as if you never imported the module at all.
-import {ipcRenderer, webFrame, remote} from 'electron';
+import {ipcRenderer, remote, webFrame} from 'electron';
 import * as childProcess from 'child_process';
 import * as fs from 'fs';
 import {BehaviorSubject} from "rxjs";
+import {JsonRobustUIComponent} from "../../../interfaces/jsonRobustUIComponent";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ElectronService {
   public modelCheckerResult: BehaviorSubject<string> = new BehaviorSubject<string>("");
-  private fileName = "model.pml";
+  private spinModelFileName = "model.pml";
 
   ipcRenderer: typeof ipcRenderer;
   webFrame: typeof webFrame;
@@ -38,16 +39,25 @@ export class ElectronService {
     }
   }
 
+  public readJSONFileReturnContent(filePath: string): JsonRobustUIComponent {
+    try {
+      const rawData = this.fs.readFileSync(filePath);
+      return JSON.parse(rawData.toString());
+    } catch (e) {
+      alert('Failed to read file');
+    }
+  }
+
   public writeModelToFile(value: string): void {
     try {
-      this.fs.writeFileSync(this.fileName, value, 'utf-8');
+      this.fs.writeFileSync(this.spinModelFileName, value, 'utf-8');
     } catch (e) {
       alert('Failed to save the file !');
     }
   }
 
   public executeSpinFlow(): void {
-    this.childProcess.exec(`spin -a ${this.fileName} && gcc -o pan pan.c && pan.exe`, (
+    this.childProcess.exec(`spin -a ${this.spinModelFileName} && gcc -o pan pan.c && pan.exe`, (
       (error, stdout) => {
         if (error == null) {
           this.modelCheckerResult.next(stdout);
