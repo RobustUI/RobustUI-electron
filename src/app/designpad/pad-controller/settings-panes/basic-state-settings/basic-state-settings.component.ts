@@ -27,7 +27,7 @@ export class BasicStateSettingsComponent implements OnInit, OnChanges {
     private formBuilder: FormBuilder
   ) {
     this.form = this.formBuilder.group({
-      label: ['', Validators.required],
+      label: ['', Validators.required]
     });
   }
 

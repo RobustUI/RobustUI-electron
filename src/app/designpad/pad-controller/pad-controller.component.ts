@@ -110,6 +110,13 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
       }
     });
   }
+
+  public updateComponent(component: RobustUiComponent): void {
+    this.component = component;
+    this.temporaryComponent.delete(component.label);
+    this.convertComponent();
+  }
+
   public ngAfterViewInit(): void {
     this.p5 = new P5(() => {});
     this.sketch(this.p5);
