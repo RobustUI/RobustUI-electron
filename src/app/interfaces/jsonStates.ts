@@ -1,4 +1,4 @@
 export interface JsonStates {
   label: string;
-  type: number;
+  type: string;
 }

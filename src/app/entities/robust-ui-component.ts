@@ -128,7 +128,7 @@ export class RobustUiComponent implements RobustUiState {
     transitions = transitions.slice(0, -1);
     positions = positions.slice(0, -1);
 
-    const json = `{
+    return `{
       "label": "${component.label}",
       "initialState": "${component.initialState.label}",
       "states": [
@@ -150,7 +150,6 @@ export class RobustUiComponent implements RobustUiState {
         ${positions}
       ]
     }`;
-    return json;
   }
 
   public static fromJSON(json: JsonRobustUIComponent): RobustUiComponent {
@@ -163,7 +162,7 @@ export class RobustUiComponent implements RobustUiState {
     json.states.forEach(state => {
       newState.add({
         label: state.label,
-        type: RobustUiComponent.fromNumberToRobustUiStateTypesEnum(state.type)
+        type: RobustUiComponent.fromStringToRobustUiStateTypesEnum(state.type)
       });
     });
 
@@ -199,13 +198,13 @@ export class RobustUiComponent implements RobustUiState {
     );
   }
 
-  private static fromNumberToRobustUiStateTypesEnum(state: number): RobustUiStateTypes {
+  private static fromStringToRobustUiStateTypesEnum(state: string): RobustUiStateTypes {
     switch (state) {
-      case 0:
+      case "0":
         return RobustUiStateTypes.baseState;
-      case 1:
+      case "1":
         return RobustUiStateTypes.simpleComponent;
-      case 2:
+      case "2":
         return RobustUiStateTypes.compositeComponent;
     }
   }

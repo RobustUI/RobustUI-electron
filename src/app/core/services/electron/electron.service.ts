@@ -50,7 +50,6 @@ export class ElectronService {
   }
 
   public writeComponentToJSON(component: RobustUiComponent, path: string): void {
-    console.log(RobustUiComponent.toJSON(component));
     this.fs.writeFileSync(
       path + "/component" + component.label + ".json",
       RobustUiComponent.toJSON(component),
