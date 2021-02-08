@@ -5,6 +5,7 @@ import {RobustUiTransition} from "./entities/robust-ui-transition";
 import {Injectable} from "@angular/core";
 import {BehaviorSubject, Observable} from "rxjs";
 import {UpdateComponent} from "./designpad/designpad/designpad.component";
+import {ElectronService} from "./core/services";
 
 @Injectable({
   providedIn: "root"
@@ -16,11 +17,13 @@ export class ComponentRepository {
 
   private singleComponentObservableMap: Map<string, BehaviorSubject<RobustUiComponent>>;
 
-  constructor() {
+  constructor(private electronService: ElectronService) {
     this.components = new Map<string, RobustUiComponent>();
     this.singleComponentObservableMap = new Map<string, BehaviorSubject<RobustUiComponent>>();
-    this.save('First', this.demoComponent('First'));
-    this.save('Second', this.demoComponent('Second'));
+    const componentA = this.electronService.readJSONFileReturnContent("src/app/testJSON/componentA.json");
+    const componentB = this.electronService.readJSONFileReturnContent("src/app/testJSON/componentB.json");
+    this.save(componentA.label, RobustUiComponent.fromJSON(componentA));
+    this.save(componentB.label, RobustUiComponent.fromJSON(componentB));
   }
 
   public get(name: string): Observable<RobustUiComponent> {
@@ -55,41 +58,5 @@ export class ComponentRepository {
     this.allComponents$.next(Array.from(this.components.values()));
 
     return this.allComponents$.asObservable();
-  }
-
-  private demoComponent(label: string): RobustUiComponent {
-    const states: RobustUiState[] = [
-      {label: label+'_A', type: RobustUiStateTypes.baseState},
-      {label: label+'_B', type: RobustUiStateTypes.baseState}
-    ];
-
-    const events: string[] = [];
-    const inputs: string[] = [
-      'awk'
-    ];
-    const outputs: string[] = [
-      'msg'
-    ];
-
-    const transitions: RobustUiTransition[] = [
-      {from: label+'_A', label: 'msg', to: label+'_B'},
-      {from: label+'_B', label: 'awk', to: label+'_A'}
-    ];
-
-    const positions = new Map<string, {x: number, y:number}>();
-
-    positions.set(label+'_A', {x: 40, y:200});
-    positions.set(label+'_B', {x: 100, y:40});
-
-    return new RobustUiComponent(
-      label,
-      new Set(states),
-      label+'_A',
-      new Set(events),
-      new Set(inputs),
-      new Set(outputs),
-      new Set(transitions),
-      positions
-    );
   }
 }
