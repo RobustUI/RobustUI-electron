@@ -63,12 +63,18 @@ export class ElectronService {
 
   public readAllJSONFilesInFolder(folderPath: string): JsonRobustUIComponent[] {
     const components: JsonRobustUIComponent[] = [];
+    let hasError = false;
     this.fs.readdirSync(folderPath).forEach(file => {
       const component = this.readJSONFileReturnContent(folderPath + "/" + file);
       if (component != null) {
         components.push(this.readJSONFileReturnContent(folderPath + "/" + file));
+      } else {
+        hasError = true;
       }
     });
+    if (hasError) {
+      alert("Some files could not be loaded. Either they do not have the correct schema or something else");
+    }
     return components;
   }
 

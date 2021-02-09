@@ -65,7 +65,14 @@
       "$id": "#root/events",
       "title": "Events",
       "type": "array",
-      "default": []
+      "default": [],
+      "items":{
+        "$id": "#root/events/items",
+        "title": "Items",
+        "type": "string",
+        "default": "",
+        "pattern": "^.*$"
+      }
     },
     "inputs": {
       "$id": "#root/inputs",
