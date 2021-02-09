@@ -44,7 +44,7 @@ export class ElectronService {
     }
   }
 
-  public readJSONFileReturnContent(filePath: string): JsonRobustUIComponent {
+  public readSingleJSONFileReturnContent(filePath: string): JsonRobustUIComponent {
     let json: JsonRobustUIComponent;
 
     try {
@@ -65,9 +65,9 @@ export class ElectronService {
     const components: JsonRobustUIComponent[] = [];
     let hasError = false;
     this.fs.readdirSync(folderPath).forEach(file => {
-      const component = this.readJSONFileReturnContent(folderPath + "/" + file);
+      const component = this.readSingleJSONFileReturnContent(folderPath + "/" + file);
       if (component != null) {
-        components.push(this.readJSONFileReturnContent(folderPath + "/" + file));
+        components.push(component);
       } else {
         hasError = true;
       }
