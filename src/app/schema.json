@@ -1,0 +1,175 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/object1612866524.json",
+  "title": "RobustUI Simple Component",
+  "type": "object",
+  "required": [
+    "label",
+    "initialState",
+    "states",
+    "events",
+    "inputs",
+    "outputs",
+    "transitions",
+    "positions"
+  ],
+  "properties": {
+    "label": {
+      "$id": "#root/label",
+      "title": "Label",
+      "type": "string",
+      "default": "",
+      "pattern": "^.*$"
+    },
+    "initialState": {
+      "$id": "#root/initialState",
+      "title": "Initialstate",
+      "type": "string",
+      "default": "",
+      "pattern": "^.*$"
+    },
+    "states": {
+      "$id": "#root/states",
+      "title": "States",
+      "type": "array",
+      "default": [],
+      "items":{
+        "$id": "#root/states/items",
+        "title": "Items",
+        "type": "object",
+        "required": [
+          "label",
+          "type"
+        ],
+        "properties": {
+          "label": {
+            "$id": "#root/states/items/label",
+            "title": "Label",
+            "type": "string",
+            "default": "",
+            "pattern": "^.*$"
+          },
+          "type": {
+            "$id": "#root/states/items/type",
+            "title": "Type",
+            "type": "string",
+            "default": "",
+            "pattern": "^.*$"
+          }
+        }
+      }
+
+    },
+    "events": {
+      "$id": "#root/events",
+      "title": "Events",
+      "type": "array",
+      "default": []
+    },
+    "inputs": {
+      "$id": "#root/inputs",
+      "title": "Inputs",
+      "type": "array",
+      "default": [],
+      "items":{
+        "$id": "#root/inputs/items",
+        "title": "Items",
+        "type": "string",
+        "default": "",
+        "pattern": "^.*$"
+      }
+    },
+    "outputs": {
+      "$id": "#root/outputs",
+      "title": "Outputs",
+      "type": "array",
+      "default": [],
+      "items":{
+        "$id": "#root/outputs/items",
+        "title": "Items",
+        "type": "string",
+        "default": "",
+        "pattern": "^.*$"
+      }
+    },
+    "transitions": {
+      "$id": "#root/transitions",
+      "title": "Transitions",
+      "type": "array",
+      "default": [],
+      "items":{
+        "$id": "#root/transitions/items",
+        "title": "Items",
+        "type": "object",
+        "required": [
+          "from",
+          "label",
+          "to"
+        ],
+        "properties": {
+          "from": {
+            "$id": "#root/transitions/items/from",
+            "title": "From",
+            "type": "string",
+            "default": "",
+            "pattern": "^.*$"
+          },
+          "label": {
+            "$id": "#root/transitions/items/label",
+            "title": "Label",
+            "type": "string",
+            "default": "",
+            "pattern": "^.*$"
+          },
+          "to": {
+            "$id": "#root/transitions/items/to",
+            "title": "To",
+            "type": "string",
+            "default": "",
+            "pattern": "^.*$"
+          }
+        }
+      }
+
+    },
+    "positions": {
+      "$id": "#root/positions",
+      "title": "Positions",
+      "type": "array",
+      "default": [],
+      "items":{
+        "$id": "#root/positions/items",
+        "title": "Items",
+        "type": "object",
+        "required": [
+          "label",
+          "x",
+          "y"
+        ],
+        "properties": {
+          "label": {
+            "$id": "#root/positions/items/label",
+            "title": "Label",
+            "type": "string",
+            "default": "",
+            "pattern": "^.*$"
+          },
+          "x": {
+            "$id": "#root/positions/items/x",
+            "title": "X",
+            "type": "integer",
+            "default": 0
+          },
+          "y": {
+            "$id": "#root/positions/items/y",
+            "title": "Y",
+            "type": "integer",
+            "default": 0
+          }
+        }
+      }
+
+    }
+  }
+}

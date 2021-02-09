@@ -17,10 +17,11 @@ export class ComponentRepository {
   constructor(private electronService: ElectronService) {
     this.components = new Map<string, RobustUiComponent>();
     this.singleComponentObservableMap = new Map<string, BehaviorSubject<RobustUiComponent>>();
-    const componentA = this.electronService.readJSONFileReturnContent("src/app/JSON/componentA.json");
-    const componentB = this.electronService.readJSONFileReturnContent("src/app/JSON/componentB.json");
-    this.save(componentA.label, RobustUiComponent.fromJSON(componentA));
-    this.save(componentB.label, RobustUiComponent.fromJSON(componentB));
+    const components = this.electronService.readAllJSONFilesInFolder("src/app/JSON");
+
+    components.forEach(component => {
+      this.save(component.label, RobustUiComponent.fromJSON(component));
+    });
   }
 
   public get(name: string): Observable<RobustUiComponent> {
