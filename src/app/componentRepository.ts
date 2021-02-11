@@ -22,6 +22,7 @@ export class ComponentRepository {
     components.forEach(component => {
       this.save(component.label, RobustUiComponent.fromJSON(component));
     });
+
   }
 
   public get(name: string): Observable<RobustUiComponent> {

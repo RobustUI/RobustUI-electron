@@ -86,6 +86,14 @@ export class ElectronService {
     );
   }
 
+  public writeComponentToJSON(component: RobustUiComponent, path: string): void {
+    this.fs.writeFileSync(
+      path + "/component" + component.label + ".json",
+      RobustUiComponent.toJSON(component),
+      'utf-8'
+    );
+  }
+
   public writeModelToFile(value: string): void {
     try {
       this.fs.writeFileSync(this.spinModelFileName, value, 'utf-8');
