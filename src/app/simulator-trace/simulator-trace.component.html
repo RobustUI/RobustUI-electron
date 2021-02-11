@@ -1,0 +1,9 @@
+<div class="bg-gray-300 border rounded-lg w-full h-full p-2">
+  <div class="flex justify-center items-center mb-2 text-xl">
+    Trace of simulation:
+  </div>
+  <div *ngFor="let trace of traces" class="mb-1">
+    From: <span class="font-bold">{{trace.from}}</span> with <span class="font-bold">{{trace.action}}</span> to: <span
+    class="font-bold">{{trace.to}}</span>
+  </div>
+</div>
