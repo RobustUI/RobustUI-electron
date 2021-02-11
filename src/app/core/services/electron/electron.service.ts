@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-
+import Ajv from "ajv";
 // If you import a module but never use any of the imported values other than as TypeScript types,
 // the resulting javascript file will look as if you never imported the module at all.
 import {ipcRenderer, remote, webFrame} from 'electron';
@@ -15,6 +15,8 @@ import {RobustUiComponent} from "../../../entities/robust-ui-component";
 export class ElectronService {
   public modelCheckerResult: BehaviorSubject<string> = new BehaviorSubject<string>("");
   private spinModelFileName = "model.pml";
+  private ajv = new Ajv();
+  private readonly componentSchema;
 
   ipcRenderer: typeof ipcRenderer;
   webFrame: typeof webFrame;
@@ -37,16 +39,51 @@ export class ElectronService {
 
       this.childProcess = window.require('child_process');
       this.fs = window.require('fs');
+      const componentSchemaRaw = this.fs.readFileSync("src/app/schema.json");
+      this.componentSchema = JSON.parse(componentSchemaRaw.toString());
     }
   }
 
-  public readJSONFileReturnContent(filePath: string): JsonRobustUIComponent {
+  public readSingleJSONFileReturnContent(filePath: string): JsonRobustUIComponent {
+    let json: JsonRobustUIComponent;
+
     try {
       const rawData = this.fs.readFileSync(filePath);
-      return JSON.parse(rawData.toString());
+      json = JSON.parse(rawData.toString());
     } catch (e) {
-      alert('Failed to read file');
+      return null;
     }
+
+    if (!this.ajv.validate(this.componentSchema, json)) {
+      return null;
+    }
+
+    return json;
+  }
+
+  public readAllJSONFilesInFolder(folderPath: string): JsonRobustUIComponent[] {
+    const components: JsonRobustUIComponent[] = [];
+    let hasError = false;
+    this.fs.readdirSync(folderPath).forEach(file => {
+      const component = this.readSingleJSONFileReturnContent(folderPath + "/" + file);
+      if (component != null) {
+        components.push(component);
+      } else {
+        hasError = true;
+      }
+    });
+    if (hasError) {
+      alert("Some files could not be loaded. Either they do not have the correct schema or something else");
+    }
+    return components;
+  }
+
+  public writeComponentToJSON(component: RobustUiComponent, path: string): void {
+    this.fs.writeFileSync(
+      path + "/component" + component.label + ".json",
+      RobustUiComponent.toJSON(component),
+      'utf-8'
+    );
   }
 
   public writeComponentToJSON(component: RobustUiComponent, path: string): void {
