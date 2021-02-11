@@ -19,6 +19,7 @@ import {ComponentRepository} from "../../componentRepository";
 import {SettingsPane} from "./settingsPane";
 import {ToolTypes} from "../toolings/toolTypes";
 import {SimulatorTool} from "../toolings/simulator-tool";
+import {ResizeStateTool} from "../toolings/resize-state-tool";
 
 @Component({
   selector: 'app-pad-controller',
@@ -49,6 +50,9 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
           break;
         case "AddTransitionTool":
           this._tool = new AddTransitionTool(this.p5);
+          break;
+        case "ResizeStateTool":
+          this._tool = new ResizeStateTool(this.p5);
           break;
         case "SimulatorTool":
           this._tool = new SimulatorTool(this.p5, this.elements);

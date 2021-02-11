@@ -80,6 +80,11 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
     this._drawLabel();
   }
 
+  public resize(scale): void {
+    this.height = scale;
+    this.width = scale;
+  }
+
   public update(cameraPosition: Triple, events: Event[]): void {
     events.forEach(e => this.handleEvent(e));
     this._isHover = this.isTarget(this.pad.mouseX, this.pad.mouseY, cameraPosition);
