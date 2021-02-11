@@ -81,6 +81,73 @@ export class RobustUiComponent implements RobustUiState {
     return new RobustUiComponent(label, newState, initialState.label, new Set(), new Set(), new Set(), new Set(), position);
   }
 
+  public static toJSON(component: RobustUiComponent): string {
+    let states = "";
+    let events = "";
+    let inputs = "";
+    let outputs = "";
+    let transitions = "";
+    let positions = "";
+    component.states.forEach(state => {
+      states += `{
+      "label": "${state.label}",
+      "type": "${state.type}"
+      },`;
+    });
+    component.transitions.forEach(transition => {
+      transitions += `{
+      "from": "${transition.from}",
+      "label": "${transition.label}",
+      "to": "${transition.to}"
+      },`;
+    });
+    component.positions.forEach((position, key) => {
+      positions += `{
+      "label": "${key}",
+      "x": ${position.x},
+      "y": ${position.y}
+      },`;
+    });
+    component.events.forEach(event => {
+      events += `"${event}",`;
+    });
+    component.inputs.forEach(input => {
+      inputs += `"${input}",`;
+    });
+    component.outputs.forEach(output => {
+      outputs += `"${output}",`;
+    });
+    states = states.slice(0, -1);
+    events = events.slice(0, -1);
+    inputs = inputs.slice(0, -1);
+    outputs = outputs.slice(0, -1);
+    transitions = transitions.slice(0, -1);
+    positions = positions.slice(0, -1);
+
+    return `{
+      "label": "${component.label}",
+      "initialState": "${component.initialState.label}",
+      "states": [
+        ${states}
+      ],
+      "events": [
+        ${events}
+      ],
+      "inputs": [
+        ${inputs}
+      ],
+      "outputs": [
+        ${outputs}
+      ],
+      "transitions": [
+       ${transitions}
+      ],
+      "positions": [
+        ${positions}
+      ]
+    }`;
+  }
+
   public static fromJSON(json: JsonRobustUIComponent): RobustUiComponent {
     const newState = new Set<RobustUiState>();
     const newEvents = new Set<string>();
@@ -129,11 +196,11 @@ export class RobustUiComponent implements RobustUiState {
 
   private static fromStringToRobustUiStateTypesEnum(state: string): RobustUiStateTypes {
     switch (state) {
-      case "baseState":
+      case "0":
         return RobustUiStateTypes.baseState;
-      case "simpleComponent":
+      case "1":
         return RobustUiStateTypes.simpleComponent;
-      case "compositeComponent":
+      case "2":
         return RobustUiStateTypes.compositeComponent;
     }
   }

@@ -1,7 +1,4 @@
 import {RobustUiComponent} from "./entities/robust-ui-component";
-import {RobustUiState} from "./entities/robust-ui-state";
-import {RobustUiStateTypes} from "./entities/robust-ui-state-types";
-import {RobustUiTransition} from "./entities/robust-ui-transition";
 import {Injectable} from "@angular/core";
 import {BehaviorSubject, Observable} from "rxjs";
 import {UpdateComponent} from "./designpad/designpad/designpad.component";
@@ -20,8 +17,8 @@ export class ComponentRepository {
   constructor(private electronService: ElectronService) {
     this.components = new Map<string, RobustUiComponent>();
     this.singleComponentObservableMap = new Map<string, BehaviorSubject<RobustUiComponent>>();
-    const componentA = this.electronService.readJSONFileReturnContent("src/app/testJSON/componentA.json");
-    const componentB = this.electronService.readJSONFileReturnContent("src/app/testJSON/componentB.json");
+    const componentA = this.electronService.readJSONFileReturnContent("src/app/JSON/componentA.json");
+    const componentB = this.electronService.readJSONFileReturnContent("src/app/JSON/componentB.json");
     this.save(componentA.label, RobustUiComponent.fromJSON(componentA));
     this.save(componentB.label, RobustUiComponent.fromJSON(componentB));
   }
@@ -33,9 +30,13 @@ export class ComponentRepository {
     return this.singleComponentObservableMap.get(name).asObservable();
   }
 
+  private saveToFile(component: RobustUiComponent): void {
+    this.electronService.writeComponentToJSON(component, "src/app/JSON");
+  }
+
   public save(name: string, component: RobustUiComponent): void {
     this.components.set(name, component);
-
+    this.saveToFile(component);
     if (this.singleComponentObservableMap.has(name)) {
       this.singleComponentObservableMap.get(name).next(component);
     }
