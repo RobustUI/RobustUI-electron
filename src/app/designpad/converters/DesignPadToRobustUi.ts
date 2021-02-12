@@ -1,9 +1,10 @@
 import {RobustUiState} from "../../entities/robust-ui-state";
 import {BasicState} from "../elements/basicState";
 import {Transition} from "../elements/transition";
-import {Position, RobustUiComponent} from "../../entities/robust-ui-component";
+import {RobustUiComponent} from "../../entities/robust-ui-component";
 import {RobustUiStateTypes} from "../../entities/robust-ui-state-types";
 import {RobustUiTransition} from "../../entities/robust-ui-transition";
+import {Position} from "../../interfaces/position";
 
 export class DesignPadToRobustUi {
   public static convert(elements: any[], base: RobustUiState): RobustUiComponent {

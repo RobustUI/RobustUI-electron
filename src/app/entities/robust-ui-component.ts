@@ -2,12 +2,7 @@ import {RobustUiState} from "./robust-ui-state";
 import {RobustUiStateTypes} from "./robust-ui-state-types";
 import {RobustUiTransition} from "./robust-ui-transition";
 import {JsonRobustUIComponent} from "../interfaces/jsonRobustUIComponent";
-
-export interface Position {
-  x: number;
-  y: number;
-  width: number
-}
+import {Position} from "../interfaces/position";
 
 export class RobustUiComponent implements RobustUiState {
   public get label(): string {
