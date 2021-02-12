@@ -152,7 +152,8 @@
         "required": [
           "label",
           "x",
-          "y"
+          "y",
+          "width"
         ],
         "properties": {
           "label": {
@@ -172,6 +173,12 @@
             "$id": "#root/positions/items/y",
             "title": "Y",
             "type": "number",
+            "default": 0
+          },
+          "width": {
+            "$id": "#root/positions/items/width",
+            "title": "Width",
+            "type": "integer",
             "default": 0
           }
         }

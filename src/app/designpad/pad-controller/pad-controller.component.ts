@@ -19,6 +19,7 @@ import {ComponentRepository} from "../../componentRepository";
 import {SettingsPane} from "./settingsPane";
 import {ToolTypes} from "../toolings/toolTypes";
 import {SimulatorTool} from "../toolings/simulator-tool";
+import {ResizeStateTool} from "../toolings/resize-state-tool";
 import {SimulatorTrace} from "../../interfaces/simulator-trace";
 
 @Component({
@@ -53,6 +54,9 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
           break;
         case "AddTransitionTool":
           this._tool = new AddTransitionTool(this.p5);
+          break;
+        case "ResizeStateTool":
+          this._tool = new ResizeStateTool(this.p5);
           break;
         case "SimulatorTool":
           this._tool = new SimulatorTool(this.p5, this.elements, this.simulatorTraceSubject);
@@ -297,7 +301,7 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
 
       this._component.states.forEach(state => {
         const position = this._component.positions.get(state.label);
-        states.set(state.label, new BasicState(this.p5, state.label, position.x, position.y, 50, (state.label === this._component.initialState.label)));
+        states.set(state.label, new BasicState(this.p5, state.label, position.x, position.y, position.width, (state.label === this._component.initialState.label)));
       });
       const transitions: Transition[] = [];
       this._component.transitions.forEach(transition => {

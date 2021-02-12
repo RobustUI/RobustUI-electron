@@ -2,6 +2,7 @@ import {RobustUiState} from "./robust-ui-state";
 import {RobustUiStateTypes} from "./robust-ui-state-types";
 import {RobustUiTransition} from "./robust-ui-transition";
 import {JsonRobustUIComponent} from "../interfaces/jsonRobustUIComponent";
+import {Position} from "../interfaces/position";
 
 export class RobustUiComponent implements RobustUiState {
   public get label(): string {
@@ -75,9 +76,9 @@ export class RobustUiComponent implements RobustUiState {
       type: RobustUiStateTypes.baseState
     };
     const newState = new Set<RobustUiState>();
-    const position = new Map<string, { x: number; y: number }>();
+    const position = new Map<string, Position>();
     newState.add(initialState);
-    position.set(initialStateLabel, {x: 10, y: 10});
+    position.set(initialStateLabel, {x: 10, y: 10, width: 50});
     return new RobustUiComponent(label, newState, initialState.label, new Set(), new Set(), new Set(), new Set(), position);
   }
 
@@ -105,7 +106,8 @@ export class RobustUiComponent implements RobustUiState {
       positions += `{
       "label": "${key}",
       "x": ${position.x},
-      "y": ${position.y}
+      "y": ${position.y},
+      "width": ${position.width}
       },`;
     });
     component.events.forEach(event => {
@@ -154,7 +156,7 @@ export class RobustUiComponent implements RobustUiState {
     const newInput = new Set<string>();
     const newOutput = new Set<string>();
     const newTransition = new Set<RobustUiTransition>();
-    const newPosition = new Map<string, { x: number; y: number; }>();
+    const newPosition = new Map<string, Position>();
     json.states.forEach(state => {
       newState.add({
         label: state.label,
@@ -179,7 +181,7 @@ export class RobustUiComponent implements RobustUiState {
     });
 
     json.positions.forEach(position => {
-      newPosition.set(position.label, {x: position.x, y: position.y});
+      newPosition.set(position.label, {x: position.x, y: position.y, width: position.width});
     });
 
     return new RobustUiComponent(
@@ -221,7 +223,7 @@ export class RobustUiComponent implements RobustUiState {
     inputs: Set<string>,
     outputs: Set<string>,
     transitions: Set<RobustUiTransition>,
-    public positions: Map<string, { x: number, y: number }>
+    public positions: Map<string, Position>
   ) {
     this._label = label;
 
@@ -242,7 +244,6 @@ export class RobustUiComponent implements RobustUiState {
     if (transitions != null) {
       transitions.forEach(transition => this._transitions.set(transition.label, transition));
     }
-
   }
 
   private validateInitialStateIsInStates(initialState: string): void {

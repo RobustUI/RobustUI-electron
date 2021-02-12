@@ -4,6 +4,7 @@ import {Transition} from "../elements/transition";
 import {RobustUiComponent} from "../../entities/robust-ui-component";
 import {RobustUiStateTypes} from "../../entities/robust-ui-state-types";
 import {RobustUiTransition} from "../../entities/robust-ui-transition";
+import {Position} from "../../interfaces/position";
 
 export class DesignPadToRobustUi {
   public static convert(elements: any[], base: RobustUiState): RobustUiComponent {
@@ -21,10 +22,10 @@ export class DesignPadToRobustUi {
 
   private static convertRobustUiSimpleComponent(states: BasicState[], transitions: Transition[], base: RobustUiComponent): RobustUiComponent {
 
-    const positions = new Map<string, {x:number, y:number}>();
+    const positions = new Map<string, Position>();
 
     const robustUiStates = states.map(e => {
-      positions.set(e.label, {x: e.xPos, y: e.yPos})
+      positions.set(e.label, {x: e.xPos, y: e.yPos, width: e.width});
       return {
         label: e.label,
         type: RobustUiStateTypes.baseState
@@ -34,7 +35,7 @@ export class DesignPadToRobustUi {
     const events = new Set<string>();
 
     const robustUiTransition = transitions.map(e => {
-      const labelInputOutput = e.getEvent.slice(0,-1);
+      const labelInputOutput = e.getEvent.slice(0, -1);
       let label = e.getEvent;
 
       if (base.outputs.has(labelInputOutput) || base.inputs.has(labelInputOutput)) {
@@ -49,7 +50,7 @@ export class DesignPadToRobustUi {
         to: e.getTo.label
       } as RobustUiTransition;
     });
-    
+
     return new RobustUiComponent(
       base.label,
       new Set(robustUiStates),

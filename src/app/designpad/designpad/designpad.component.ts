@@ -1,6 +1,4 @@
 import {
-  ApplicationRef,
-  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
