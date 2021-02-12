@@ -35,7 +35,6 @@ export class ModelCheckerComponent {
     if (this.shouldGenerateEnvironment()) {
       this.modelString += this.generateEnvironment();
     }
-    console.log(this.modelString);
     this.electronService.writeModelToFile(this.modelString);
     this.electronService.executeSpinFlow();
   }

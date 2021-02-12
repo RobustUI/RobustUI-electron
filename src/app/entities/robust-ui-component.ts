@@ -108,7 +108,6 @@ export class RobustUiComponent implements RobustUiState {
       },`;
     });
     component.positions.forEach((position, key) => {
-      console.log(position.width);
       positions += `{
       "label": "${key}",
       "x": ${position.x},
@@ -250,7 +249,6 @@ export class RobustUiComponent implements RobustUiState {
     if (transitions != null) {
       transitions.forEach(transition => this._transitions.set(transition.label, transition));
     }
-
   }
 
   private validateInitialStateIsInStates(initialState: string): void {
