@@ -13,6 +13,7 @@ import {Subject} from "rxjs";
 import {EventDispatcher, EventType} from "../eventDispatcher";
 import {ToolTypes} from "../toolings/toolTypes";
 import {PadControllerComponent} from "../pad-controller/pad-controller.component";
+import {SimulatorTrace} from "../../interfaces/simulator-trace";
 
 export interface UpdateComponent {
   newLabel: string;
@@ -39,9 +40,9 @@ export class DesignpadComponent implements OnInit {
   @Input()
   public addComponentStream: Subject<RobustUiComponent>;
 
+  public simulatorTrance: Subject<SimulatorTrace> = new Subject<SimulatorTrace>();
   public activeComponent: RobustUiComponent;
   public tempComponentLabel;
-
   public activeTool: ToolTypes = 'SelectTool';
 
   constructor() {
