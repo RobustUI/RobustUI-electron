@@ -3,7 +3,7 @@ import * as P5 from 'p5';
 import {implementsDrawable, implementsSelectable, implementsUpdatable} from "../implements";
 import {Triple} from "../elements/triple";
 import {Event, EventDispatcher, EventType} from "../eventDispatcher";
-import {Subscription} from "rxjs";
+import {Subject, Subscription} from "rxjs";
 import {RobustUiComponent} from "../../entities/robust-ui-component";
 import {RobustUiStateTypes} from "../../entities/robust-ui-state-types";
 import {BasicState} from "../elements/basicState";
@@ -20,6 +20,7 @@ import {SettingsPane} from "./settingsPane";
 import {ToolTypes} from "../toolings/toolTypes";
 import {SimulatorTool} from "../toolings/simulator-tool";
 import {ResizeStateTool} from "../toolings/resize-state-tool";
+import {SimulatorTrace} from "../../interfaces/simulator-trace";
 
 @Component({
   selector: 'app-pad-controller',
@@ -28,6 +29,9 @@ import {ResizeStateTool} from "../toolings/resize-state-tool";
 })
 export class PadControllerComponent implements AfterViewInit, OnDestroy {
   public p5: P5;
+
+  @Input()
+  public simulatorTraceSubject: Subject<SimulatorTrace>;
 
   @Input()
   public parent: HTMLElement;
@@ -55,7 +59,7 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
           this._tool = new ResizeStateTool(this.p5);
           break;
         case "SimulatorTool":
-          this._tool = new SimulatorTool(this.p5, this.elements);
+          this._tool = new SimulatorTool(this.p5, this.elements, this.simulatorTraceSubject);
           break;
       }
     }

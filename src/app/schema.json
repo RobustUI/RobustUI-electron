@@ -166,13 +166,13 @@
           "x": {
             "$id": "#root/positions/items/x",
             "title": "X",
-            "type": "integer",
+            "type": "number",
             "default": 0
           },
           "y": {
             "$id": "#root/positions/items/y",
             "title": "Y",
-            "type": "integer",
+            "type": "number",
             "default": 0
           },
           "width": {
