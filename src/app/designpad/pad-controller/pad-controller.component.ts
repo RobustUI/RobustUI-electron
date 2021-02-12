@@ -297,7 +297,7 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
 
       this._component.states.forEach(state => {
         const position = this._component.positions.get(state.label);
-        states.set(state.label, new BasicState(this.p5, state.label, position.x, position.y, 50, (state.label === this._component.initialState.label)));
+        states.set(state.label, new BasicState(this.p5, state.label, position.x, position.y, position.width, (state.label === this._component.initialState.label)));
       });
       const transitions: Transition[] = [];
       this._component.transitions.forEach(transition => {
