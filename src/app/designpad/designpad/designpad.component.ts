@@ -43,7 +43,6 @@ export class DesignpadComponent implements OnInit {
   public simulatorTrance: Subject<SimulatorTrace> = new Subject<SimulatorTrace>();
   public activeComponent: RobustUiComponent;
   public tempComponentLabel;
-  public isSimulator = false;
   public activeTool: ToolTypes = 'SelectTool';
 
   constructor() {
@@ -56,9 +55,6 @@ export class DesignpadComponent implements OnInit {
   }
 
   public activateTool(toolName: ToolTypes): void {
-    if (toolName !== "SimulatorTool") {
-      this.isSimulator = false;
-    }
     this.activeTool = toolName;
   }
 
@@ -88,16 +84,11 @@ export class DesignpadComponent implements OnInit {
   public activateSimulator(): void {
     this.save();
     this.activateTool('SimulatorTool');
-    this.isSimulator = true;
   }
 
   public updateValue(event: any): void {
     if (event.key === "Enter") {
       this.updateComponentLabel.emit({newLabel: this.tempComponentLabel, component: this.activeComponent});
     }
-  }
-
-  public test(event: any) {
-    console.log(event);
   }
 }
