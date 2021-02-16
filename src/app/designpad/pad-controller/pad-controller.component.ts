@@ -306,6 +306,8 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
         ...transitions,
         ...Array.from(states.values())
       );
+    } else if (this._component.type === RobustUiStateTypes.compositeComponent) {
+
     }
   }
 
