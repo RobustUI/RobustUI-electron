@@ -1,8 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {RobustUiComponent} from "../entities/robust-ui-component";
 import {RobustUiState} from "../entities/robust-ui-state";
-import {RobustUiStateTypes} from "../entities/robust-ui-state-types";
-import {RobustUiTransition} from "../entities/robust-ui-transition";
 import {ElectronService} from "../core/services";
 import {BehaviorSubject} from "rxjs";
 
@@ -37,7 +35,6 @@ export class ModelCheckerComponent {
     if (this.shouldGenerateEnvironment()) {
       this.modelString += this.generateEnvironment();
     }
-    console.log(this.modelString);
     this.electronService.writeModelToFile(this.modelString);
     this.electronService.executeSpinFlow();
   }

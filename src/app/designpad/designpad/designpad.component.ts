@@ -1,8 +1,17 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
 import {RobustUiComponent} from "../../entities/robust-ui-component";
 import {Subject} from "rxjs";
 import {EventDispatcher, EventType} from "../eventDispatcher";
 import {ToolTypes} from "../toolings/toolTypes";
+import {PadControllerComponent} from "../pad-controller/pad-controller.component";
+import {SimulatorTrace} from "../../interfaces/simulator-trace";
 
 export interface UpdateComponent {
   newLabel: string;
@@ -21,15 +30,17 @@ export class DesignpadComponent implements OnInit {
     this.tempComponentLabel = value.label;
   }
 
+  @ViewChild(PadControllerComponent) padController: PadControllerComponent;
+
   @Output()
   public updateComponentLabel: EventEmitter<UpdateComponent> = new EventEmitter<UpdateComponent>();
 
   @Input()
   public addComponentStream: Subject<RobustUiComponent>;
 
+  public simulatorTrance: Subject<SimulatorTrace> = new Subject<SimulatorTrace>();
   public activeComponent: RobustUiComponent;
   public tempComponentLabel;
-
   public activeTool: ToolTypes = 'SelectTool';
 
   constructor() {
@@ -63,6 +74,10 @@ export class DesignpadComponent implements OnInit {
     EventDispatcher.getInstance().emit({type: EventType.SAVE_COMPONENT, data: this.activeComponent});
   }
 
+  public updateInitialValue(label: string): void {
+    this.activeComponent.initialState = this.activeComponent.states.get(label);
+    this.padController.updateComponent(this.activeComponent);
+  }
 
   public activateSimulator(): void {
     this.save();

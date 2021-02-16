@@ -80,6 +80,11 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
     this._drawLabel();
   }
 
+  public resize(scale: number): void {
+    this.height = scale;
+    this.width = scale;
+  }
+
   public update(cameraPosition: Triple, events: Event[]): void {
     events.forEach(e => this.handleEvent(e));
     this._isHover = this.isTarget(this.pad.mouseX, this.pad.mouseY, cameraPosition);
@@ -93,31 +98,28 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
     return this.isTarget(this.pad.mouseX, this.pad.mouseY, cameraPosition);
   }
 
-  public getCenterOfEdge(side: 't'|'r'|'b'|'l', cameraPosition: Triple): Point {
+  public getCenterOfEdge(side: 't' | 'r' | 'b' | 'l', cameraPosition: Triple): Point {
     let xEdgeCenter;
     let yEdgeCenter;
 
     if (side === 't') {
-      xEdgeCenter = this.xPos + this.width/2;
+      xEdgeCenter = this.xPos + this.width / 2;
       yEdgeCenter = this.yPos;
-    }
-    else if(side === 'r') {
+    } else if (side === 'r') {
       xEdgeCenter = this.xPos + this.width;
-      yEdgeCenter = this.yPos + this.height/2;
-    }
-    else if (side === 'b') {
-      xEdgeCenter = this.xPos + this.width/2;
+      yEdgeCenter = this.yPos + this.height / 2;
+    } else if (side === 'b') {
+      xEdgeCenter = this.xPos + this.width / 2;
       yEdgeCenter = this.yPos + this.height;
-    }
-    else if (side === 'l') {
+    } else if (side === 'l') {
       xEdgeCenter = this.xPos;
-      yEdgeCenter = this.yPos + this.width/2;
+      yEdgeCenter = this.yPos + this.width / 2;
     } else {
       throw new Error("You didn't specify a recognizable side!");
     }
 
 
-    return {x: xEdgeCenter, y: yEdgeCenter };
+    return {x: xEdgeCenter, y: yEdgeCenter};
   }
 
   protected isTarget(mouseX: number, mouseY: number, cameraPosition: Triple): boolean {
@@ -131,7 +133,7 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
       y: ((this.yPos + cameraPosition.y) + this.height) * cameraPosition.z
     };
 
-    return  (mouseX > bottomLeftCorner.x && mouseX < topRightCorner.x && mouseY > bottomLeftCorner.y && mouseY < topRightCorner.y);
+    return (mouseX > bottomLeftCorner.x && mouseX < topRightCorner.x && mouseY > bottomLeftCorner.y && mouseY < topRightCorner.y);
   }
 
   protected move(xPos: number, yPos: number): void {
@@ -156,7 +158,7 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
 
   private _drawLabel() {
     this.pad.textAlign(this.pad.CENTER);
-    this.pad.text(this.title, this.xPos + this.width/2, this.yPos + this.height/2);
+    this.pad.text(this.title, this.xPos + this.width / 2, this.yPos + this.height / 2);
   }
 
   private _highlight() {
@@ -181,28 +183,28 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
   }
 
   private handleStateExpansion(data: {
-    point: {x: number, y: number},
-    old: {width: number, height: number},
-    new: {width: number, height: number}
+    point: { x: number, y: number },
+    old: { width: number, height: number },
+    new: { width: number, height: number }
   }) {
     if (this.x > data.point.x) {
-      this.x += data.new.width-data.old.width;
+      this.x += data.new.width - data.old.width;
     }
     if (this.y > data.point.y) {
-      this.y += data.new.height-data.old.height;
+      this.y += data.new.height - data.old.height;
     }
   }
 
   private handleStateShrink(data: {
-    point: {x: number, y: number},
-    old: {width: number, height: number},
-    new: {width: number, height: number}
+    point: { x: number, y: number },
+    old: { width: number, height: number },
+    new: { width: number, height: number }
   }) {
     if (this.x > data.point.x) {
-      this.x += data.new.width-data.old.width;
+      this.x += data.new.width - data.old.width;
     }
     if (this.y > data.point.y) {
-      this.y += data.new.height-data.old.height;
+      this.y += data.new.height - data.old.height;
     }
   }
 }

@@ -1,1 +1,1 @@
-export type ToolTypes = 'SelectTool' | 'MoveTool' | 'AddStateTool' | 'AddTransitionTool' | 'SimulatorTool';
+export type ToolTypes = 'SelectTool' | 'MoveTool' | 'AddStateTool' | 'AddTransitionTool' | 'SimulatorTool' | 'ResizeStateTool';

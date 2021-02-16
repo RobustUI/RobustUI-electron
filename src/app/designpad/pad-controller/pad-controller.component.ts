@@ -3,7 +3,7 @@ import * as P5 from 'p5';
 import {implementsDrawable, implementsSelectable, implementsUpdatable} from "../implements";
 import {Triple} from "../elements/triple";
 import {Event, EventDispatcher, EventType} from "../eventDispatcher";
-import {Subscription} from "rxjs";
+import {Subject, Subscription} from "rxjs";
 import {RobustUiComponent} from "../../entities/robust-ui-component";
 import {RobustUiStateTypes} from "../../entities/robust-ui-state-types";
 import {BasicState} from "../elements/basicState";
@@ -19,6 +19,8 @@ import {ComponentRepository} from "../../componentRepository";
 import {SettingsPane} from "./settingsPane";
 import {ToolTypes} from "../toolings/toolTypes";
 import {SimulatorTool} from "../toolings/simulator-tool";
+import {ResizeStateTool} from "../toolings/resize-state-tool";
+import {SimulatorTrace} from "../../interfaces/simulator-trace";
 
 @Component({
   selector: 'app-pad-controller',
@@ -27,6 +29,9 @@ import {SimulatorTool} from "../toolings/simulator-tool";
 })
 export class PadControllerComponent implements AfterViewInit, OnDestroy {
   public p5: P5;
+
+  @Input()
+  public simulatorTraceSubject: Subject<SimulatorTrace>;
 
   @Input()
   public parent: HTMLElement;
@@ -50,8 +55,11 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
         case "AddTransitionTool":
           this._tool = new AddTransitionTool(this.p5);
           break;
+        case "ResizeStateTool":
+          this._tool = new ResizeStateTool(this.p5);
+          break;
         case "SimulatorTool":
-          this._tool = new SimulatorTool(this.p5, this.elements);
+          this._tool = new SimulatorTool(this.p5, this.elements, this.simulatorTraceSubject);
           break;
       }
     }
@@ -110,6 +118,13 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
       }
     });
   }
+
+  public updateComponent(component: RobustUiComponent): void {
+    this.component = component;
+    this.temporaryComponent.delete(component.label);
+    this.convertComponent();
+  }
+
   public ngAfterViewInit(): void {
     this.p5 = new P5(() => {});
     this.sketch(this.p5);
@@ -286,7 +301,7 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
 
       this._component.states.forEach(state => {
         const position = this._component.positions.get(state.label);
-        states.set(state.label, new BasicState(this.p5, state.label, position.x, position.y, 50, (state.label === this._component.initialState.label)));
+        states.set(state.label, new BasicState(this.p5, state.label, position.x, position.y, position.width, (state.label === this._component.initialState.label)));
       });
       const transitions: Transition[] = [];
       this._component.transitions.forEach(transition => {

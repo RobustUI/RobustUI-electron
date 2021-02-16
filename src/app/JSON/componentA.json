@@ -1,0 +1,42 @@
+{
+      "label": "A",
+      "initialState": "A_A",
+      "states": [
+        {
+      "label": "A_A",
+      "type": "0"
+      },{
+      "label": "A_B",
+      "type": "0"
+      }
+      ],
+      "events": [
+        
+      ],
+      "inputs": [
+        "awk"
+      ],
+      "outputs": [
+        "msg"
+      ],
+      "transitions": [
+       {
+      "from": "A_B",
+      "label": "msg",
+      "to": "A_A"
+      }
+      ],
+      "positions": [
+        {
+      "label": "A_A",
+      "x": 40,
+      "y": 200,
+      "width": 200
+      },{
+      "label": "A_B",
+      "x": 100,
+      "y": 40,
+      "width": 25
+      }
+      ]
+    }
