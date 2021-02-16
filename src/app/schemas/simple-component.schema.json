@@ -2,7 +2,7 @@
   "definitions": {},
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://example.com/object1612866524.json",
-  "title": "RobustUI Simple Component",
+  "title": "1",
   "type": "object",
   "required": [
     "label",
@@ -15,6 +15,19 @@
     "positions"
   ],
   "properties": {
+    "type": {
+      "$id": "#root/type",
+      "title": "Type",
+      "type": "number",
+      "default": "",
+      "pattern": "^.*$"
+    },
+    "type": {
+      "$id": "#root/type",
+      "title": "Type",
+      "type": "number",
+      "default": ""
+    },
     "label": {
       "$id": "#root/label",
       "title": "Label",

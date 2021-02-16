@@ -1,5 +1,6 @@
 {
       "label": "B",
+      "type": 1,
       "initialState": "B_A",
       "states": [
         {
@@ -34,8 +35,8 @@
       "width": 24
       },{
       "label": "B_B",
-      "x": 148,
-      "y": 91,
+      "x": 580,
+      "y": 435,
       "width": 83
       }
       ]

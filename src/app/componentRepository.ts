@@ -3,6 +3,7 @@ import {Injectable} from "@angular/core";
 import {BehaviorSubject, Observable} from "rxjs";
 import {UpdateComponent} from "./designpad/designpad/designpad.component";
 import {ElectronService} from "./core/services";
+import {JsonRobustUIComponent} from "./interfaces/jsonRobustUIComponent";
 
 @Injectable({
   providedIn: "root"
@@ -17,9 +18,9 @@ export class ComponentRepository {
   constructor(private electronService: ElectronService) {
     this.components = new Map<string, RobustUiComponent>();
     this.singleComponentObservableMap = new Map<string, BehaviorSubject<RobustUiComponent>>();
-    const components = this.electronService.readAllJSONFilesInFolder("src/app/JSON");
+    const components = this.electronService.readAllProject("src/app/JSON");
 
-    components.forEach(component => {
+    components.filter(component => component.type === 1).forEach(component => {
       this.save(component.label, RobustUiComponent.fromJSON(component));
     });
 

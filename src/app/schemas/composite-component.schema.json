@@ -1,0 +1,133 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/object1613469890.json",
+  "title": "2",
+  "type": "object",
+  "required": [
+    "label",
+    "type",
+    "components",
+    "inputs",
+    "outputs",
+    "positions"
+  ],
+  "properties": {
+    "label": {
+      "$id": "#root/label",
+      "title": "Label",
+      "type": "string",
+      "default": "",
+      "pattern": "^.*$"
+    },
+    "type": {
+      "$id": "#root/type",
+      "title": "Type",
+      "type": "integer",
+      "default": 0
+    },
+    "components": {
+      "$id": "#root/components",
+      "title": "Components",
+      "type": "array",
+      "default": [],
+      "items":{
+        "$id": "#root/components/items",
+        "title": "Items",
+        "type": "object",
+        "required": [
+          "label",
+          "type"
+        ],
+        "properties": {
+          "label": {
+            "$id": "#root/components/items/label",
+            "title": "Label",
+            "type": "string",
+            "default": "",
+            "pattern": "^.*$"
+          },
+          "type": {
+            "$id": "#root/components/items/type",
+            "title": "Type",
+            "type": "string",
+            "default": "",
+            "pattern": "^.*$"
+          }
+        }
+      }
+
+    },
+    "inputs": {
+      "$id": "#root/inputs",
+      "title": "Inputs",
+      "type": "array",
+      "default": [],
+      "items":{
+        "$id": "#root/inputs/items",
+        "title": "Items",
+        "type": "string",
+        "default": "",
+        "pattern": "^.*$"
+      }
+    },
+    "outputs": {
+      "$id": "#root/outputs",
+      "title": "Outputs",
+      "type": "array",
+      "default": [],
+      "items":{
+        "$id": "#root/outputs/items",
+        "title": "Items",
+        "type": "string",
+        "default": "",
+        "pattern": "^.*$"
+      }
+    },
+    "positions": {
+      "$id": "#root/positions",
+      "title": "Positions",
+      "type": "array",
+      "default": [],
+      "items":{
+        "$id": "#root/positions/items",
+        "title": "Items",
+        "type": "object",
+        "required": [
+          "label",
+          "x",
+          "y",
+          "width"
+        ],
+        "properties": {
+          "label": {
+            "$id": "#root/positions/items/label",
+            "title": "Label",
+            "type": "string",
+            "default": "",
+            "pattern": "^.*$"
+          },
+          "x": {
+            "$id": "#root/positions/items/x",
+            "title": "X",
+            "type": "integer",
+            "default": 0
+          },
+          "y": {
+            "$id": "#root/positions/items/y",
+            "title": "Y",
+            "type": "integer",
+            "default": 0
+          },
+          "width": {
+            "$id": "#root/positions/items/width",
+            "title": "Width",
+            "type": "integer",
+            "default": 0
+          }
+        }
+      }
+
+    }
+  }
+}

@@ -1,5 +1,6 @@
 {
       "label": "A",
+      "type": 1,
       "initialState": "A_A",
       "states": [
         {

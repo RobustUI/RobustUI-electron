@@ -4,6 +4,7 @@ import {JsonPosition} from "./jsonPosition";
 
 export interface JsonRobustUIComponent {
   label: string;
+  type: number;
   initialState: string;
   states: JsonStates[];
   events: string[];

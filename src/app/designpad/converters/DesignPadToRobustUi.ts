@@ -53,6 +53,7 @@ export class DesignPadToRobustUi {
 
     return new RobustUiComponent(
       base.label,
+      base.type,
       new Set(robustUiStates),
       base.initialState.label,
       events,
