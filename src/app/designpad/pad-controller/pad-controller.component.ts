@@ -22,6 +22,9 @@ import {SimulatorTool} from "../toolings/simulator-tool";
 import {ResizeStateTool} from "../toolings/resize-state-tool";
 import {SimulatorTrace} from "../../interfaces/simulator-trace";
 import {RobustUiSimpleComponent} from "../../entities/robust-ui-simple-component";
+import {RobustUiCompositeComponent} from "../../entities/robust-ui-composite-component";
+import {RobustUiToDesignPad} from "../converters/RobustUiToDesignPad";
+import {CompositeComponent} from "../elements/compositeComponent";
 
 @Component({
   selector: 'app-pad-controller',
@@ -298,33 +301,27 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
       return;
     }
     if (this._component.type === RobustUiStateTypes.simpleComponent) {
-      const states = new Map<string, BasicState>();
-
-      (this._component as RobustUiSimpleComponent).states.forEach(state => {
-        const position = (this._component as RobustUiSimpleComponent).position.get(state.label);
-        states.set(state.label, new BasicState(this.p5, state.label, position.x, position.y, position.width, (state.label === (this._component as RobustUiSimpleComponent).initialState.label)));
-      });
-      const transitions: Transition[] = [];
-      (this._component as RobustUiSimpleComponent).transitions.forEach(transition => {
-        const isInput = this._component.inputs.has(transition.label);
-        const isOutput = this._component.outputs.has(transition.label);
-
-        let label = transition.label;
-        label += (isInput) ? '?' : '';
-        label += (isOutput) ? '!' : '';
-
-        transitions.push(
-          new Transition(this.p5, label, states.get(transition.from), states.get(transition.to))
-        );
-      });
-
-      this.elements.push(
-        ...transitions,
-        ...Array.from(states.values())
-      );
+      this.convertAsRobustUiSimpleComponent();
     } else if (this._component.type === RobustUiStateTypes.compositeComponent) {
-
+      this.convertAsRobustUiCompositeComponent();
     }
+  }
+
+  private convertAsRobustUiCompositeComponent() {
+    const obj = RobustUiToDesignPad.convert(this._component, this.p5, this.componentRepository) as CompositeComponent;
+
+    this.elements.push(
+      ...obj.getComponent
+    );
+  }
+
+  private convertAsRobustUiSimpleComponent() {
+    const obj = RobustUiToDesignPad.convert(this._component, this.p5, this.componentRepository) as SimpleComponent;
+
+    this.elements.push(
+      ...obj.getTransitions,
+      ...obj.getStates()
+    );
   }
 
   private storeInTemporaryObject(): void {

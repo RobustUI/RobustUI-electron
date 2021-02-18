@@ -41,6 +41,10 @@ export class ComponentRepository {
     return this.singleComponentObservableMap.get(name).asObservable();
   }
 
+  public get snapshot(): RobustUiComponent[] {
+    return Array.from(this.components.values());
+  }
+
   private saveToFile(component: RobustUiComponent): void {
     this.electronService.writeComponentToJSON((component as RobustUiSimpleComponent), "src/app/JSON");
   }

@@ -7,6 +7,14 @@ import {Event, EventDispatcher, EventType} from "../eventDispatcher";
 
 export class SimpleComponent extends BasicState {
 
+  public get getTransitions(): Transition[] {
+    return this.transitions.slice();
+  }
+
+  public getStates(): BasicState[] {
+    return this.subStates.slice();
+  }
+
   private childrenDrawLevel: number;
   private shouldDrawChildren = false;
 
@@ -75,7 +83,8 @@ export class SimpleComponent extends BasicState {
     }
   }
 
-  private setDrawLevelAndCalculateExpandedDimensions() {
+  protected setDrawLevelAndCalculateExpandedDimensions() {
+    this.childrenDrawLevel = this._drawLevel + 1;
     let maxWidth = 0;
     let maxHeight = 0;
     let minX = Infinity;

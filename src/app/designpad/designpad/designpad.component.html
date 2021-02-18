@@ -19,6 +19,7 @@
       <span class="text-xs uppercase mt-2">Select</span>
     </button>
     <button
+            [class.hidden]="activeComponent.type === 2"
             [class]="activeTool === 'AddStateTool' ? 'border-yellow-600' : 'border-gray-400'"
             class="w-20 h-20 bg-transparent border-2 flex flex-col items-center justify-center outline-none focus:outline-none"
             (click)="activateTool('AddStateTool')">
@@ -28,6 +29,7 @@
       <span class="text-xs uppercase mt-2">New State</span>
     </button>
     <button
+      [class.hidden]="activeComponent.type === 2"
       [class]="activeTool === 'AddTransitionTool' ? 'border-yellow-600' : 'border-gray-400'"
       class="w-20 h-20 bg-transparent border-2  flex flex-col items-center justify-center outline-none focus:outline-none"
       (click)="activateTool('AddTransitionTool')">
@@ -77,7 +79,7 @@
                  class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md" (keypress)="updateValue($event)" [(ngModel)]="tempComponentLabel">
         </div>
       </div>
-      <div class="">
+      <div class="" *ngIf="activeComponent.type === 1">
         <label for="initialState" class="block text-sm font-medium text-gray-700">Initial state</label>
         <div class="mt-1">
           <select name="initialState" id="initialState" (change)="updateInitialValue($event.target.value)"

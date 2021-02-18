@@ -51,6 +51,7 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
 
   public set drawLevel(drawLevel: number) {
     this._drawLevel = drawLevel;
+    this.setDrawLevelAndCalculateExpandedDimensions();
   }
 
   public get type() {
@@ -67,6 +68,10 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
 
   protected get p5(): P5 {
     return this.pad;
+  }
+
+  protected setDrawLevelAndCalculateExpandedDimensions() {
+
   }
 
   private _isHover = false;
