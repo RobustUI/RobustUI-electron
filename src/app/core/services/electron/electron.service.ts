@@ -9,6 +9,8 @@ import {BehaviorSubject} from "rxjs";
 import {JsonRobustUIComponent} from "../../../interfaces/jsonRobustUIComponent";
 import {RobustUiComponent} from "../../../entities/robust-ui-component";
 import {RobustUiStateTypes} from "../../../entities/robust-ui-state-types";
+import {RobustUiSimpleComponent} from "../../../entities/robust-ui-simple-component";
+import {SerializerFactory} from "../../../serializers/SerializerFactory";
 
 @Injectable({
   providedIn: 'root'
@@ -91,7 +93,7 @@ export class ElectronService {
   public writeComponentToJSON(component: RobustUiComponent, path: string): void {
     this.fs.writeFileSync(
       path + "/component" + component.label + ".json",
-      RobustUiComponent.toJSON(component),
+      SerializerFactory.forType(component.type).toJSON(component),
       'utf-8'
     );
   }

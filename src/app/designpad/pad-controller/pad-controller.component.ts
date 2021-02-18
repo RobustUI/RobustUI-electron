@@ -21,6 +21,7 @@ import {ToolTypes} from "../toolings/toolTypes";
 import {SimulatorTool} from "../toolings/simulator-tool";
 import {ResizeStateTool} from "../toolings/resize-state-tool";
 import {SimulatorTrace} from "../../interfaces/simulator-trace";
+import {RobustUiSimpleComponent} from "../../entities/robust-ui-simple-component";
 
 @Component({
   selector: 'app-pad-controller',
@@ -299,12 +300,12 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
     if (this._component.type === RobustUiStateTypes.simpleComponent) {
       const states = new Map<string, BasicState>();
 
-      this._component.states.forEach(state => {
-        const position = this._component.positions.get(state.label);
-        states.set(state.label, new BasicState(this.p5, state.label, position.x, position.y, position.width, (state.label === this._component.initialState.label)));
+      (this._component as RobustUiSimpleComponent).states.forEach(state => {
+        const position = (this._component as RobustUiSimpleComponent).position.get(state.label);
+        states.set(state.label, new BasicState(this.p5, state.label, position.x, position.y, position.width, (state.label === (this._component as RobustUiSimpleComponent).initialState.label)));
       });
       const transitions: Transition[] = [];
-      this._component.transitions.forEach(transition => {
+      (this._component as RobustUiSimpleComponent).transitions.forEach(transition => {
         const isInput = this._component.inputs.has(transition.label);
         const isOutput = this._component.outputs.has(transition.label);
 

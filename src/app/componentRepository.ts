@@ -3,7 +3,10 @@ import {Injectable} from "@angular/core";
 import {BehaviorSubject, Observable} from "rxjs";
 import {UpdateComponent} from "./designpad/designpad/designpad.component";
 import {ElectronService} from "./core/services";
-import {JsonRobustUIComponent} from "./interfaces/jsonRobustUIComponent";
+import {RobustUiStateTypes} from "./entities/robust-ui-state-types";
+import {SerializerFactory} from "./serializers/SerializerFactory";
+import {RobustUiSimpleComponent} from "./entities/robust-ui-simple-component";
+import {ComponentFactory} from "./factories/ComponentFactory";
 
 @Injectable({
   providedIn: "root"
@@ -20,8 +23,13 @@ export class ComponentRepository {
     this.singleComponentObservableMap = new Map<string, BehaviorSubject<RobustUiComponent>>();
     const components = this.electronService.readAllProject("src/app/JSON");
 
-    components.filter(component => component.type === 1).forEach(component => {
-      this.save(component.label, RobustUiComponent.fromJSON(component));
+    components.forEach(component => {
+      const comp =  SerializerFactory.forType(component.type).fromJSON(component);
+      if (comp != null) {
+        this.save(component.label, comp);
+      } else {
+        console.error("Something went wrong while trying to parse a component", component);
+      }
     });
 
   }
@@ -34,7 +42,7 @@ export class ComponentRepository {
   }
 
   private saveToFile(component: RobustUiComponent): void {
-    this.electronService.writeComponentToJSON(component, "src/app/JSON");
+    this.electronService.writeComponentToJSON((component as RobustUiSimpleComponent), "src/app/JSON");
   }
 
   public save(name: string, component: RobustUiComponent): void {
@@ -46,8 +54,8 @@ export class ComponentRepository {
     this.allComponents$.next(Array.from(this.components.values()));
   }
 
-  public create(componentName: string): void {
-    this.components.set(componentName, RobustUiComponent.factory(componentName));
+  public create(componentName: string, type: number): void {
+    this.components.set(componentName, this.factory(type, componentName));
     this.allComponents$.next(Array.from(this.components.values()));
   }
 
@@ -62,5 +70,9 @@ export class ComponentRepository {
     this.allComponents$.next(Array.from(this.components.values()));
 
     return this.allComponents$.asObservable();
+  }
+
+  public factory(type: RobustUiStateTypes, label: string): any {
+    return ComponentFactory.forType(type).build(label);
   }
 }

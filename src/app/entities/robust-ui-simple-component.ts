@@ -2,7 +2,6 @@ import {RobustUiComponent} from "./robust-ui-component";
 import {RobustUiState} from "./robust-ui-state";
 import {RobustUiTransition} from "./robust-ui-transition";
 import {Position} from "../interfaces/position";
-import {RobustUiStateTypes} from "./robust-ui-state-types";
 
 export class RobustUiSimpleComponent extends RobustUiComponent {
   public states = new Map<string, RobustUiState>();
@@ -22,7 +21,6 @@ export class RobustUiSimpleComponent extends RobustUiComponent {
     positions: Map<string, Position>
   ) {
     super(label, type, inputs, outputs, positions);
-
     if (states != null) {
       states.forEach(state => this.states.set(state.label, state));
     }
@@ -38,20 +36,7 @@ export class RobustUiSimpleComponent extends RobustUiComponent {
   }
 
   public copy(): RobustUiSimpleComponent {
-    return new RobustUiSimpleComponent(this.label, this.type, new Set(this.states.values()), this.initialState.label, this.events, this.inputs, this.outputs, new Set(this.transitions.values()), this.positions);;
-  }
-
-  public static factory(label: string): RobustUiSimpleComponent {
-    const initialStateLabel = "initial_state";
-    const initialState: RobustUiState = {
-      label: initialStateLabel,
-      type: RobustUiStateTypes.baseState
-    };
-    const newState = new Set<RobustUiState>();
-    const position = new Map<string, Position>();
-    newState.add(initialState);
-    position.set(initialStateLabel, {x: 10, y: 10, width: 50});
-    return new RobustUiSimpleComponent(label, 1, newState, initialState.label, new Set(), new Set(), new Set(), new Set(), position);
+    return new RobustUiSimpleComponent(this.label, this.type, new Set(this.states.values()), this.initialState.label, this.events, this.inputs, this.outputs, new Set(this.transitions.values()), this.position);
   }
 
   private validateInitialStateIsInStates(initialState: string): void {
@@ -91,12 +76,6 @@ export class RobustUiSimpleComponent extends RobustUiComponent {
   }
 
   private validateActionsAreMutuallyExclusive(events: Set<string>, inputs: Set<string>, outputs: Set<string>): void {
-    if (inputs != null && outputs != null) {
-      if (!this.isMutuallyExclusive(inputs, outputs)) {
-        throw new Error("Input-messages and Output-messages must be disjoint");
-      }
-    }
-
     if (events != null && outputs != null) {
       if (!this.isMutuallyExclusive(events, outputs)) {
         throw new Error("Events and Output-messages must be disjoint");
@@ -108,14 +87,5 @@ export class RobustUiSimpleComponent extends RobustUiComponent {
         throw new Error("Events and Input-messages must be disjoint");
       }
     }
-  }
-
-  private isMutuallyExclusive(first: Set<string>, second: Set<string>): boolean {
-    if (first.size === 0 && second.size === 0) {
-      return true;
-    }
-    const intersection = Array.from(first).filter(x => second.has(x));
-
-    return intersection.length === 0;
   }
 }

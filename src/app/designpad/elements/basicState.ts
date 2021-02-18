@@ -31,11 +31,19 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
   }
 
   public get label(): string {
-    return this.title;
+    return (this._name != null) ? this._name : this.title;
   }
 
   public set label(value: string) {
     this.title = value;
+  }
+
+  public set name(value: string) {
+    this._name = value;
+  }
+
+  public get identifier(): string {
+    return this.title;
   }
 
   protected _type = 'basic';
@@ -67,6 +75,7 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
   private h: number;
 
   private _isInitial: boolean;
+  private _name: string = null;
 
   constructor(protected pad: P5, private title: string, private x: number, private y: number, w: number, isInitial = false) {
     super();

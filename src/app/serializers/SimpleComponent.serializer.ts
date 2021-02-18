@@ -1,35 +1,25 @@
 import {RobustUiSerializer} from "./SerializerFactory";
-import {RobustUiComponent} from "../entities/robust-ui-component";
+import {RobustUiSimpleComponent} from "../entities/robust-ui-simple-component";
 import {RobustUiState} from "../entities/robust-ui-state";
-import {RobustUiTransition} from "../entities/robust-ui-transition";
+import {RobustUiStateTypes} from "../entities/robust-ui-state-types";
 import {Position} from "../interfaces/position";
 import {JsonRobustUIComponent} from "../interfaces/jsonRobustUIComponent";
-import {RobustUiStateTypes} from "../entities/robust-ui-state-types";
+import {RobustUiTransition} from "../entities/robust-ui-transition";
 
 export class SimpleComponentSerializer implements RobustUiSerializer {
 
-  public fromStringToRobustUiStateTypesEnum(state: string): RobustUiStateTypes {
-    switch (state) {
-      case "0":
-        return RobustUiStateTypes.baseState;
-      case "1":
-        return RobustUiStateTypes.simpleComponent;
-      case "2":
-        return RobustUiStateTypes.compositeComponent;
-    }
-  }
-
-  public fromJson(json: JsonRobustUIComponent): RobustUiComponent {
+  public fromJSON(json: JsonRobustUIComponent): RobustUiSimpleComponent {
     const newState = new Set<RobustUiState>();
     const newEvents = new Set<string>();
     const newInput = new Set<string>();
     const newOutput = new Set<string>();
     const newTransition = new Set<RobustUiTransition>();
     const newPosition = new Map<string, Position>();
+
     json.states.forEach(state => {
       newState.add({
         label: state.label,
-        type: this.fromStringToRobustUiStateTypesEnum(state.type)
+        type: RobustUiStateTypes.baseState
       });
     });
 
@@ -53,7 +43,7 @@ export class SimpleComponentSerializer implements RobustUiSerializer {
       newPosition.set(position.label, {x: position.x, y: position.y, width: position.width});
     });
 
-    return new RobustUiComponent(
+    return new RobustUiSimpleComponent(
       json.label,
       json.type,
       newState,
@@ -66,7 +56,7 @@ export class SimpleComponentSerializer implements RobustUiSerializer {
     );
   }
 
-  public toJson(component: RobustUiComponent): string {
+  public toJSON(component: RobustUiSimpleComponent): string {
     let states = "";
     let events = "";
     let inputs = "";
@@ -86,7 +76,7 @@ export class SimpleComponentSerializer implements RobustUiSerializer {
       "to": "${transition.to}"
       },`;
     });
-    component.positions.forEach((position, key) => {
+    component.position.forEach((position, key) => {
       positions += `{
       "label": "${key}",
       "x": ${position.x},
@@ -134,5 +124,4 @@ export class SimpleComponentSerializer implements RobustUiSerializer {
       ]
     }`;
   }
-
 }

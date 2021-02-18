@@ -1,12 +1,11 @@
 import {RobustUiComponent} from "../entities/robust-ui-component";
 import {SimpleComponentSerializer} from "./SimpleComponent.serializer";
-import {CompositeComponentSerializer} from "./CompositeComponent.serializer";
 import {JsonRobustUIComponent} from "../interfaces/jsonRobustUIComponent";
-import {RobustUiStateTypes} from "../entities/robust-ui-state-types";
+import {CompositeComponentSerializer} from "./CompositeComponent.serializer";
 
 export interface RobustUiSerializer {
-  fromJson(json: JsonRobustUIComponent): RobustUiComponent;
-  toJson(component: RobustUiComponent): string;
+  fromJSON(json: JsonRobustUIComponent): RobustUiComponent;
+  toJSON(component: RobustUiComponent): string;
 }
 
 export class SerializerFactory {

@@ -1,37 +1,35 @@
 {
-  "label": "Composite_A",
-  "type": 2,
-  "components": [
-    {
+      "label": "Composite_A",
+      "type": 2,
+      "components": [
+        {
       "label": "Hello",
       "type": "A"
-    },
-    {
+      },{
       "label": "Foo",
       "type": "A"
-    }
-  ,{
+      },{
       "label": "World",
       "type": "B"
-    }
-  ],
-  "inputs": [
-    "awk"
-  ],
-  "outputs": [
-    "msg"
-  ],
-  "positions": [
-    {
+      }
+      ],
+      "inputs": [
+        "awk"
+      ],
+      "outputs": [
+        "msg"
+      ],
+      "positions": [
+        {
       "label": "Hello",
       "x": 40,
       "y": 200,
       "width": 200
-    },{
+      },{
       "label": "World",
       "x": 100,
       "y": 40,
       "width": 25
+      }
+      ]
     }
-  ]
-}

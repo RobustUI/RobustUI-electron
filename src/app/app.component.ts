@@ -76,8 +76,8 @@ export class AppComponent {
     this.model = true;
   }
 
-  public createComponent(componentName: string): void {
-    this.componentRepository.create(componentName);
+  public createComponent(newComponent: {name: string, type: number}): void {
+    this.componentRepository.create(newComponent.name, newComponent.type);
     this.closeModal();
   }
 

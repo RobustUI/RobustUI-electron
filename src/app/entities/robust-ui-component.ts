@@ -1,10 +1,8 @@
 import {RobustUiState} from "./robust-ui-state";
 import {RobustUiStateTypes} from "./robust-ui-state-types";
-import {RobustUiTransition} from "./robust-ui-transition";
 import {JsonRobustUIComponent} from "../interfaces/jsonRobustUIComponent";
 import {Position} from "../interfaces/position";
-import {SerializerFactory} from "../serializers/SerializerFactory";
-import {RobustUiSimpleComponent} from "./robust-ui-simple-component";
+import {error} from "ajv/dist/vocabularies/applicator/dependencies";
 
 export abstract class RobustUiComponent implements RobustUiState {
   public label: string;
@@ -24,7 +22,7 @@ export abstract class RobustUiComponent implements RobustUiState {
     }
   }
 
-  constructor(
+  protected constructor(
     label: string,
     type: number,
     inputs: Set<string>,
@@ -36,24 +34,22 @@ export abstract class RobustUiComponent implements RobustUiState {
     this._type = type;
     this.inputs = inputs;
     this.outputs = outputs;
+
+    if (inputs != null && outputs != null) {
+      if (!this.isMutuallyExclusive(inputs, outputs)) {
+        throw new Error("Input-messages and Output-messages must be disjoint");
+      }
+    }
   }
 
   public abstract copy(): RobustUiComponent;
 
-  public static factory(type: RobustUiStateTypes, label: string): RobustUiComponent {
-    switch (type) {
-      case RobustUiStateTypes.simpleComponent:
-        return RobustUiSimpleComponent.factory(label);
-      default:
-        throw Error('Unknown type in RobustUiComponent factory, type=' + type.toString());
+  protected isMutuallyExclusive(first: Set<string>, second: Set<string>): boolean {
+    if (first.size === 0 && second.size === 0) {
+      return true;
     }
-  }
+    const intersection = Array.from(first).filter(x => second.has(x));
 
-  public static toJSON(component: RobustUiComponent): string {
-    return SerializerFactory.forType(component.type).toJson(component);
-  }
-
-  public static fromJSON(json: JsonRobustUIComponent): RobustUiComponent {
-    return SerializerFactory.forType(json.type).fromJson(json);
+    return intersection.length === 0;
   }
 }
