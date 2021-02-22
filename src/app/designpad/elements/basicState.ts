@@ -68,6 +68,7 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
   }
 
   public constrainedDraw = false;
+  public constrainedDrawInfo: { x: number, y: number, width: number, height: number, drawLevel: number} = null;
 
   protected _type = 'basic';
   protected _drawLevel = 1;
@@ -152,17 +153,17 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
     let yEdgeCenter;
 
     if (side === 't') {
-      xEdgeCenter = this.xPos + this.width / 2;
-      yEdgeCenter = this.yPos;
+      xEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.x + this.constrainedDrawInfo.width / 2 : this.xPos + this.width / 2;
+      yEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.y : this.yPos;
     } else if (side === 'r') {
-      xEdgeCenter = this.xPos + this.width;
-      yEdgeCenter = this.yPos + this.height / 2;
+      xEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.x + this.constrainedDrawInfo.width : this.xPos + this.width;
+      yEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.y + this.constrainedDrawInfo.height / 2 : this.yPos + this.height / 2;
     } else if (side === 'b') {
-      xEdgeCenter = this.xPos + this.width / 2;
-      yEdgeCenter = this.yPos + this.height;
+      xEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.x + this.constrainedDrawInfo.width / 2 : this.xPos + this.width / 2;
+      yEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.y + this.constrainedDrawInfo.height : this.yPos + this.height;
     } else if (side === 'l') {
-      xEdgeCenter = this.xPos;
-      yEdgeCenter = this.yPos + this.width / 2;
+      xEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.x : this.xPos;
+      yEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.y + this.constrainedDrawInfo.width / 2 : this.yPos + this.width / 2;
     } else {
       throw new Error("You didn't specify a recognizable side!");
     }
@@ -201,12 +202,22 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
     if (this.isInitial)
       this.pad.fill(190, 190, 190);
 
+
     if (!this.shouldDrawChildren) {
-      this._drawBasicState();
+      if (this.constrainedDrawInfo) {
+        this._drawConstrained();
+      } else {
+        this._drawBasicState();
+      }
     } else {
       this._drawExpandedState();
     }
+
     this.pad.pop();
+  }
+
+  private _drawConstrained() {
+    this.pad.rect(this.constrainedDrawInfo.x, this.constrainedDrawInfo.y, this.constrainedDrawInfo.width, this.constrainedDrawInfo.height, 0);
   }
 
   private _drawBasicState() {
@@ -220,10 +231,19 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
 
   private _drawLabel() {
     if (!this.shouldDrawChildren) {
-      this._drawLabelInsideState();
+      if (this.constrainedDrawInfo) {
+        this._drawLabelConstrained();
+      } else {
+        this._drawLabelInsideState();
+      }
     } else {
       this._drawLabelInSnackBar();
     }
+  }
+
+  private _drawLabelConstrained() {
+    this.pad.textAlign(this.pad.CENTER);
+    this.pad.text(this.label, this.constrainedDrawInfo.x + this.constrainedDrawInfo.width / 2, this.constrainedDrawInfo.y + this.constrainedDrawInfo.height / 2);
   }
 
   private _drawLabelInSnackBar() {

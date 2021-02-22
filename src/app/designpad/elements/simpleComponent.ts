@@ -41,15 +41,99 @@ export class SimpleComponent extends BasicState {
     super.draw(cameraPosition);
     if (this.shouldDrawChildren) {
       this.pad.push();
+      this.pad.textSize(this.pad.textSize() / this.childrenDrawLevel);
       this.pad.translate(this.xPos + 5, this.yPos + 5);
       if (this.constrainedDraw) {
-        /*this.subStates.forEach(e => {
-          e.position = {
-            x: e.xPos / this.width,
-            y: e.yPos / this.height,
-            width: e.width / this.width
+        let maxWidth = 0;
+        let minWidth = Infinity;
+        let maxHeight = 0;
+        let minHeight = Infinity;
+
+        let maxX = 0;
+        let minX = Infinity;
+        let maxY = 0;
+        let minY = Infinity;
+
+
+        this.subStates.forEach((e) => {
+          if (e.width > maxWidth) {
+            maxWidth = e.width;
+          }
+
+          if (e.width < minWidth) {
+            minWidth = e.width;
+          }
+
+          if (e.height > maxHeight) {
+            maxHeight = e.height;
+          }
+
+          if (e.height < minHeight) {
+            minHeight = e.height;
+          }
+
+          if (e.xPos > maxX) {
+            maxX = e.xPos;
+          }
+
+          if (e.xPos < minX) {
+            minX = e.xPos;
+          }
+
+          if (e.yPos > maxY) {
+            maxY = e.yPos;
+          }
+
+          if (e.yPos < minY) {
+            minY = e.yPos;
+          }
+        });
+
+        this.subStates.forEach((e, index) => {
+          let width;
+          let height;
+          let x;
+          let y;
+
+
+          if (maxWidth === minWidth) {
+            width = 1 / this.subStates.length;
+          } else {
+            width = (e.width - minWidth) / (maxWidth - minWidth);
+          }
+
+          if (maxHeight === minHeight) {
+            height = 1 / this.subStates.length;
+          } else {
+            height =  (e.height - minHeight) / (maxHeight - minHeight);
+          }
+
+          if (maxX === minX) {
+            x = 1 / this.subStates.length;
+          } else {
+            x = (e.xPos - minX) / (maxX - minX);
+          }
+
+          if (maxY === minY) {
+            y = 1 / this.subStates.length;
+          } else {
+            y =  (e.yPos - minY) / (maxY - minY);
+          }
+
+          width = (10 * width) + 5;
+          height = (10 * height) + 5;
+          x = ((this.width/this._drawLevel) * x) + 5;
+          y = ((this.height/this._drawLevel) * y) + 5;
+
+          e.constrainedDraw = true;
+          e.constrainedDrawInfo = {
+            x: x,
+            y: y,
+            width: width,
+            height: height,
+            drawLevel: this.childrenDrawLevel
           };
-        });*/
+        });
       }
 
       this.subStates.forEach(e => e.draw(cameraPosition));
