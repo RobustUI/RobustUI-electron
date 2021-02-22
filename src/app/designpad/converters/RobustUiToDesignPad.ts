@@ -61,9 +61,12 @@ export class RobustUiToDesignPad {
   private static convertCompositeComponent(component: RobustUiCompositeComponent, pad: P5, position: Position, repo: ComponentRepository): CompositeComponent {
     const subComponents = new Map<string, BasicState>();
 
-    component.components.forEach((name, key) => {
-      const comp = repo.snapshot.find(el => el.label === name);
-      subComponents.set(key, RobustUiToDesignPad.convert(comp, pad, repo));
+    component.components.forEach((type, name) => {
+      const comp = repo.snapshot.find(el => el.label === type);
+      const pos = component.position.get(name);
+      const obj = RobustUiToDesignPad.convert(comp, pad, repo, pos);
+      obj.name = name;
+      subComponents.set(name, obj);
     });
 
     if (position == null) {
@@ -74,6 +77,9 @@ export class RobustUiToDesignPad {
       };
     }
 
-    return new CompositeComponent(pad, component.label, subComponents, position.x, position.y, position.width);
+    const obj = new CompositeComponent(pad, component.label, subComponents, position.x, position.y, position.width);
+    obj.drawLevel = 0;
+
+    return obj;
   }
 }

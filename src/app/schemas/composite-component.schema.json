@@ -110,19 +110,19 @@
           "x": {
             "$id": "#root/positions/items/x",
             "title": "X",
-            "type": "integer",
+            "type": "number",
             "default": 0
           },
           "y": {
             "$id": "#root/positions/items/y",
             "title": "Y",
-            "type": "integer",
+            "type": "number",
             "default": 0
           },
           "width": {
             "$id": "#root/positions/items/width",
             "title": "Width",
-            "type": "integer",
+            "type": "number",
             "default": 0
           }
         }

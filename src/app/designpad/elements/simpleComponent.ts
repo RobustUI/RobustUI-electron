@@ -16,8 +16,6 @@ export class SimpleComponent extends BasicState {
   }
 
   private childrenDrawLevel: number;
-  private shouldDrawChildren = false;
-
   private defaultSize: number;
   private expandedWidth: number;
   private expandedHeight: number;
@@ -44,6 +42,16 @@ export class SimpleComponent extends BasicState {
     if (this.shouldDrawChildren) {
       this.pad.push();
       this.pad.translate(this.xPos + 5, this.yPos + 5);
+      if (this.constrainedDraw) {
+        /*this.subStates.forEach(e => {
+          e.position = {
+            x: e.xPos / this.width,
+            y: e.yPos / this.height,
+            width: e.width / this.width
+          };
+        });*/
+      }
+
       this.subStates.forEach(e => e.draw(cameraPosition));
       this.transitions.forEach(e => e.draw(cameraPosition));
       this.pad.pop();
@@ -56,7 +64,11 @@ export class SimpleComponent extends BasicState {
   }
 
   private setDimensionsAndDrawLevel(zoomLevel: number) {
-    if (zoomLevel >= this.childrenDrawLevel && !this.shouldDrawChildren) {
+    if (zoomLevel >= this.childrenDrawLevel && !this.shouldDrawChildren && this.constrainedDraw) {
+      this.shouldDrawChildren = true;
+    } else if (zoomLevel < this.childrenDrawLevel && this.shouldDrawChildren && this.constrainedDraw) {
+      this.shouldDrawChildren = false;
+    } else if (zoomLevel >= this.childrenDrawLevel && !this.shouldDrawChildren) {
       this.shouldDrawChildren = true;
       this.width = this.expandedWidth;
       this.height = this.expandedHeight;
@@ -91,6 +103,11 @@ export class SimpleComponent extends BasicState {
     let maxX = 0;
     let minY = Infinity;
     let maxY = 0;
+
+    this.transitions.forEach((t) => {
+      t.drawLevel = this.childrenDrawLevel;
+    });
+
     this.subStates.forEach((e) => {
       e.drawLevel = this.childrenDrawLevel;
 
