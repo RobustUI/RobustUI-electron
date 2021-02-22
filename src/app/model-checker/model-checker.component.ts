@@ -5,6 +5,8 @@ import {ElectronService} from "../core/services";
 import {BehaviorSubject} from "rxjs";
 import {RobustUiSimpleComponent} from "../entities/robust-ui-simple-component";
 import {RobustUiStateTypes} from "../entities/robust-ui-state-types";
+import {RobustUiCompositeComponent} from "../entities/robust-ui-composite-component";
+import {ComponentRepository} from "../componentRepository";
 
 export interface ChannelWithSymbol {
   label: string;
@@ -27,13 +29,18 @@ export class ModelCheckerComponent {
   private modelString = "";
   private counter = 0;
 
-  constructor(private electronService: ElectronService) {
+  constructor(
+    private electronService: ElectronService,
+    private componentRepository: ComponentRepository
+  ) {
     this.modelCheckerResult = this.electronService.modelCheckerResult;
   }
 
   public verifyComponent(): void {
     if (this.component.type === RobustUiStateTypes.simpleComponent) {
-      this.createModelForComponent((this.component as RobustUiSimpleComponent));
+      this.createModelForSimpleComponent(this.component as RobustUiSimpleComponent);
+    } else if (this.component.type === RobustUiStateTypes.compositeComponent) {
+      this.createModelForCompositeComponent(this.component as RobustUiCompositeComponent);
     }
 
     if (this.shouldGenerateEnvironment()) {
@@ -56,7 +63,15 @@ export class ModelCheckerComponent {
     this.modelCheckerResult.next("");
   }
 
-  private createModelForComponent(component: RobustUiSimpleComponent) {
+  private createModelForCompositeComponent(compositeComponent: RobustUiCompositeComponent) {
+    const allComponent = this.componentRepository.snapshot;
+    compositeComponent.components.forEach(simpleComponent => {
+      const component = allComponent.find(c => c.label === simpleComponent);
+      this.createModelForSimpleComponent(component as RobustUiSimpleComponent);
+    });
+  }
+
+  private createModelForSimpleComponent(component: RobustUiSimpleComponent) {
     component.inputs.forEach(this.createChannelAndDefine.bind(this));
     component.outputs.forEach(this.createChannelAndDefine.bind(this));
     this.modelString += "\nactive proctype " + ModelCheckerComponent.replaceSpace(component.label) + "() {\n";
@@ -100,7 +115,7 @@ export class ModelCheckerComponent {
   }
 
   private addOrRemoveMissingChannel(channel: string, send: boolean) {
-    if (this.missingChannels.has(channel)) {
+    if (this.hasChannelWithCorrectSymbol(channel, send)) {
       this.missingChannels.delete(channel);
     } else {
       if (send) {
@@ -115,6 +130,18 @@ export class ModelCheckerComponent {
         });
       }
     }
+  }
+
+  private hasChannelWithCorrectSymbol(channel, send: boolean): boolean {
+    if (this.missingChannels.has(channel)) {
+      const channelWithSymbol = this.missingChannels.get(channel);
+      if (send) {
+        return channelWithSymbol.symbol !== "!";
+      } else {
+        return channelWithSymbol.symbol !== "?";
+      }
+    }
+    return false;
   }
 
   private createChannelAndDefine(input: string) {
