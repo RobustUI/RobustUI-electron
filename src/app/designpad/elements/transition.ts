@@ -178,16 +178,19 @@ export class Transition implements Drawable, Clickable, DoubleClickable, SelectA
   }
 
   private isTarget(mouseX: number, mouseY: number, cameraPosition: Triple) {
+
     if (this.connection == null) {
       return false;
     }
+
+    const safeDrawLevel = (this._drawLevel > 0) ? this._drawLevel : 1;
 
     for (const point of this.clickAblePoints) {
       const dist = this.pad.dist(
         mouseX,
         mouseY,
-        ((point.x / this._drawLevel) + cameraPosition.x) * cameraPosition.z,
-        ((point.y / this._drawLevel) + cameraPosition.y) * cameraPosition.z
+        ((point.x / safeDrawLevel) + cameraPosition.x) * cameraPosition.z,
+        ((point.y / safeDrawLevel) + cameraPosition.y) * cameraPosition.z
       );
 
       if (dist <= 5) {

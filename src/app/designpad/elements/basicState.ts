@@ -4,6 +4,7 @@ import {DoubleClickable, Drawable, Updatable} from "../interactions/p5Core";
 import {Point} from "./point";
 import {Triple} from "./triple";
 import {Event, EventType} from "../eventDispatcher";
+import {Position} from "../../interfaces/position";
 
 export class BasicState extends Draggable implements Drawable, Updatable, DoubleClickable {
   public get xPos(): number {
@@ -23,11 +24,19 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
   }
 
   public get height(): number {
-    return this.h / this._drawLevel;
+    if (this.shouldDrawChildren) {
+      return (this.h + this.snackbarHeight) / this._drawLevel;
+    } else {
+      return this.h / this._drawLevel;
+    }
   }
 
   public set height(value: number) {
     this.h = value;
+  }
+
+  public getRawHeight() : number {
+    return this.h / this._drawLevel;
   }
 
   public get label(): string {
@@ -45,6 +54,21 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
   public get identifier(): string {
     return this.title;
   }
+
+  public set position (value: { x: number, y: number, width: number, height: number, drawLevel: number}) {
+    const height = (this.shouldDrawChildren) ? (value.height * value.drawLevel) - (this.snackbarHeight * value.drawLevel) : value.height * value.drawLevel;
+    const width = value.width * value.drawLevel;
+    const x = value.x;
+    const y = (this.shouldDrawChildren) ? value.y + ((this.snackbarHeight * value.drawLevel)) : value.y;
+
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+  }
+
+  public constrainedDraw = false;
+  public constrainedDrawInfo: { x: number, y: number, width: number, height: number, drawLevel: number} = null;
 
   protected _type = 'basic';
   protected _drawLevel = 1;
@@ -66,12 +90,22 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
     this._isInitial = value;
   }
 
+  public translateScaleForMouseInteraction: Point = {x:0, y:0};
+
   protected get p5(): P5 {
     return this.pad;
   }
 
   protected setDrawLevelAndCalculateExpandedDimensions() {
 
+  }
+
+  private get snackbarHeight() {
+    return this._snackbarHeight / this._drawLevel;
+  }
+
+  private set snackbarHeight(value: number) {
+    this._snackbarHeight = value;
   }
 
   private _isHover = false;
@@ -81,6 +115,10 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
 
   private _isInitial: boolean;
   private _name: string = null;
+
+  protected shouldDrawChildren = false;
+  private _snackbarHeight = 20;
+  private defaultPadding = 5;
 
   constructor(protected pad: P5, private title: string, private x: number, private y: number, w: number, isInitial = false) {
     super();
@@ -117,17 +155,17 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
     let yEdgeCenter;
 
     if (side === 't') {
-      xEdgeCenter = this.xPos + this.width / 2;
-      yEdgeCenter = this.yPos;
+      xEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.x + this.constrainedDrawInfo.width / 2 : this.xPos + this.width / 2;
+      yEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.y : this.yPos;
     } else if (side === 'r') {
-      xEdgeCenter = this.xPos + this.width;
-      yEdgeCenter = this.yPos + this.height / 2;
+      xEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.x + this.constrainedDrawInfo.width : this.xPos + this.width;
+      yEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.y + this.constrainedDrawInfo.height / 2 : this.yPos + this.height / 2;
     } else if (side === 'b') {
-      xEdgeCenter = this.xPos + this.width / 2;
-      yEdgeCenter = this.yPos + this.height;
+      xEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.x + this.constrainedDrawInfo.width / 2 : this.xPos + this.width / 2;
+      yEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.y + this.constrainedDrawInfo.height : this.yPos + this.height;
     } else if (side === 'l') {
-      xEdgeCenter = this.xPos;
-      yEdgeCenter = this.yPos + this.width / 2;
+      xEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.x : this.xPos;
+      yEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.y + this.constrainedDrawInfo.width / 2 : this.yPos + this.width / 2;
     } else {
       throw new Error("You didn't specify a recognizable side!");
     }
@@ -138,13 +176,13 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
 
   protected isTarget(mouseX: number, mouseY: number, cameraPosition: Triple): boolean {
     const bottomLeftCorner: Point = {
-      x: (this.xPos + cameraPosition.x) * cameraPosition.z,
-      y: (this.yPos + cameraPosition.y) * cameraPosition.z
+      x: (((this.constrainedDrawInfo) ? this.constrainedDrawInfo.x : this.xPos + this.translateScaleForMouseInteraction.x) + cameraPosition.x) * cameraPosition.z,
+      y: (((this.constrainedDrawInfo) ? this.constrainedDrawInfo.y : this.yPos  + this.translateScaleForMouseInteraction.y) + cameraPosition.y) * cameraPosition.z
     };
 
     const topRightCorner: Point = {
-      x: ((this.xPos + cameraPosition.x) + this.width) * cameraPosition.z,
-      y: ((this.yPos + cameraPosition.y) + this.height) * cameraPosition.z
+      x: ((((this.constrainedDrawInfo) ? this.constrainedDrawInfo.x : this.xPos + this.translateScaleForMouseInteraction.x) + cameraPosition.x) + ((this.constrainedDrawInfo) ? this.constrainedDrawInfo.width : this.width)) * cameraPosition.z,
+      y: ((((this.constrainedDrawInfo) ? this.constrainedDrawInfo.y : this.yPos + this.translateScaleForMouseInteraction.y) + cameraPosition.y) + ((this.constrainedDrawInfo) ? this.constrainedDrawInfo.height : this.height)) * cameraPosition.z
     };
 
     return (mouseX > bottomLeftCorner.x && mouseX < topRightCorner.x && mouseY > bottomLeftCorner.y && mouseY < topRightCorner.y);
@@ -166,13 +204,65 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
     if (this.isInitial)
       this.pad.fill(190, 190, 190);
 
-    this.pad.rect(this.xPos, this.yPos, this.width, this.height, 5);
+    if (!this.shouldDrawChildren) {
+      if (this.constrainedDrawInfo) {
+        this._drawConstrained();
+      } else {
+        this._drawBasicState();
+      }
+    } else {
+      this._drawExpandedState();
+    }
+
     this.pad.pop();
   }
 
+  private _drawConstrained() {
+    this.pad.rect(this.constrainedDrawInfo.x, this.constrainedDrawInfo.y, this.constrainedDrawInfo.width, this.constrainedDrawInfo.height, 0);
+  }
+
+  private _drawBasicState() {
+    this.pad.rect(this.xPos, this.yPos, this.width, this.height, this.defaultPadding);
+  }
+
+  private _drawExpandedState() {
+    this.pad.rect(this.xPos, this.yPos - this.snackbarHeight, (this.pad.textWidth(this.label) + 2 * this.defaultPadding), this.snackbarHeight, this.defaultPadding, this.defaultPadding, 0, 0);
+    this.pad.rect(this.xPos, this.yPos, this.width, this.height, 0, this.defaultPadding, this.defaultPadding, this.defaultPadding);
+  }
+
   private _drawLabel() {
+    if (!this.shouldDrawChildren) {
+      if (this.constrainedDrawInfo) {
+        this._drawLabelConstrained();
+      } else {
+        this._drawLabelInsideState();
+      }
+    } else {
+      this._drawLabelInSnackBar();
+    }
+  }
+
+  private _drawLabelConstrained() {
     this.pad.textAlign(this.pad.CENTER);
-    this.pad.text(this.title, this.xPos + this.width / 2, this.yPos + this.height / 2);
+    this.pad.text(this.label, this.constrainedDrawInfo.x + this.constrainedDrawInfo.width / 2, this.constrainedDrawInfo.y + this.constrainedDrawInfo.height / 2);
+  }
+
+  private _drawLabelInSnackBar() {
+    this.pad.textAlign(this.pad.LEFT);
+    this.pad.text(this.label, this.xPos + this.defaultPadding, (this.yPos - this.snackbarHeight + (this.snackbarHeight - this.pad.textSize() / 2)));
+  }
+
+  private _drawLabelInsideState() {
+    this.pad.textAlign(this.pad.CENTER);
+    this.pad.text(this.label, this.xPos + this.width / 2, this.yPos + this.height / 2);
+    if (this._name != null) {
+      this.pad.push();
+      const originalFontSize = this.pad.textSize();
+      this.pad.textSize(originalFontSize * 0.75);
+      this.pad.fill('#c9c9c9');
+      this.pad.text("("+this.title+")",this.xPos + this.width / 2, (this.yPos + this.height / 2) + originalFontSize);
+      this.pad.pop();
+    }
   }
 
   private _highlight() {

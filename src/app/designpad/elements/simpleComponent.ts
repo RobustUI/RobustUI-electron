@@ -16,8 +16,6 @@ export class SimpleComponent extends BasicState {
   }
 
   private childrenDrawLevel: number;
-  private shouldDrawChildren = false;
-
   private defaultSize: number;
   private expandedWidth: number;
   private expandedHeight: number;
@@ -43,7 +41,101 @@ export class SimpleComponent extends BasicState {
     super.draw(cameraPosition);
     if (this.shouldDrawChildren) {
       this.pad.push();
+      this.pad.textSize(this.pad.textSize() / this.childrenDrawLevel);
       this.pad.translate(this.xPos + 5, this.yPos + 5);
+      if (this.constrainedDraw) {
+        let maxWidth = 0;
+        let minWidth = Infinity;
+        let maxHeight = 0;
+        let minHeight = Infinity;
+
+        let maxX = 0;
+        let minX = Infinity;
+        let maxY = 0;
+        let minY = Infinity;
+
+
+        this.subStates.forEach((e) => {
+          if (e.width > maxWidth) {
+            maxWidth = e.width;
+          }
+
+          if (e.width < minWidth) {
+            minWidth = e.width;
+          }
+
+          if (e.height > maxHeight) {
+            maxHeight = e.height;
+          }
+
+          if (e.height < minHeight) {
+            minHeight = e.height;
+          }
+
+          if (e.xPos > maxX) {
+            maxX = e.xPos;
+          }
+
+          if (e.xPos < minX) {
+            minX = e.xPos;
+          }
+
+          if (e.yPos > maxY) {
+            maxY = e.yPos;
+          }
+
+          if (e.yPos < minY) {
+            minY = e.yPos;
+          }
+        });
+
+        this.subStates.forEach((e, index) => {
+          let width;
+          let height;
+          let x;
+          let y;
+
+
+          if (maxWidth === minWidth) {
+            width = 1 / this.subStates.length;
+          } else {
+            width = (e.width - minWidth) / (maxWidth - minWidth);
+          }
+
+          if (maxHeight === minHeight) {
+            height = 1 / this.subStates.length;
+          } else {
+            height =  (e.height - minHeight) / (maxHeight - minHeight);
+          }
+
+          if (maxX === minX) {
+            x = 1 / this.subStates.length;
+          } else {
+            x = (e.xPos - minX) / (maxX - minX);
+          }
+
+          if (maxY === minY) {
+            y = 1 / this.subStates.length;
+          } else {
+            y =  (e.yPos - minY) / (maxY - minY);
+          }
+
+          width = (10 * width) + 5;
+          height = (10 * height) + 5;
+          x = ((this.width/this._drawLevel) * x) + 5;
+          y = ((this.height/this._drawLevel) * y) + 5;
+
+          e.constrainedDraw = true;
+          e.constrainedDrawInfo = {
+            x: x,
+            y: y,
+            width: width,
+            height: height,
+            drawLevel: this.childrenDrawLevel
+          };
+        });
+      }
+
       this.subStates.forEach(e => e.draw(cameraPosition));
       this.transitions.forEach(e => e.draw(cameraPosition));
       this.pad.pop();
@@ -56,7 +148,11 @@ export class SimpleComponent extends BasicState {
   }
 
   private setDimensionsAndDrawLevel(zoomLevel: number) {
-    if (zoomLevel >= this.childrenDrawLevel && !this.shouldDrawChildren) {
+    if (zoomLevel >= this.childrenDrawLevel && !this.shouldDrawChildren && this.constrainedDraw) {
+      this.shouldDrawChildren = true;
+    } else if (zoomLevel < this.childrenDrawLevel && this.shouldDrawChildren && this.constrainedDraw) {
+      this.shouldDrawChildren = false;
+    } else if (zoomLevel >= this.childrenDrawLevel && !this.shouldDrawChildren) {
       this.shouldDrawChildren = true;
       this.width = this.expandedWidth;
       this.height = this.expandedHeight;
@@ -91,6 +187,11 @@ export class SimpleComponent extends BasicState {
     let maxX = 0;
     let minY = Infinity;
     let maxY = 0;
+
+    this.transitions.forEach((t) => {
+      t.drawLevel = this.childrenDrawLevel;
+    });
+
     this.subStates.forEach((e) => {
       e.drawLevel = this.childrenDrawLevel;
 

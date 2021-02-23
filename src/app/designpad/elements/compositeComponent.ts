@@ -2,16 +2,16 @@ import {BasicState} from "./basicState";
 import * as P5 from "p5";
 import {Triple} from "./triple";
 import {Event, EventDispatcher, EventType} from "../eventDispatcher";
+import {GridBuilder} from "../pad-controller/helpers/GridBuilder";
 
 export class CompositeComponent extends BasicState {
-  private shouldDrawChildren = false;
+
   private childrenDrawLevel: number;
 
   private defaultSize: number;
   private expandedWidth: number;
   private expandedHeight: number;
-
-  public get getComponent(): BasicState[] {
+  public get getComponents(): BasicState[] {
     return Array.from(this.subComponents.values());
   }
 
@@ -32,18 +32,20 @@ export class CompositeComponent extends BasicState {
 
   public draw(cameraPosition: Triple): void {
     super.draw(cameraPosition);
+
     if (this.shouldDrawChildren) {
-      this.pad.push();
-      this.pad.translate(this.xPos + 5, this.yPos + 5);
-      this.subComponents.forEach(e => e.draw(cameraPosition));
-      this.pad.pop();
+      GridBuilder.drawGridLayout(this.pad, {x: this.xPos, y: this.yPos}, this.subComponents.size, this.width, this.height);
+      GridBuilder.drawElementsInGrid(Array.from(this.subComponents.values()), this.width, this.getRawHeight(), {x: this.xPos, y: this.yPos}, this.pad, this.childrenDrawLevel, cameraPosition);
     }
   }
 
   public update(cameraPosition: Triple, events: Event[]) {
     super.update(cameraPosition, events);
     this.setDimensionsAndDrawLevel(cameraPosition.z);
+    this.subComponents.forEach(e => e.update(cameraPosition, events));
   }
+
+
 
   private setDimensionsAndDrawLevel(zoomLevel: number) {
     if (zoomLevel >= this.childrenDrawLevel && !this.shouldDrawChildren) {

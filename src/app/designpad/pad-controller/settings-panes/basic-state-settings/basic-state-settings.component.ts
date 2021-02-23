@@ -41,7 +41,11 @@ export class BasicStateSettingsComponent implements OnInit, OnChanges {
 
   public saveChanges(): void {
     if (this.form.valid) {
-      this._item.label = this.form.controls.label.value;
+      if (this._item.type === 'or' || this._item.type === 'basic') {
+        this._item.label = this.form.controls.label.value;
+      } else {
+        this._item.name = this.form.controls.label.value;
+      }
       this.close.emit(true);
     }
   }

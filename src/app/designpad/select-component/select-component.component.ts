@@ -1,0 +1,43 @@
+import {Component, Input, Output, EventEmitter} from '@angular/core';
+import {ComponentRepository} from "../../componentRepository";
+import {Observable, of} from "rxjs";
+import {RobustUiComponent} from "../../entities/robust-ui-component";
+import {filter} from "rxjs/operators";
+import {flatMap} from "rxjs/internal/operators";
+
+@Component({
+  selector: 'app-select-component',
+  templateUrl: './select-component.component.html',
+  styleUrls: ['./select-component.component.scss']
+})
+export class SelectComponentComponent {
+
+  @Input()
+  public show: boolean;
+
+  @Input()
+  private activeComp: string;
+
+  @Output()
+  public showChange = new EventEmitter<boolean>();
+
+  @Output()
+  public selectedComponent = new EventEmitter<{name: string, type: string}>();
+
+  public components$: Observable<RobustUiComponent[]>;
+  constructor(private repo: ComponentRepository) {
+    this.components$ = repo.getAll().pipe(flatMap((res) => {
+      return of(res.filter(e => e.label !== this.activeComp));
+    }));
+  }
+
+  public onCloseModal() {
+    this.show = !this.show;
+    this.showChange.emit(this.show);
+  }
+
+  public selectComponent(name: string, type: string) {
+    this.selectedComponent.emit({name, type});
+    this.onCloseModal();
+  }
+}

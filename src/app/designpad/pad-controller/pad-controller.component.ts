@@ -21,10 +21,10 @@ import {ToolTypes} from "../toolings/toolTypes";
 import {SimulatorTool} from "../toolings/simulator-tool";
 import {ResizeStateTool} from "../toolings/resize-state-tool";
 import {SimulatorTrace} from "../../interfaces/simulator-trace";
-import {RobustUiSimpleComponent} from "../../entities/robust-ui-simple-component";
-import {RobustUiCompositeComponent} from "../../entities/robust-ui-composite-component";
 import {RobustUiToDesignPad} from "../converters/RobustUiToDesignPad";
 import {CompositeComponent} from "../elements/compositeComponent";
+import {GridBuilder} from "./helpers/GridBuilder";
+import {AddComponentTool} from "../toolings/add-component-tool";
 
 @Component({
   selector: 'app-pad-controller',
@@ -65,12 +65,38 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
         case "SimulatorTool":
           this._tool = new SimulatorTool(this.p5, this.elements, this.simulatorTraceSubject);
           break;
+        case "AddComponentTool":
+          this._tool = new AddComponentTool(this.p5, this.elements, this.componentRepository, () => {
+            this.selectComponentModalOpen = true;
+          }, () => {
+            this.selectComponentModalOpen = false;
+          }, this.selectedComponent$);
+          break;
       }
     }
   }
 
+  public get activeTool(): ToolTypes {
+    return this._tool.name;
+  }
+
   @Output()
   public activeToolChange = new EventEmitter<ToolTypes>();
+
+  public selectedComponent$ = new EventEmitter<{name: string, type:string}>();
+
+  public get selectComponentModalOpen(): boolean {
+    return this._selectComponentModalStatus;
+  }
+
+  public set selectComponentModalOpen(value: boolean) {
+    this._selectComponentModalStatus = value;
+    if (!value && this.activeTool == 'AddComponentTool') {
+      EventDispatcher.getInstance().emit({type: EventType.SWITCH_TOOL, data: 'SelectTool' as ToolTypes});
+    }
+  }
+
+  private _selectComponentModalStatus = false;
 
   private _tool: Tool;
   private _prevTool: ToolTypes = null;
@@ -159,6 +185,10 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
     this.settingsPane = {open: false, item: null};
   }
 
+  private selectComponent() {
+
+  }
+
   private sketch(p: P5) {
     p.preload = this.preload.bind(this);
     p.setup = this.setup.bind(this);
@@ -194,7 +224,16 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
     this.p5.clear();
     this.p5.scale(this.cameraPos.z);
     this.p5.translate(this.cameraPos.x, this.cameraPos.y);
-    this.elements.filter((e) => implementsDrawable(e)).forEach(e => e.draw(this.cameraPos));
+    if (this._component.type === RobustUiStateTypes.compositeComponent) {
+      this.p5.push();
+      this.p5.strokeWeight(5);
+      GridBuilder.drawGridLayout(this.p5, {x: 0, y: 0}, (this.elements.length === 1) ? this.elements.length + 1 : this.elements.length, this.p5.width, this.p5.height);
+      this.p5.pop();
+      GridBuilder.drawElementsInGrid(this.elements, this.p5.width, this.p5.height, {x: 0, y: 0}, this.p5, 1, this.cameraPos);
+    } else if (this._component.type === RobustUiStateTypes.simpleComponent) {
+      this.elements.filter((e) => implementsDrawable(e)).forEach(e => e.draw(this.cameraPos));
+    }
+
     this.update();
   }
 
@@ -311,7 +350,7 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
     const obj = RobustUiToDesignPad.convert(this._component, this.p5, this.componentRepository) as CompositeComponent;
 
     this.elements.push(
-      ...obj.getComponent
+      ... obj.getComponents
     );
   }
 

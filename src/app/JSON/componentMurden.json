@@ -3,8 +3,20 @@
       "type": 2,
       "components": [
         {
-      "label": "Foo",
+      "label": "TheMikkel",
       "type": "Mikkel"
+      },{
+      "label": "TheA",
+      "type": "A"
+      },{
+      "label": "sda",
+      "type": "A"
+      },{
+      "label": "qwe",
+      "type": "A"
+      },{
+      "label": "dfg",
+      "type": "A"
       }
       ],
       "inputs": [
@@ -14,6 +26,31 @@
         
       ],
       "positions": [
-        
+        {
+      "label": "Murden",
+      "x": 10.348706411698535,
+      "y": 15.973003374578173,
+      "width": 121.3671875
+      },{
+      "label": "TheA",
+      "x": 350,
+      "y": 204,
+      "width": 50
+      },{
+      "label": "sda",
+      "x": 350,
+      "y": 204,
+      "width": 50
+      },{
+      "label": "qwe",
+      "x": 350,
+      "y": 204,
+      "width": 50
+      },{
+      "label": "dfg",
+      "x": 350,
+      "y": 204,
+      "width": 50
+      }
       ]
     }
