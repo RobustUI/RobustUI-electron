@@ -3,6 +3,8 @@ import {RobustUiComponent} from "../entities/robust-ui-component";
 import {RobustUiState} from "../entities/robust-ui-state";
 import {ElectronService} from "../core/services";
 import {BehaviorSubject} from "rxjs";
+import {RobustUiSimpleComponent} from "../entities/robust-ui-simple-component";
+import {RobustUiStateTypes} from "../entities/robust-ui-state-types";
 
 export interface ChannelWithSymbol {
   label: string;
@@ -30,7 +32,9 @@ export class ModelCheckerComponent {
   }
 
   public verifyComponent(): void {
-    this.createModelForComponent(this.component);
+    if (this.component.type === RobustUiStateTypes.simpleComponent) {
+      this.createModelForComponent((this.component as RobustUiSimpleComponent));
+    }
 
     if (this.shouldGenerateEnvironment()) {
       this.modelString += this.generateEnvironment();
@@ -52,7 +56,7 @@ export class ModelCheckerComponent {
     this.modelCheckerResult.next("");
   }
 
-  private createModelForComponent(component: RobustUiComponent) {
+  private createModelForComponent(component: RobustUiSimpleComponent) {
     component.inputs.forEach(this.createChannelAndDefine.bind(this));
     component.outputs.forEach(this.createChannelAndDefine.bind(this));
     this.modelString += "\nactive proctype " + ModelCheckerComponent.replaceSpace(component.label) + "() {\n";

@@ -1,12 +1,13 @@
 {
       "label": "B",
+      "type": 1,
       "initialState": "B_A",
       "states": [
         {
       "label": "B_A",
       "type": "0"
       },{
-      "label": "B_B",
+      "label": "B_B_B",
       "type": "0"
       }
       ],
@@ -23,7 +24,7 @@
        {
       "from": "B_A",
       "label": "awk",
-      "to": "B_B"
+      "to": "B_B_B"
       }
       ],
       "positions": [
@@ -33,9 +34,9 @@
       "y": 309,
       "width": 24
       },{
-      "label": "B_B",
-      "x": 148,
-      "y": 91,
+      "label": "B_B_B",
+      "x": 580,
+      "y": 435,
       "width": 83
       }
       ]

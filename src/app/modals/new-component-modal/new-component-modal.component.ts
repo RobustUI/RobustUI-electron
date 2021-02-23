@@ -7,12 +7,12 @@ import {Component, EventEmitter, Output} from '@angular/core';
 })
 export class NewComponentModalComponent {
   @Output()
-  public newComponentName: EventEmitter<string> = new EventEmitter<string>();
+  public newComponentName: EventEmitter<{name: string, type: number}> = new EventEmitter<{name: string, type: number}>();
   @Output()
   public closeModal: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  public createComponent(name: string): void {
-    this.newComponentName.emit(name);
+  public createComponent(name: string, type: number): void {
+    this.newComponentName.emit({ name, type });
   }
 
   public onCloseModal(): void {

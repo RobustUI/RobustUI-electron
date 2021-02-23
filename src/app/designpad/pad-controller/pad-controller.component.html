@@ -32,3 +32,5 @@
     </section>
   </div>
 </div>
+
+<app-select-component [(show)]="selectComponentModalOpen" (selectedComponent)="selectedComponent$.emit($event)" [activeComp]="_component.label"></app-select-component>

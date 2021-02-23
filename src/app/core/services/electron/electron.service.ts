@@ -8,6 +8,9 @@ import * as fs from 'fs';
 import {BehaviorSubject} from "rxjs";
 import {JsonRobustUIComponent} from "../../../interfaces/jsonRobustUIComponent";
 import {RobustUiComponent} from "../../../entities/robust-ui-component";
+import {RobustUiStateTypes} from "../../../entities/robust-ui-state-types";
+import {RobustUiSimpleComponent} from "../../../entities/robust-ui-simple-component";
+import {SerializerFactory} from "../../../serializers/SerializerFactory";
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +19,7 @@ export class ElectronService {
   public modelCheckerResult: BehaviorSubject<string> = new BehaviorSubject<string>("");
   private spinModelFileName = "model.pml";
   private ajv = new Ajv();
-  private readonly componentSchema;
+  private readonly componentSchemas: any[];
 
   ipcRenderer: typeof ipcRenderer;
   webFrame: typeof webFrame;
@@ -39,13 +42,12 @@ export class ElectronService {
 
       this.childProcess = window.require('child_process');
       this.fs = window.require('fs');
-      const componentSchemaRaw = this.fs.readFileSync("src/app/schema.json");
-      this.componentSchema = JSON.parse(componentSchemaRaw.toString());
+      this.componentSchemas = this.readAllJSONFilesInFolder<any>('src/app/schemas/');
     }
   }
 
-  public readSingleJSONFileReturnContent(filePath: string): JsonRobustUIComponent {
-    let json: JsonRobustUIComponent;
+  public readSingleJSONFileReturnContent<T>(filePath: string): T {
+    let json: T;
 
     try {
       const rawData = this.fs.readFileSync(filePath);
@@ -54,20 +56,16 @@ export class ElectronService {
       return null;
     }
 
-    if (!this.ajv.validate(this.componentSchema, json)) {
-      return null;
-    }
-
     return json;
   }
 
-  public readAllJSONFilesInFolder(folderPath: string): JsonRobustUIComponent[] {
-    const components: JsonRobustUIComponent[] = [];
+  public readAllJSONFilesInFolder<T>(folderPath: string): T[] {
+    const files: T[] = [];
     let hasError = false;
     this.fs.readdirSync(folderPath).forEach(file => {
-      const component = this.readSingleJSONFileReturnContent(folderPath + "/" + file);
+      const component = this.readSingleJSONFileReturnContent<T>(folderPath + "/" + file);
       if (component != null) {
-        components.push(component);
+        files.push(component);
       } else {
         hasError = true;
       }
@@ -75,13 +73,27 @@ export class ElectronService {
     if (hasError) {
       alert("Some files could not be loaded. Either they do not have the correct schema or something else");
     }
-    return components;
+    return files;
+  }
+
+  public readAllProject(folderPath: string): JsonRobustUIComponent[] {
+    const files = this.readAllJSONFilesInFolder<JsonRobustUIComponent>(folderPath);
+    const elements: JsonRobustUIComponent[] = [];
+    for (const file of files)  {
+      const schema = this.componentSchemas.find(e => e.title == file.type);
+
+      if (this.ajv.validate(schema, file)) {
+        elements.push(file);
+      }
+    }
+
+    return elements;
   }
 
   public writeComponentToJSON(component: RobustUiComponent, path: string): void {
     this.fs.writeFileSync(
       path + "/component" + component.label + ".json",
-      RobustUiComponent.toJSON(component),
+      SerializerFactory.forType(component.type).toJSON(component),
       'utf-8'
     );
   }

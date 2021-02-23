@@ -21,6 +21,10 @@ import {ToolTypes} from "../toolings/toolTypes";
 import {SimulatorTool} from "../toolings/simulator-tool";
 import {ResizeStateTool} from "../toolings/resize-state-tool";
 import {SimulatorTrace} from "../../interfaces/simulator-trace";
+import {RobustUiToDesignPad} from "../converters/RobustUiToDesignPad";
+import {CompositeComponent} from "../elements/compositeComponent";
+import {GridBuilder} from "./helpers/GridBuilder";
+import {AddComponentTool} from "../toolings/add-component-tool";
 
 @Component({
   selector: 'app-pad-controller',
@@ -61,12 +65,38 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
         case "SimulatorTool":
           this._tool = new SimulatorTool(this.p5, this.elements, this.simulatorTraceSubject);
           break;
+        case "AddComponentTool":
+          this._tool = new AddComponentTool(this.p5, this.elements, this.componentRepository, () => {
+            this.selectComponentModalOpen = true;
+          }, () => {
+            this.selectComponentModalOpen = false;
+          }, this.selectedComponent$);
+          break;
       }
     }
   }
 
+  public get activeTool(): ToolTypes {
+    return this._tool.name;
+  }
+
   @Output()
   public activeToolChange = new EventEmitter<ToolTypes>();
+
+  public selectedComponent$ = new EventEmitter<{name: string, type:string}>();
+
+  public get selectComponentModalOpen(): boolean {
+    return this._selectComponentModalStatus;
+  }
+
+  public set selectComponentModalOpen(value: boolean) {
+    this._selectComponentModalStatus = value;
+    if (!value && this.activeTool == 'AddComponentTool') {
+      EventDispatcher.getInstance().emit({type: EventType.SWITCH_TOOL, data: 'SelectTool' as ToolTypes});
+    }
+  }
+
+  private _selectComponentModalStatus = false;
 
   private _tool: Tool;
   private _prevTool: ToolTypes = null;
@@ -190,7 +220,16 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
     this.p5.clear();
     this.p5.scale(this.cameraPos.z);
     this.p5.translate(this.cameraPos.x, this.cameraPos.y);
-    this.elements.filter((e) => implementsDrawable(e)).forEach(e => e.draw(this.cameraPos));
+    if (this._component.type === RobustUiStateTypes.compositeComponent) {
+      this.p5.push();
+      this.p5.strokeWeight(5);
+      GridBuilder.drawGridLayout(this.p5, {x: 0, y: 0}, (this.elements.length === 1) ? this.elements.length + 1 : this.elements.length, this.p5.width, this.p5.height);
+      this.p5.pop();
+      GridBuilder.drawElementsInGrid(this.elements, this.p5.width, this.p5.height, {x: 0, y: 0}, this.p5, 1, this.cameraPos);
+    } else if (this._component.type === RobustUiStateTypes.simpleComponent) {
+      this.elements.filter((e) => implementsDrawable(e)).forEach(e => e.draw(this.cameraPos));
+    }
+
     this.update();
   }
 
@@ -297,31 +336,27 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
       return;
     }
     if (this._component.type === RobustUiStateTypes.simpleComponent) {
-      const states = new Map<string, BasicState>();
-
-      this._component.states.forEach(state => {
-        const position = this._component.positions.get(state.label);
-        states.set(state.label, new BasicState(this.p5, state.label, position.x, position.y, position.width, (state.label === this._component.initialState.label)));
-      });
-      const transitions: Transition[] = [];
-      this._component.transitions.forEach(transition => {
-        const isInput = this._component.inputs.has(transition.label);
-        const isOutput = this._component.outputs.has(transition.label);
-
-        let label = transition.label;
-        label += (isInput) ? '?' : '';
-        label += (isOutput) ? '!' : '';
-
-        transitions.push(
-          new Transition(this.p5, label, states.get(transition.from), states.get(transition.to))
-        );
-      });
-
-      this.elements.push(
-        ...transitions,
-        ...Array.from(states.values())
-      );
+      this.convertAsRobustUiSimpleComponent();
+    } else if (this._component.type === RobustUiStateTypes.compositeComponent) {
+      this.convertAsRobustUiCompositeComponent();
     }
+  }
+
+  private convertAsRobustUiCompositeComponent() {
+    const obj = RobustUiToDesignPad.convert(this._component, this.p5, this.componentRepository) as CompositeComponent;
+
+    this.elements.push(
+      ... obj.getComponents
+    );
+  }
+
+  private convertAsRobustUiSimpleComponent() {
+    const obj = RobustUiToDesignPad.convert(this._component, this.p5, this.componentRepository) as SimpleComponent;
+
+    this.elements.push(
+      ...obj.getTransitions,
+      ...obj.getStates()
+    );
   }
 
   private storeInTemporaryObject(): void {

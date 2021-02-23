@@ -5,6 +5,8 @@ import {RobustUiComponent} from "../../entities/robust-ui-component";
 import {RobustUiStateTypes} from "../../entities/robust-ui-state-types";
 import {RobustUiTransition} from "../../entities/robust-ui-transition";
 import {Position} from "../../interfaces/position";
+import {RobustUiSimpleComponent} from "../../entities/robust-ui-simple-component";
+import {RobustUiCompositeComponent} from "../../entities/robust-ui-composite-component";
 
 export class DesignPadToRobustUi {
   public static convert(elements: any[], base: RobustUiState): RobustUiComponent {
@@ -13,14 +15,16 @@ export class DesignPadToRobustUi {
 
     switch (base.type) {
       case RobustUiStateTypes.simpleComponent:
-        return DesignPadToRobustUi.convertRobustUiSimpleComponent(states, transitions, base as RobustUiComponent);
+        return DesignPadToRobustUi.convertRobustUiSimpleComponent(states, transitions, base as RobustUiSimpleComponent);
+      case RobustUiStateTypes.compositeComponent:
+        return DesignPadToRobustUi.convertRobustUiCompositeComponent(states, base as RobustUiCompositeComponent);
       default:
         console.error("Couldn't convert");
         return undefined;
     }
   }
 
-  private static convertRobustUiSimpleComponent(states: BasicState[], transitions: Transition[], base: RobustUiComponent): RobustUiComponent {
+  private static convertRobustUiSimpleComponent(states: BasicState[], transitions: Transition[], base: RobustUiSimpleComponent): RobustUiComponent {
 
     const positions = new Map<string, Position>();
 
@@ -51,8 +55,9 @@ export class DesignPadToRobustUi {
       } as RobustUiTransition;
     });
 
-    return new RobustUiComponent(
+    return new RobustUiSimpleComponent(
       base.label,
+      base.type,
       new Set(robustUiStates),
       base.initialState.label,
       events,
@@ -60,6 +65,26 @@ export class DesignPadToRobustUi {
       base.outputs,
       new Set(robustUiTransition),
       positions
+    );
+  }
+
+  private static convertRobustUiCompositeComponent(components: BasicState[], base: RobustUiCompositeComponent) {
+    const positions = new Map<string, Position>();
+    const robustUiComponents = new Map<string, string>();
+
+    components.map(e => {
+      positions.set(e.label, {x: e.xPos, y: e.yPos, width: e.width});
+      robustUiComponents.set(e.label, e.identifier);
+    });
+
+
+    return new RobustUiCompositeComponent(
+      base.label,
+      base.type,
+      base.inputs,
+      base.outputs,
+      positions,
+      robustUiComponents
     );
   }
 }

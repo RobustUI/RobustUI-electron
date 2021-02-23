@@ -1,17 +1,12 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  ViewChild
-} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {RobustUiComponent} from "../../entities/robust-ui-component";
 import {Subject} from "rxjs";
 import {EventDispatcher, EventType} from "../eventDispatcher";
 import {ToolTypes} from "../toolings/toolTypes";
 import {PadControllerComponent} from "../pad-controller/pad-controller.component";
 import {SimulatorTrace} from "../../interfaces/simulator-trace";
+import {RobustUiStateTypes} from "../../entities/robust-ui-state-types";
+import {RobustUiSimpleComponent} from "../../entities/robust-ui-simple-component";
 
 export interface UpdateComponent {
   newLabel: string;
@@ -48,7 +43,9 @@ export class DesignpadComponent implements OnInit {
 
   public ngOnInit(): void {
     this.addComponentStream.subscribe((newComp: RobustUiComponent) => {
-      this.activeComponent.states.set(newComp.label, newComp);
+      if(this.activeComponent.type === RobustUiStateTypes.simpleComponent) {
+        (this.activeComponent as RobustUiSimpleComponent).states.set(newComp.label, newComp);
+      }
     });
   }
 
@@ -75,7 +72,9 @@ export class DesignpadComponent implements OnInit {
   }
 
   public updateInitialValue(label: string): void {
-    this.activeComponent.initialState = this.activeComponent.states.get(label);
+    if (this.activeComponent.type === RobustUiStateTypes.simpleComponent) {
+      (this.activeComponent as RobustUiSimpleComponent).initialState = (this.activeComponent as RobustUiSimpleComponent).states.get(label);
+    }
     this.padController.updateComponent(this.activeComponent);
   }
 
