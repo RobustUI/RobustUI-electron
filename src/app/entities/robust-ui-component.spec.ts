@@ -1,9 +1,10 @@
 import {RobustUiComponent} from "./robust-ui-component";
 import {RobustUiStateTypes} from "./robust-ui-state-types";
+import {RobustUiSimpleComponent} from "./robust-ui-simple-component";
 /*
 describe('Robust UI Component Formalism', () => {
   it('should allow empty component', function () {
-    const component = new RobustUiComponent(
+    const component = new RobustUiSimpleComponent(
       'label',
       new Set([]),
       null,
@@ -17,7 +18,7 @@ describe('Robust UI Component Formalism', () => {
   });
 
   it('should allow empty component, with null objects', function () {
-    const component = new RobustUiComponent(
+    const component = new RobustUiSimpleComponent(
       'label',
       null,
       null,
@@ -32,7 +33,7 @@ describe('Robust UI Component Formalism', () => {
 
   it('should require initialState to be contained in states, if non empty', () => {
     expect(() => {
-      new RobustUiComponent(
+      new RobustUiSimpleComponent(
         'label',
         new Set([{label: "Not-initial", type: RobustUiStateTypes.baseState}]),
         "initial",
@@ -46,7 +47,7 @@ describe('Robust UI Component Formalism', () => {
 
   it('should construct when initial state is in states', () => {
     expect(() => {
-      new RobustUiComponent(
+      new RobustUiSimpleComponent(
         'label',
         new Set([{label: "initial", type: RobustUiStateTypes.baseState}]),
         "initial",
@@ -60,7 +61,7 @@ describe('Robust UI Component Formalism', () => {
 
   it('should require input and output to be disjoint', () => {
     expect(() => {
-      new RobustUiComponent(
+      new RobustUiSimpleComponent(
         'label',
         new Set([{label: "initial", type: RobustUiStateTypes.baseState}]),
         "initial",
@@ -74,7 +75,7 @@ describe('Robust UI Component Formalism', () => {
 
   it('should construct when input && output is disjoint', () => {
     expect(() => {
-      new RobustUiComponent(
+      new RobustUiSimpleComponent(
         'label',
         new Set([{label: "initial", type: RobustUiStateTypes.baseState}]),
         "initial",
@@ -86,7 +87,7 @@ describe('Robust UI Component Formalism', () => {
     }).not.toThrow(new Error("Input-messages and Output-messages must be disjoint"));
 
     expect(() => {
-      new RobustUiComponent(
+      new RobustUiSimpleComponent(
         'label',
         new Set([{label: "initial", type: RobustUiStateTypes.baseState}]),
         "initial",
@@ -98,7 +99,7 @@ describe('Robust UI Component Formalism', () => {
     }).not.toThrow(new Error("Input-messages and Output-messages must be disjoint"));
 
     expect(() => {
-      new RobustUiComponent(
+      new RobustUiSimpleComponent(
         'label',
         new Set([{label: "initial", type: RobustUiStateTypes.baseState}]),
         "initial",
@@ -112,7 +113,7 @@ describe('Robust UI Component Formalism', () => {
 
   it('should require events and outputs to be disjoint', function () {
     expect(() => {
-      new RobustUiComponent(
+      new RobustUiSimpleComponent(
         'label',
         new Set([{label: "initial", type: RobustUiStateTypes.baseState}]),
         "initial",
@@ -126,7 +127,7 @@ describe('Robust UI Component Formalism', () => {
 
   it('should require events and inputs to be disjoint', function () {
     expect(() => {
-      new RobustUiComponent(
+      new RobustUiSimpleComponent(
         'label',
         new Set([{label: "initial", type: RobustUiStateTypes.baseState}]),
         "initial",
@@ -140,7 +141,7 @@ describe('Robust UI Component Formalism', () => {
 
   it('should require transition from to be in states', function () {
     expect(() => {
-      new RobustUiComponent(
+      new RobustUiSimpleComponent(
         'label',
         new Set([{label: "initial", type: RobustUiStateTypes.baseState}]),
         "initial",
@@ -154,7 +155,7 @@ describe('Robust UI Component Formalism', () => {
 
   it('should require transition "to" to be in states', function () {
     expect(() => {
-      new RobustUiComponent(
+      new RobustUiSimpleComponent(
         'label',
         new Set([
           {label: "initial", type: RobustUiStateTypes.baseState},
@@ -170,7 +171,7 @@ describe('Robust UI Component Formalism', () => {
 
   it('should require transition label to be in actions', function () {
     expect(() => {
-      new RobustUiComponent(
+      new RobustUiSimpleComponent(
         'label',
         new Set([
           {label: "initial", type: RobustUiStateTypes.baseState},
@@ -187,7 +188,7 @@ describe('Robust UI Component Formalism', () => {
 
   it('should allow valid transitions', () => {
     expect(() => {
-      new RobustUiComponent(
+      new RobustUiSimpleComponent(
         'label',
         new Set([
           {label: "initial", type: RobustUiStateTypes.baseState},
@@ -202,7 +203,7 @@ describe('Robust UI Component Formalism', () => {
     }).not.toThrow();
 
     expect(() => {
-      new RobustUiComponent(
+      new RobustUiSimpleComponent(
         'label',
         new Set([
           {label: "initial", type: RobustUiStateTypes.baseState},
@@ -217,7 +218,7 @@ describe('Robust UI Component Formalism', () => {
     }).not.toThrow();
 
     expect(() => {
-      new RobustUiComponent(
+      new RobustUiSimpleComponent(
         'label',
         new Set([
           {label: "initial", type: RobustUiStateTypes.baseState},
@@ -231,5 +232,4 @@ describe('Robust UI Component Formalism', () => {
       );
     }).not.toThrow();
   });
-});
-*/
+});*/

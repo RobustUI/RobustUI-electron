@@ -18,7 +18,7 @@ export class RobustUiCompositeComponent extends RobustUiComponent {
 
 
   public copy(): RobustUiComponent {
-    return undefined;
+    return new RobustUiCompositeComponent(this.label, this.type, this.inputs, this.outputs, this.position, this.components);
   }
 
 }

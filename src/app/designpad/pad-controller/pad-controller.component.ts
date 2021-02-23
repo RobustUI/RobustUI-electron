@@ -185,10 +185,6 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
     this.settingsPane = {open: false, item: null};
   }
 
-  private selectComponent() {
-
-  }
-
   private sketch(p: P5) {
     p.preload = this.preload.bind(this);
     p.setup = this.setup.bind(this);

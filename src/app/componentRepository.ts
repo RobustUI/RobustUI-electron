@@ -28,7 +28,7 @@ export class ComponentRepository {
       if (comp != null) {
         this.save(component.label, comp);
       } else {
-        console.error("Something went wrong while trying to parse a component", component);
+        console.error("Something went wrong while trying to parse the component: ", component);
       }
     });
 
