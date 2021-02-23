@@ -5,6 +5,15 @@
         {
       "label": "TheLabel",
       "type": "Murden"
+      },{
+      "label": "NotTHeB",
+      "type": "B"
+      },{
+      "label": "Hello",
+      "type": "A"
+      },{
+      "label": "sdsasa",
+      "type": "A"
       }
       ],
       "inputs": [
@@ -16,9 +25,24 @@
       "positions": [
         {
       "label": "TheLabel",
-      "x": 164,
-      "y": 204,
-      "width": 50
+      "x": 0,
+      "y": 0,
+      "width": 618.5
+      },{
+      "label": "NotTHeB",
+      "x": 0,
+      "y": 0,
+      "width": 618.5
+      },{
+      "label": "Hello",
+      "x": 0,
+      "y": 0,
+      "width": 618.5
+      },{
+      "label": "sdsasa",
+      "x": 0,
+      "y": 0,
+      "width": 618.5
       }
       ]
     }

@@ -90,6 +90,8 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
     this._isInitial = value;
   }
 
+  public translateScaleForMouseInteraction: Point = {x:0, y:0};
+
   protected get p5(): P5 {
     return this.pad;
   }
@@ -174,13 +176,13 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
 
   protected isTarget(mouseX: number, mouseY: number, cameraPosition: Triple): boolean {
     const bottomLeftCorner: Point = {
-      x: (this.xPos + cameraPosition.x) * cameraPosition.z,
-      y: (this.yPos + cameraPosition.y) * cameraPosition.z
+      x: (((this.constrainedDrawInfo) ? this.constrainedDrawInfo.x : this.xPos + this.translateScaleForMouseInteraction.x) + cameraPosition.x) * cameraPosition.z,
+      y: (((this.constrainedDrawInfo) ? this.constrainedDrawInfo.y : this.yPos  + this.translateScaleForMouseInteraction.y) + cameraPosition.y) * cameraPosition.z
     };
 
     const topRightCorner: Point = {
-      x: ((this.xPos + cameraPosition.x) + this.width) * cameraPosition.z,
-      y: ((this.yPos + cameraPosition.y) + this.height) * cameraPosition.z
+      x: ((((this.constrainedDrawInfo) ? this.constrainedDrawInfo.x : this.xPos + this.translateScaleForMouseInteraction.x) + cameraPosition.x) + ((this.constrainedDrawInfo) ? this.constrainedDrawInfo.width : this.width)) * cameraPosition.z,
+      y: ((((this.constrainedDrawInfo) ? this.constrainedDrawInfo.y : this.yPos + this.translateScaleForMouseInteraction.y) + cameraPosition.y) + ((this.constrainedDrawInfo) ? this.constrainedDrawInfo.height : this.height)) * cameraPosition.z
     };
 
     return (mouseX > bottomLeftCorner.x && mouseX < topRightCorner.x && mouseY > bottomLeftCorner.y && mouseY < topRightCorner.y);
@@ -201,7 +203,6 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
 
     if (this.isInitial)
       this.pad.fill(190, 190, 190);
-
 
     if (!this.shouldDrawChildren) {
       if (this.constrainedDrawInfo) {

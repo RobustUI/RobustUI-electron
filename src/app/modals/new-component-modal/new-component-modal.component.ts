@@ -1,5 +1,4 @@
 import {Component, EventEmitter, Output} from '@angular/core';
-import {RobustUiStateTypes} from "../../entities/robust-ui-state-types";
 
 @Component({
   selector: 'app-new-component-modal',

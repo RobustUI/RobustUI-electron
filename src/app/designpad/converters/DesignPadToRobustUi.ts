@@ -5,7 +5,6 @@ import {RobustUiComponent} from "../../entities/robust-ui-component";
 import {RobustUiStateTypes} from "../../entities/robust-ui-state-types";
 import {RobustUiTransition} from "../../entities/robust-ui-transition";
 import {Position} from "../../interfaces/position";
-import {SimpleComponent} from "../elements/simpleComponent";
 import {RobustUiSimpleComponent} from "../../entities/robust-ui-simple-component";
 import {RobustUiCompositeComponent} from "../../entities/robust-ui-composite-component";
 
@@ -75,7 +74,7 @@ export class DesignPadToRobustUi {
 
     components.map(e => {
       positions.set(e.label, {x: e.xPos, y: e.yPos, width: e.width});
-      robustUiComponents.set(e.name, e.identifier);
+      robustUiComponents.set(e.label, e.identifier);
     });
 
 

@@ -8,6 +8,7 @@ import {BasicStateSettingsComponent} from './pad-controller/settings-panes/basic
 import {ModelCheckerComponent} from "../model-checker/model-checker.component";
 import {ModalComponent} from "../modals/modal/modal.component";
 import {SimulatorTraceComponent} from "../simulator-trace/simulator-trace.component";
+import {SelectComponentComponent} from "./select-component/select-component.component";
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import {SimulatorTraceComponent} from "../simulator-trace/simulator-trace.compon
     BasicStateSettingsComponent,
     ModelCheckerComponent,
     ModalComponent,
-    SimulatorTraceComponent
+    SimulatorTraceComponent,
+    SelectComponentComponent
   ],
   exports: [
     DesignpadComponent,
