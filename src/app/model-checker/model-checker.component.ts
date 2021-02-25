@@ -28,7 +28,6 @@ export class ModelCheckerComponent {
   private missingChannels: Map<string, ChannelWithSymbol> = new Map<string, ChannelWithSymbol>();
   private modelString = "";
   private counter = 0;
-  private methodNamePostfixCounter = 0;
 
   constructor(
     private electronService: ElectronService,
@@ -57,21 +56,20 @@ export class ModelCheckerComponent {
     this.channels.clear();
     this.missingChannels.clear();
     this.counter = 0;
-    this.methodNamePostfixCounter = 0;
     this.modelCheckerResult.next("");
   }
 
   private createModelForCompositeComponent(compositeComponent: RobustUiCompositeComponent) {
     const allComponent = this.componentRepository.snapshot;
-    compositeComponent.components.forEach(label => {
+    compositeComponent.components.forEach((label, key) => {
       const component = allComponent.find(c => c.label === label);
-      this.createModelString(component);
+      this.createModelString(component, key);
     });
   }
 
-  private createModelString(component: RobustUiComponent): void {
+  private createModelString(component: RobustUiComponent, nickname?: string): void {
     if (component.type === RobustUiStateTypes.simpleComponent) {
-      this.createModelForSimpleComponent(component as RobustUiSimpleComponent);
+      this.createModelForSimpleComponent(component as RobustUiSimpleComponent, nickname);
     } else if (component.type === RobustUiStateTypes.compositeComponent) {
       this.createModelForCompositeComponent(component as RobustUiCompositeComponent);
     } else {
@@ -79,13 +77,16 @@ export class ModelCheckerComponent {
     }
   }
 
-  private createModelForSimpleComponent(component: RobustUiSimpleComponent) {
+  private createModelForSimpleComponent(component: RobustUiSimpleComponent, nickname?: string) {
     component.inputs.forEach(this.createChannelAndDefine.bind(this));
     component.outputs.forEach(this.createChannelAndDefine.bind(this));
 
-    this.modelString += "\nactive proctype " + ModelCheckerComponent.replaceSpace(component.label) + this.methodNamePostfixCounter.toString() + "() {\n";
+    if (nickname != null) {
+      this.modelString += "\nactive proctype " + ModelCheckerComponent.replaceSpace(nickname) + "() {\n";
+    } else {
+      this.modelString += "\nactive proctype " + ModelCheckerComponent.replaceSpace(component.label) + "() {\n";
+    }
     this.modelString += "goto " + ModelCheckerComponent.replaceSpace(component.initialState.label) + ";\n";
-    this.methodNamePostfixCounter++;
 
     component.states.forEach((state: RobustUiState) => {
       this.modelString += ModelCheckerComponent.replaceSpace(state.label) + ":\n";

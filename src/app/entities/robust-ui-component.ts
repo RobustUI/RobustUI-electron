@@ -2,7 +2,6 @@ import {RobustUiState} from "./robust-ui-state";
 import {RobustUiStateTypes} from "./robust-ui-state-types";
 import {JsonRobustUIComponent} from "../interfaces/jsonRobustUIComponent";
 import {Position} from "../interfaces/position";
-import {error} from "ajv/dist/vocabularies/applicator/dependencies";
 
 export abstract class RobustUiComponent implements RobustUiState {
   public label: string;
