@@ -28,6 +28,7 @@ export class ModelCheckerComponent {
   private missingChannels: Map<string, ChannelWithSymbol> = new Map<string, ChannelWithSymbol>();
   private modelString = "";
   private counter = 0;
+  private methodNamePostfixCounter = 0;
 
   constructor(
     private electronService: ElectronService,
@@ -37,11 +38,7 @@ export class ModelCheckerComponent {
   }
 
   public verifyComponent(): void {
-    if (this.component.type === RobustUiStateTypes.simpleComponent) {
-      this.createModelForSimpleComponent(this.component as RobustUiSimpleComponent);
-    } else if (this.component.type === RobustUiStateTypes.compositeComponent) {
-      this.createModelForCompositeComponent(this.component as RobustUiCompositeComponent);
-    }
+    this.createModelString(this.component);
 
     if (this.shouldGenerateEnvironment()) {
       this.modelString += this.generateEnvironment();
@@ -60,22 +57,35 @@ export class ModelCheckerComponent {
     this.channels.clear();
     this.missingChannels.clear();
     this.counter = 0;
+    this.methodNamePostfixCounter = 0;
     this.modelCheckerResult.next("");
   }
 
   private createModelForCompositeComponent(compositeComponent: RobustUiCompositeComponent) {
     const allComponent = this.componentRepository.snapshot;
-    compositeComponent.components.forEach(simpleComponent => {
-      const component = allComponent.find(c => c.label === simpleComponent);
-      this.createModelForSimpleComponent(component as RobustUiSimpleComponent);
+    compositeComponent.components.forEach(label => {
+      const component = allComponent.find(c => c.label === label);
+      this.createModelString(component);
     });
+  }
+
+  private createModelString(component: RobustUiComponent): void {
+    if (component.type === RobustUiStateTypes.simpleComponent) {
+      this.createModelForSimpleComponent(component as RobustUiSimpleComponent);
+    } else if (component.type === RobustUiStateTypes.compositeComponent) {
+      this.createModelForCompositeComponent(component as RobustUiCompositeComponent);
+    } else {
+      throw new Error("Type is not supported: " + component.type.toString());
+    }
   }
 
   private createModelForSimpleComponent(component: RobustUiSimpleComponent) {
     component.inputs.forEach(this.createChannelAndDefine.bind(this));
     component.outputs.forEach(this.createChannelAndDefine.bind(this));
-    this.modelString += "\nactive proctype " + ModelCheckerComponent.replaceSpace(component.label) + "() {\n";
+
+    this.modelString += "\nactive proctype " + ModelCheckerComponent.replaceSpace(component.label) + this.methodNamePostfixCounter.toString() + "() {\n";
     this.modelString += "goto " + ModelCheckerComponent.replaceSpace(component.initialState.label) + ";\n";
+    this.methodNamePostfixCounter++;
 
     component.states.forEach((state: RobustUiState) => {
       this.modelString += ModelCheckerComponent.replaceSpace(state.label) + ":\n";
