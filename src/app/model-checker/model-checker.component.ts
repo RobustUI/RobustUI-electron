@@ -69,7 +69,7 @@ export class ModelCheckerComponent {
         this.createModelForCompositeComponent(component as RobustUiCompositeComponent);
         break;
       case RobustUiStateTypes.selectiveComponent:
-        this.createModelForSelectiveComponent(component as RobustUiSelectiveComponent);
+        this.createModelForSelectiveComponent(component as RobustUiSelectiveComponent, nickname);
         break;
       default:
         throw new Error("Type is not supported: " + component.type.toString());
@@ -84,10 +84,15 @@ export class ModelCheckerComponent {
     });
   }
 
-  private createModelForSelectiveComponent(component: RobustUiSelectiveComponent) {
+  private createModelForSelectiveComponent(component: RobustUiSelectiveComponent, nickname?: string) {
     const variable = component.observer.input;
     this.modelString += "byte " + variable + "\n";
-    this.modelString += "\nactive proctype " + ModelCheckerComponent.replaceSpace(component.label) + "() {\nend:\n";
+    if (nickname != null) {
+      this.modelString += "\nactive proctype " + ModelCheckerComponent.replaceSpace(nickname) + "() {\nend:\n";
+    } else {
+      this.modelString += "\nactive proctype " + ModelCheckerComponent.replaceSpace(component.label) + "() {\nend:\n";
+
+    }
     this.modelString += variable + "++;\nif\n";
 
     component.cases.forEach((singleCase) => {
