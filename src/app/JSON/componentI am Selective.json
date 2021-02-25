@@ -1,0 +1,26 @@
+{
+      "label": "I am Selective",
+      "type": 3,
+      "observer": {
+      "input": "onSelect",
+      "dataType": "number"
+    },
+      "cases": [
+        {
+      "guard": "<9",
+      "type": "Murden"
+      },{
+      "guard": ">=9",
+      "type": "A"
+      }
+      ],
+      "inputs": [
+        "onSelect"
+      ],
+      "outputs": [
+        
+      ],
+      "positions": [
+        
+      ]
+    }
