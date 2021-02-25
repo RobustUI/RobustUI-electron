@@ -29,8 +29,6 @@ export class RobustUiSelectiveComponent extends RobustUiComponent{
     this.cases = cases;
   }
 
-
-
   public copy(): RobustUiComponent {
     return new RobustUiSelectiveComponent(this.label, this.type, this.inputs, this.outputs, this.position, this.observer, this.cases);
   }
