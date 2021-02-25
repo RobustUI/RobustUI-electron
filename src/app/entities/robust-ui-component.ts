@@ -1,6 +1,5 @@
 import {RobustUiState} from "./robust-ui-state";
 import {RobustUiStateTypes} from "./robust-ui-state-types";
-import {JsonRobustUIComponent} from "../interfaces/jsonRobustUIComponent";
 import {Position} from "../interfaces/position";
 
 export abstract class RobustUiComponent implements RobustUiState {
@@ -16,6 +15,8 @@ export abstract class RobustUiComponent implements RobustUiState {
         return RobustUiStateTypes.simpleComponent;
       case 2:
         return RobustUiStateTypes.compositeComponent;
+      case 3:
+        return RobustUiStateTypes.selectiveComponent;
       default:
         throw Error("Could not recognize the type");
     }
