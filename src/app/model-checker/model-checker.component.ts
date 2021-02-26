@@ -7,6 +7,7 @@ import {RobustUiSimpleComponent} from "../entities/robust-ui-simple-component";
 import {RobustUiStateTypes} from "../entities/robust-ui-state-types";
 import {RobustUiCompositeComponent} from "../entities/robust-ui-composite-component";
 import {ComponentRepository} from "../componentRepository";
+import {RobustUiSelectiveComponent} from "../entities/robust-ui-selective-component";
 
 export interface ChannelWithSymbol {
   label: string;
@@ -59,6 +60,22 @@ export class ModelCheckerComponent {
     this.modelCheckerResult.next("");
   }
 
+  private createModelString(component: RobustUiComponent, nickname?: string): void {
+    switch (component.type) {
+      case RobustUiStateTypes.simpleComponent:
+        this.createModelForSimpleComponent(component as RobustUiSimpleComponent, nickname);
+        break;
+      case RobustUiStateTypes.compositeComponent:
+        this.createModelForCompositeComponent(component as RobustUiCompositeComponent);
+        break;
+      case RobustUiStateTypes.selectiveComponent:
+        this.createModelForSelectiveComponent(component as RobustUiSelectiveComponent, nickname);
+        break;
+      default:
+        throw new Error("Type is not supported: " + component.type.toString());
+    }
+  }
+
   private createModelForCompositeComponent(compositeComponent: RobustUiCompositeComponent) {
     const allComponent = this.componentRepository.snapshot;
     compositeComponent.components.forEach((label, key) => {
@@ -67,14 +84,21 @@ export class ModelCheckerComponent {
     });
   }
 
-  private createModelString(component: RobustUiComponent, nickname?: string): void {
-    if (component.type === RobustUiStateTypes.simpleComponent) {
-      this.createModelForSimpleComponent(component as RobustUiSimpleComponent, nickname);
-    } else if (component.type === RobustUiStateTypes.compositeComponent) {
-      this.createModelForCompositeComponent(component as RobustUiCompositeComponent);
+  private createModelForSelectiveComponent(component: RobustUiSelectiveComponent, nickname?: string) {
+    const variable = component.observer.input;
+    this.modelString += "byte " + variable + "\n";
+    if (nickname != null) {
+      this.modelString += "\nactive proctype " + ModelCheckerComponent.replaceSpace(nickname) + "() {\nend:\n";
     } else {
-      throw new Error("Type is not supported: " + component.type.toString());
+      this.modelString += "\nactive proctype " + ModelCheckerComponent.replaceSpace(component.label) + "() {\nend:\n";
+
     }
+    this.modelString += variable + "++;\nif\n";
+
+    component.cases.forEach((singleCase) => {
+      this.modelString += ":: " + variable + singleCase.guard + " -> goto end;\n";
+    });
+    this.modelString += "fi\n}\n";
   }
 
   private createModelForSimpleComponent(component: RobustUiSimpleComponent, nickname?: string) {
