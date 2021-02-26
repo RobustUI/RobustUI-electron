@@ -5,12 +5,6 @@ import {Event, EventDispatcher, EventType} from "../eventDispatcher";
 import {GridBuilder} from "../pad-controller/helpers/GridBuilder";
 
 export class CompositeComponent extends BasicState {
-
-  private childrenDrawLevel: number;
-
-  private defaultSize: number;
-  private expandedWidth: number;
-  private expandedHeight: number;
   public get getComponents(): BasicState[] {
     return Array.from(this.subComponents.values());
   }
@@ -45,37 +39,7 @@ export class CompositeComponent extends BasicState {
     this.subComponents.forEach(e => e.update(cameraPosition, events));
   }
 
-
-
-  private setDimensionsAndDrawLevel(zoomLevel: number) {
-    if (zoomLevel >= this.childrenDrawLevel && !this.shouldDrawChildren) {
-      this.shouldDrawChildren = true;
-      this.width = this.expandedWidth;
-      this.height = this.expandedHeight;
-      EventDispatcher.getInstance().emit({
-        type: EventType.STATE_EXPANSION,
-        data: {
-          point: {x: this.xPos, y: this.yPos},
-          old: {width: this.defaultSize, height: this.defaultSize},
-          new: {width: this.expandedWidth, height: this.expandedHeight}
-        }
-      });
-    } else if (zoomLevel < this.childrenDrawLevel && this.shouldDrawChildren) {
-      this.shouldDrawChildren = false;
-      this.width = this.defaultSize;
-      this.height = this.defaultSize;
-      EventDispatcher.getInstance().emit({
-        type: EventType.STATE_SHRINK,
-        data: {
-          point: {x: this.xPos, y: this.yPos},
-          old: {width: this.expandedWidth, height: this.expandedHeight},
-          new: {width: this.defaultSize, height: this.defaultSize}
-        }
-      });
-    }
-  }
-
-  protected setDrawLevelAndCalculateExpandedDimensions() {
+  protected setDrawLevelAndCalculateExpandedDimensions(): void {
     this.childrenDrawLevel = this._drawLevel + 1;
     let maxWidth = 0;
     let maxHeight = 0;

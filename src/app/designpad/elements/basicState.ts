@@ -3,7 +3,7 @@ import {Draggable} from "../interactions/draggable";
 import {DoubleClickable, Drawable, Updatable} from "../interactions/p5Core";
 import {Point} from "./point";
 import {Triple} from "./triple";
-import {Event, EventType} from "../eventDispatcher";
+import {Event, EventDispatcher, EventType} from "../eventDispatcher";
 import {Position} from "../../interfaces/position";
 
 export class BasicState extends Draggable implements Drawable, Updatable, DoubleClickable {
@@ -108,6 +108,12 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
     this._snackbarHeight = value;
   }
 
+  protected childrenDrawLevel: number;
+  protected defaultSize: number;
+
+  protected expandedWidth: number;
+  protected expandedHeight: number;
+
   private _isHover = false;
 
   private w: number;
@@ -190,6 +196,34 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
   protected move(xPos: number, yPos: number): void {
     this.x = xPos;
     this.y = yPos;
+  }
+
+  protected setDimensionsAndDrawLevel(zoomLevel: number) {
+    if (zoomLevel >= this.childrenDrawLevel && !this.shouldDrawChildren) {
+      this.shouldDrawChildren = true;
+      this.width = this.expandedWidth;
+      this.height = this.expandedHeight;
+      EventDispatcher.getInstance().emit({
+        type: EventType.STATE_EXPANSION,
+        data: {
+          point: {x: this.xPos, y: this.yPos},
+          old: {width: this.defaultSize, height: this.defaultSize},
+          new: {width: this.expandedWidth, height: this.expandedHeight}
+        }
+      });
+    } else if (zoomLevel < this.childrenDrawLevel && this.shouldDrawChildren) {
+      this.shouldDrawChildren = false;
+      this.width = this.defaultSize;
+      this.height = this.defaultSize;
+      EventDispatcher.getInstance().emit({
+        type: EventType.STATE_SHRINK,
+        data: {
+          point: {x: this.xPos, y: this.yPos},
+          old: {width: this.expandedWidth, height: this.expandedHeight},
+          new: {width: this.defaultSize, height: this.defaultSize}
+        }
+      });
+    }
   }
 
   private _drawState() {

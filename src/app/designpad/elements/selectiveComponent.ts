@@ -11,11 +11,6 @@ export interface caseComponent {
 }
 
 export class SelectiveComponent extends BasicState {
-  private childrenDrawLevel: number;
-  private defaultSize: number;
-
-  private expandedWidth: number;
-  private expandedHeight: number;
   public get getCases(): BasicState[] {
     return this.cases.map(e => e.component);
   }
@@ -40,8 +35,15 @@ export class SelectiveComponent extends BasicState {
     super.draw(cameraPosition);
 
     if (this.shouldDrawChildren) {
-      GridBuilder.drawSelectiveElementsLayout(this.cases, this.width, this.getRawHeight(), {x: this.xPos, y: this.yPos}, this.pad, this.childrenDrawLevel, cameraPosition);
-
+      GridBuilder.drawSelectiveElementsLayout(
+        this.cases,
+        this.width,
+        this.getRawHeight(),
+        {x: this.xPos, y: this.yPos},
+        this.pad,
+        this.childrenDrawLevel,
+        cameraPosition
+      );
     }
   }
 
@@ -49,34 +51,6 @@ export class SelectiveComponent extends BasicState {
     super.update(cameraPosition, events);
     this.setDimensionsAndDrawLevel(cameraPosition.z);
     this.cases.forEach(e => e.component.update(cameraPosition, events));
-  }
-
-  private setDimensionsAndDrawLevel(zoomLevel: number) {
-    if (zoomLevel >= this.childrenDrawLevel && !this.shouldDrawChildren) {
-      this.shouldDrawChildren = true;
-      this.width = this.expandedWidth;
-      this.height = this.expandedHeight;
-      EventDispatcher.getInstance().emit({
-        type: EventType.STATE_EXPANSION,
-        data: {
-          point: {x: this.xPos, y: this.yPos},
-          old: {width: this.defaultSize, height: this.defaultSize},
-          new: {width: this.expandedWidth, height: this.expandedHeight}
-        }
-      });
-    } else if (zoomLevel < this.childrenDrawLevel && this.shouldDrawChildren) {
-      this.shouldDrawChildren = false;
-      this.width = this.defaultSize;
-      this.height = this.defaultSize;
-      EventDispatcher.getInstance().emit({
-        type: EventType.STATE_SHRINK,
-        data: {
-          point: {x: this.xPos, y: this.yPos},
-          old: {width: this.expandedWidth, height: this.expandedHeight},
-          new: {width: this.defaultSize, height: this.defaultSize}
-        }
-      });
-    }
   }
 
 
