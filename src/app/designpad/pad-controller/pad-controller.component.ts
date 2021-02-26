@@ -67,7 +67,7 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
           this._tool = new SimulatorTool(this.p5, this.elements, this.simulatorTraceSubject);
           break;
         case "AddComponentTool":
-          this._tool = new AddComponentTool(this.p5, this.elements, this.componentRepository, () => {
+          this._tool = new AddComponentTool(this.p5, this.elements, this.parentDesignPadObj, this.componentRepository, () => {
             this.selectComponentModalOpen = true;
           }, () => {
             this.selectComponentModalOpen = false;

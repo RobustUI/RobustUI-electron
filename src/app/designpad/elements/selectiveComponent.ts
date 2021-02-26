@@ -16,6 +16,10 @@ export class SelectiveComponent extends BasicState {
     return this.cases.map(e => e.component);
   }
 
+  public get initialState(): BasicState {
+    return this.initial;
+  }
+
   constructor(
     pad: P5,
     title: string,

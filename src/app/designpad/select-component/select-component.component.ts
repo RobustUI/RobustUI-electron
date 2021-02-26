@@ -4,6 +4,7 @@ import {Observable, of} from "rxjs";
 import {RobustUiComponent} from "../../entities/robust-ui-component";
 import {filter} from "rxjs/operators";
 import {flatMap} from "rxjs/internal/operators";
+import {BasicState} from "../elements/basicState";
 
 @Component({
   selector: 'app-select-component',
@@ -16,7 +17,7 @@ export class SelectComponentComponent {
   public show: boolean;
 
   @Input()
-  private activeComp: string;
+  public activeComp: RobustUiComponent;
 
   @Output()
   public showChange = new EventEmitter<boolean>();
@@ -27,7 +28,7 @@ export class SelectComponentComponent {
   public components$: Observable<RobustUiComponent[]>;
   constructor(private repo: ComponentRepository) {
     this.components$ = repo.getAll().pipe(flatMap((res) => {
-      return of(res.filter(e => e.label !== this.activeComp));
+      return of(res.filter(e => e.label !== this.activeComp.label));
     }));
   }
 
