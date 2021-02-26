@@ -36,7 +36,7 @@ export class SimpleComponent extends BasicState {
     if (this.shouldDrawChildren) {
       this.pad.push();
       this.pad.textSize(this.pad.textSize() / this.childrenDrawLevel);
-      this.pad.translate(this.xPos + 5, this.yPos + 5);
+      this.pad.translate(this.xPos, this.yPos );
       if (this.constrainedDraw) {
         let maxWidth = 0;
         let minWidth = Infinity;

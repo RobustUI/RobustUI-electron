@@ -119,7 +119,7 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
   public _component: RobustUiComponent;
 
   private cameraPosForComponent = new Map<string, Triple>();
-  private temporaryComponent = new Map<string, any[]>();
+  private temporaryComponent = new Map<string, {parentComp: any, elements: any}>();
   private zMin = 1;
   private zMax = 9.00;
   private sensativity = 0.005;
@@ -130,6 +130,9 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
   private eventDispatcherSubscription: Subscription;
 
   private eventSet: Event[] = [];
+
+  private parentDesignPadObj;
+  private addSelectiveComponentTransitions = false;
 
   constructor(private componentRepository: ComponentRepository) {
     this.eventDispatcherSubscription = EventDispatcher.getInstance().stream().subscribe((event: Event) => {
@@ -227,6 +230,11 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
       GridBuilder.drawGridLayout(this.p5, {x: 0, y: 0}, (this.elements.length === 1) ? this.elements.length + 1 : this.elements.length, this.p5.width, this.p5.height);
       this.p5.pop();
       GridBuilder.drawElementsInGrid(this.elements, this.p5.width, this.p5.height, {x: 0, y: 0}, this.p5, 1, this.cameraPos);
+    } else if (this._component.type === RobustUiStateTypes.selectiveComponent) {
+      this.p5.push();
+      GridBuilder.drawSelectiveElementsLayout(this.elements.filter(e => (e instanceof BasicState) && !e.isInitial), this.p5.width, this.p5.height, {x:0, y:0}, this.p5, 1, this.cameraPos);
+      this.elements.filter(e => (e instanceof Transition) || (e instanceof BasicState) && e.isInitial).forEach(e => e.draw(this.cameraPos));
+      this.p5.pop();
     } else {
       this.elements.filter((e) => implementsDrawable(e)).forEach(e => e.draw(this.cameraPos));
     }
@@ -330,7 +338,9 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
   private convertComponent() {
     this.elements = [];
     if (this.temporaryComponent.has(this._component.label)) {
-      this.elements = this.temporaryComponent.get(this._component.label);
+      const cache = this.temporaryComponent.get(this._component.label);
+      this.parentDesignPadObj = cache.parentComp;
+      this.elements = cache.elements;
       return;
     }
     if (this._component == null) {
@@ -346,33 +356,33 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
   }
 
   private convertAsRobustUiCompositeComponent() {
-    const obj = RobustUiToDesignPad.convert(this._component, this.p5, this.componentRepository) as CompositeComponent;
+    this.parentDesignPadObj = RobustUiToDesignPad.convert(this._component, this.p5, this.componentRepository) as CompositeComponent;
 
     this.elements.push(
-      ... obj.getComponents
+      ... this.parentDesignPadObj.getComponents
     );
   }
 
   private convertAsRobustUiSimpleComponent() {
-    const obj = RobustUiToDesignPad.convert(this._component, this.p5, this.componentRepository) as SimpleComponent;
+    this.parentDesignPadObj = RobustUiToDesignPad.convert(this._component, this.p5, this.componentRepository) as SimpleComponent;
 
     this.elements.push(
-      ...obj.getTransitions,
-      ...obj.getStates()
+      ...this.parentDesignPadObj.getTransitions,
+      ...this.parentDesignPadObj.getStates()
     );
   }
 
   private convertAsRobustUiSelectiveComponent() {
-    const obj = RobustUiToDesignPad.convert(this._component, this.p5, this.componentRepository) as SelectiveComponent;
+    this.parentDesignPadObj = RobustUiToDesignPad.convert(this._component, this.p5, this.componentRepository) as SelectiveComponent;
 
     this.elements.push(
-      ... obj.getCases
+      this.parentDesignPadObj.initial,
+      ... this.parentDesignPadObj.transitions,
+      ... this.parentDesignPadObj.getCases
     );
-
-    console.log(this.elements);
   }
 
   private storeInTemporaryObject(): void {
-    this.temporaryComponent.set(this._component.label, this.elements);
+    this.temporaryComponent.set(this._component.label, {parentComp: this.parentDesignPadObj, elements: this.elements});
   }
 }

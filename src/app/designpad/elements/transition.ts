@@ -50,7 +50,7 @@ export class Transition implements Drawable, Clickable, DoubleClickable, SelectA
     this.selected = value;
   }
 
-  constructor(protected pad: P5, private event: string, private from: BasicState, private to: BasicState, private staticEdge: 't' | 'b' |'l' | 'r' | null = null) {
+  constructor(protected pad: P5, private event: string, private from: BasicState, private to: BasicState, private staticEdge: {from: 't' | 'b' |'l' | 'r', to: 't' | 'b' |'l' | 'r'} = {from: null, to: null}) {
   }
 
   public selectEvent(cameraPosition: Triple): boolean {
@@ -89,8 +89,8 @@ export class Transition implements Drawable, Clickable, DoubleClickable, SelectA
 
   protected calculatePositions(cameraPosition: Triple): void {
     this.connection = null;
-    const fromPoints = Transition.getPoints(this.from, cameraPosition, this.staticEdge);
-    const toPoints = Transition.getPoints(this.to, cameraPosition, this.staticEdge);
+    const fromPoints = Transition.getPoints(this.from, cameraPosition, this.staticEdge.from);
+    const toPoints = Transition.getPoints(this.to, cameraPosition, this.staticEdge.to);
 
     this.connection = this.getNearestConnectionPoint(fromPoints, toPoints);
     this.angle = this.calculateAngle();
