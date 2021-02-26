@@ -155,21 +155,20 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
     let yEdgeCenter;
 
     if (side === 't') {
-      xEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.x + this.constrainedDrawInfo.width / 2 : this.xPos + this.width / 2;
-      yEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.y : this.yPos;
+      xEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.x + this.constrainedDrawInfo.width / 2 : (this.xPos + this.translateScaleForMouseInteraction.x) + this.width / 2;
+      yEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.y : this.yPos + this.translateScaleForMouseInteraction.y;
     } else if (side === 'r') {
-      xEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.x + this.constrainedDrawInfo.width : this.xPos + this.width;
-      yEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.y + this.constrainedDrawInfo.height / 2 : this.yPos + this.height / 2;
+      xEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.x + this.constrainedDrawInfo.width : (this.xPos + this.translateScaleForMouseInteraction.x) + this.width;
+      yEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.y + this.constrainedDrawInfo.height / 2 : (this.yPos + this.translateScaleForMouseInteraction.y) + this.height / 2;
     } else if (side === 'b') {
-      xEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.x + this.constrainedDrawInfo.width / 2 : this.xPos + this.width / 2;
-      yEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.y + this.constrainedDrawInfo.height : this.yPos + this.height;
+      xEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.x + this.constrainedDrawInfo.width / 2 : (this.xPos + this.translateScaleForMouseInteraction.x) + this.width / 2;
+      yEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.y + this.constrainedDrawInfo.height : (this.yPos + this.translateScaleForMouseInteraction.y) + this.height;
     } else if (side === 'l') {
-      xEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.x : this.xPos;
-      yEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.y + this.constrainedDrawInfo.width / 2 : this.yPos + this.width / 2;
+      xEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.x : (this.xPos + this.translateScaleForMouseInteraction.x);
+      yEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.y + this.constrainedDrawInfo.width / 2 : (this.yPos + this.translateScaleForMouseInteraction.y) + this.width / 2;
     } else {
       throw new Error("You didn't specify a recognizable side!");
     }
-
 
     return {x: xEdgeCenter, y: yEdgeCenter};
   }

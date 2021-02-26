@@ -21,6 +21,16 @@
         
       ],
       "positions": [
-        
+        {
+      "label": "Murden",
+      "x": 10,
+      "y": 10,
+      "width": 50
+      },{
+      "label": "A",
+      "x": 10,
+      "y": 80,
+      "width": 50
+      }
       ]
     }

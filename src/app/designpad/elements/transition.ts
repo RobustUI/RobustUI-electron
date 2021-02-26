@@ -50,7 +50,7 @@ export class Transition implements Drawable, Clickable, DoubleClickable, SelectA
     this.selected = value;
   }
 
-  constructor(protected pad: P5, private event: string, private from: BasicState, private to: BasicState) {
+  constructor(protected pad: P5, private event: string, private from: BasicState, private to: BasicState, private staticEdge: 't' | 'b' |'l' | 'r' | null = null) {
   }
 
   public selectEvent(cameraPosition: Triple): boolean {
@@ -89,8 +89,8 @@ export class Transition implements Drawable, Clickable, DoubleClickable, SelectA
 
   protected calculatePositions(cameraPosition: Triple): void {
     this.connection = null;
-    const fromPoints = Transition.getPoints(this.from, cameraPosition);
-    const toPoints = Transition.getPoints(this.to, cameraPosition);
+    const fromPoints = Transition.getPoints(this.from, cameraPosition, this.staticEdge);
+    const toPoints = Transition.getPoints(this.to, cameraPosition, this.staticEdge);
 
     this.connection = this.getNearestConnectionPoint(fromPoints, toPoints);
     this.angle = this.calculateAngle();
@@ -98,13 +98,19 @@ export class Transition implements Drawable, Clickable, DoubleClickable, SelectA
     this.lineLengthY = this.calculateLineLengthY();
   }
 
-  private static getPoints(target: BasicState, cameraPosition: Triple) {
-    return [
-      target.getCenterOfEdge('t', cameraPosition),
-      target.getCenterOfEdge('b', cameraPosition),
-      target.getCenterOfEdge('l', cameraPosition),
-      target.getCenterOfEdge('r', cameraPosition)
-    ];
+  private static getPoints(target: BasicState, cameraPosition: Triple, staticEdge: 't' | 'b' |'l' | 'r' | null) {
+    if (staticEdge == null) {
+      return [
+        target.getCenterOfEdge('t', cameraPosition),
+        target.getCenterOfEdge('b', cameraPosition),
+        target.getCenterOfEdge('l', cameraPosition),
+        target.getCenterOfEdge('r', cameraPosition)
+      ];
+    }
+
+
+    return [ target.getCenterOfEdge(staticEdge, cameraPosition) ];
+
   }
 
   private getNearestConnectionPoint(fromPoints: Point[], toPoints: Point[]): PointConnection {

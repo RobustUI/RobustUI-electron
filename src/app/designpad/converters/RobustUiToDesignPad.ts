@@ -9,14 +9,19 @@ import {SimpleComponent} from "../elements/simpleComponent";
 import {Position} from "../../interfaces/position";
 import {CompositeComponent} from "../elements/compositeComponent";
 import {ComponentRepository} from "../../componentRepository";
+import {RobustUiSelectiveComponent} from "../../entities/robust-ui-selective-component";
+import {caseComponent, SelectiveComponent} from "../elements/selectiveComponent";
 
 export class RobustUiToDesignPad {
-  public static convert(component: RobustUiComponent, pad: P5, repo: ComponentRepository, position: Position = null): SimpleComponent | CompositeComponent {
+  public static convert(component: RobustUiComponent, pad: P5, repo: ComponentRepository, position: Position = null): SimpleComponent | CompositeComponent | SelectiveComponent {
     switch (component.type) {
       case RobustUiStateTypes.simpleComponent:
         return this.convertSimpleComponent((component as RobustUiSimpleComponent), pad, position);
       case RobustUiStateTypes.compositeComponent:
         return this.convertCompositeComponent((component as RobustUiCompositeComponent), pad, position, repo);
+        break;
+      case RobustUiStateTypes.selectiveComponent:
+        return this.convertSelectiveComponent((component as RobustUiSelectiveComponent), pad, position, repo);
         break;
       default:
         throw new Error("Could not convert component to DeisgnPad");
@@ -80,6 +85,32 @@ export class RobustUiToDesignPad {
     const obj = new CompositeComponent(pad, component.label, subComponents, position.x, position.y, position.width);
     obj.drawLevel = 0;
 
+    return obj;
+  }
+
+  private static convertSelectiveComponent(component: RobustUiSelectiveComponent, pad: P5, position: Position, repo: ComponentRepository): SelectiveComponent {
+    const cases: caseComponent[] = [];
+
+    component.cases.forEach(e => {
+      const comp = repo.snapshot.find(el => el.label === e.type);
+      const pos = component.position.get(e.type);
+      const obj = RobustUiToDesignPad.convert(comp, pad, repo, pos);
+      cases.push({
+        expression: e.guard,
+        component: obj
+      });
+    });
+
+    if (position == null) {
+      position = {
+        x: 0,
+        y: 0,
+        width: 0
+      };
+    }
+
+    const obj = new SelectiveComponent(pad, component.label, component.observer, cases, position.x, position.y, position.width);
+    obj.drawLevel = 0;
     return obj;
   }
 }
