@@ -1,0 +1,28 @@
+{
+      "label": "CSGO",
+      "type": 3,
+      "observer": {
+      "input": "stream",
+      "dataType": "number"
+    },
+      "cases": [
+        {
+      "guard": ">10",
+      "type": "I am Selective"
+      }
+      ],
+      "inputs": [
+        "stream"
+      ],
+      "outputs": [
+        
+      ],
+      "positions": [
+        {
+      "label": "I am Selective",
+      "x": 0,
+      "y": 0,
+      "width": 618.5
+      }
+      ]
+    }
