@@ -16,10 +16,6 @@ export class SelectiveComponent extends BasicState {
     return this.cases.map(e => e.component);
   }
 
-  public get getElements(): CaseComponent[] {
-    return this.cases;
-  }
-
   constructor(
     pad: P5,
     title: string,
@@ -61,7 +57,6 @@ export class SelectiveComponent extends BasicState {
 
   public update(cameraPosition: Triple, events: Event[]): void {
     super.update(cameraPosition, events);
-    console.log("update!");
     this.setDimensionsAndDrawLevel(cameraPosition.z);
     this.cases.forEach(e => e.component.update(cameraPosition, events));
   }
