@@ -41,7 +41,6 @@ export class SelectiveComponent extends BasicState {
 
     if (this.shouldDrawChildren) {
       GridBuilder.drawSelectiveElementsLayout(this.cases, this.width, this.getRawHeight(), {x: this.xPos, y: this.yPos}, this.pad, this.childrenDrawLevel, cameraPosition);
-      // GridBuilder.drawColumnLayout(this.pad, {x: this.xPos + (this.width/2), y: this.yPos}, 2, this.width / 2, this.height);
 
     }
   }
