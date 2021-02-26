@@ -303,6 +303,11 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
     const deleteIndexes = [];
     this.elements.filter(e => implementsSelectable(e)).filter(e => e.isSelected).forEach(e => {
       deleteIndexes.push(this.elements.indexOf(e));
+      if (e instanceof BasicState) {
+        this.elements.filter(t => (t instanceof Transition) && (t.getFrom === e || t.getTo === e)).forEach((t) => {
+          deleteIndexes.push(this.elements.indexOf(t));
+        });
+      }
     });
 
     deleteIndexes.sort().reverse().forEach(e => {
