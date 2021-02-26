@@ -6,12 +6,15 @@ import {RobustUiToDesignPad} from "../converters/RobustUiToDesignPad";
 import {EventDispatcher, EventType} from "../eventDispatcher";
 import {Observable, Subscription} from "rxjs";
 import {take} from "rxjs/operators";
+import {BasicState} from "../elements/basicState";
+import {SelectiveComponent} from "../elements/selectiveComponent";
+import {Transition} from "../elements/transition";
 
 export class AddComponentTool extends Tool{
   public readonly name: ToolTypes = 'AddComponentTool';
   private subscriptions: Subscription[] = [];
 
-  constructor(pad: P5, private elements: any[], private componentRepo: ComponentRepository, private openModal: () => void, private closeModal: () => void, private selectedComponent: Observable<{name: string, type: string}>) {
+  constructor(pad: P5, private elements: any[], private parentDesignObject: BasicState, private componentRepo: ComponentRepository, private openModal: () => void, private closeModal: () => void, private selectedComponent: Observable<{name: string, type: string}>) {
     super(pad);
     this.openModal();
     this.subscriptions.push(selectedComponent.pipe(take(1)).subscribe((res) => {
@@ -36,7 +39,14 @@ export class AddComponentTool extends Tool{
     const comp = this.componentRepo.snapshot.find((e) => e.label === component.type);
     const converted = RobustUiToDesignPad.convert(comp, this.p5, this.componentRepo);
     converted.drawLevel = 1;
-    converted.name = component.name;
+    if (component.name.trim().length > 0) {
+      converted.name = component.name;
+    }
     this.elements.push(converted);
+
+    if (this.parentDesignObject instanceof SelectiveComponent) {
+      const transition = new Transition(this.p5, "", this.parentDesignObject.initialState, converted, {from: 'r', to: 'l'});
+      this.elements.push(transition);
+    }
   }
 }

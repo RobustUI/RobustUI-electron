@@ -7,6 +7,7 @@ import {RobustUiTransition} from "../../entities/robust-ui-transition";
 import {Position} from "../../interfaces/position";
 import {RobustUiSimpleComponent} from "../../entities/robust-ui-simple-component";
 import {RobustUiCompositeComponent} from "../../entities/robust-ui-composite-component";
+import {RobustUiSelectiveComponent} from "../../entities/robust-ui-selective-component";
 
 export class DesignPadToRobustUi {
   public static convert(elements: any[], base: RobustUiState): RobustUiComponent {
@@ -18,9 +19,10 @@ export class DesignPadToRobustUi {
         return DesignPadToRobustUi.convertRobustUiSimpleComponent(states, transitions, base as RobustUiSimpleComponent);
       case RobustUiStateTypes.compositeComponent:
         return DesignPadToRobustUi.convertRobustUiCompositeComponent(states, base as RobustUiCompositeComponent);
+      case RobustUiStateTypes.selectiveComponent:
+        return DesignPadToRobustUi.convertRobustUiSelectiveComponent(states, transitions, base as RobustUiSelectiveComponent);
       default:
-        console.error("Couldn't convert");
-        return undefined;
+        throw Error("Couldn't convert to Data Structure");
     }
   }
 
@@ -85,6 +87,32 @@ export class DesignPadToRobustUi {
       base.outputs,
       positions,
       robustUiComponents
+    );
+  }
+
+  private static convertRobustUiSelectiveComponent(states: BasicState[], transitions: Transition[], base: RobustUiSelectiveComponent): RobustUiSelectiveComponent {
+    const positions = new Map<string, Position>();
+    const cases = [];
+
+
+
+    states.filter(e => !e.isInitial).map(e => {
+      positions.set(e.label, {x: e.xPos, y: e.yPos, width: e.width});
+      const guard = transitions.find(t => t.getTo === e).getEvent;
+      cases.push({
+        guard: guard,
+        type: e.identifier
+      });
+    });
+
+    return new RobustUiSelectiveComponent(
+      base.label,
+      base.type,
+      base.inputs,
+      base.outputs,
+      positions,
+      base.observer,
+      cases
     );
   }
 }

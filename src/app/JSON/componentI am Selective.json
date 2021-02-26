@@ -12,6 +12,9 @@
       },{
       "guard": ">=9",
       "type": "A"
+      },{
+      "guard": "asddsa",
+      "type": "A"
       }
       ],
       "inputs": [
@@ -23,14 +26,14 @@
       "positions": [
         {
       "label": "Murden",
-      "x": 10,
-      "y": 10,
-      "width": 50
+      "x": 0,
+      "y": 0,
+      "width": 618.5
       },{
       "label": "A",
-      "x": 10,
-      "y": 80,
-      "width": 50
+      "x": 0,
+      "y": 0,
+      "width": 618.5
       }
       ]
     }

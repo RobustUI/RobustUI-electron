@@ -19,7 +19,7 @@
       <span class="text-xs uppercase mt-2">Select</span>
     </button>
     <button
-      [class.hidden]="activeComponent.type !== 2"
+      [class.hidden]="activeComponent.type === 1"
       [class]="activeTool === 'AddComponentTool' ? 'border-yellow-600' : 'border-gray-400'"
       class="w-20 h-20 bg-transparent border-2 flex flex-col items-center justify-center outline-none focus:outline-none"
       (click)="activateTool('AddComponentTool')">
@@ -29,7 +29,7 @@
       <span class="text-xs uppercase mt-2">Add Component</span>
     </button>
     <button
-            [class.hidden]="activeComponent.type === 2"
+            [class.hidden]="activeComponent.type !== 1"
             [class]="activeTool === 'AddStateTool' ? 'border-yellow-600' : 'border-gray-400'"
             class="w-20 h-20 bg-transparent border-2 flex flex-col items-center justify-center outline-none focus:outline-none"
             (click)="activateTool('AddStateTool')">
@@ -39,7 +39,7 @@
       <span class="text-xs uppercase mt-2">New State</span>
     </button>
     <button
-      [class.hidden]="activeComponent.type === 2"
+      [class.hidden]="activeComponent.type !== 1"
       [class]="activeTool === 'AddTransitionTool' ? 'border-yellow-600' : 'border-gray-400'"
       class="w-20 h-20 bg-transparent border-2  flex flex-col items-center justify-center outline-none focus:outline-none"
       (click)="activateTool('AddTransitionTool')">
@@ -50,6 +50,7 @@
       <span class="text-xs uppercase mt-2">New Transition</span>
     </button>
     <button
+      [class.hidden]="activeComponent.type !== 1"
       [class]="activeTool === 'ResizeStateTool' ? 'border-yellow-600' : 'border-gray-400'"
       class="w-20 h-20 bg-transparent border-2  flex flex-col items-center justify-center outline-none focus:outline-none"
       (click)="activateTool('ResizeStateTool')">

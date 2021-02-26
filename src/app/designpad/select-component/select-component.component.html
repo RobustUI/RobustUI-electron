@@ -17,14 +17,17 @@
           </svg>
         </button>
       </div>
-      <div>
-        <label for="componentName" class="block text-sm font-medium text-gray-700">Component Name</label>
+      <div
+        [class.hidden]="activeComp.type === 3"
+      >
+        <label for="componentName" class="block text-sm font-medium text-gray-700">Component Alias</label>
         <div class="mt-1">
           <input #componentName type="text" name="componentName" id="componentName"
                  class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
         </div>
       </div>
       <div>
+        <label class="block text-sm font-medium text-gray-700">Select Component</label>
         <select #component name="Input" class="w-full mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
           <option *ngFor="let component of (components$ | async)" [value]="component.label">{{component.label}}</option>
         </select>
