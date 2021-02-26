@@ -175,6 +175,9 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
 
   public checkType(item: any): string {
     if (item instanceof Transition) {
+      if (this._component.type === RobustUiStateTypes.selectiveComponent) {
+        return "Guard";
+      }
       return "Transition";
     } else if (item instanceof BasicState) {
       return "BasicState";

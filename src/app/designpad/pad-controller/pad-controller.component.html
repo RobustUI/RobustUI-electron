@@ -22,6 +22,7 @@
           <div class="mt-6 relative flex-1 px-4 sm:px-6">
             <div class="absolute inset-0 px-4 sm:px-6">
               <div class="h-full border-2" aria-hidden="true" [ngSwitch]="checkType(settingsPane.item)">
+                <app-guard-settings (close)="closeSettings()" [item]="settingsPane.item" *ngSwitchCase="'Guard'"></app-guard-settings>
                 <app-transition-settings [inputEvents]="_component.inputs" [outputEvents]="_component.outputs" (close)="closeSettings()" *ngSwitchCase="'Transition'" [item]="settingsPane.item"></app-transition-settings>
                 <app-basic-state-settings [item]="settingsPane.item" (close)="closeSettings()" *ngSwitchCase="'BasicState'"></app-basic-state-settings>
               </div>

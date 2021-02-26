@@ -7,7 +7,7 @@
     },
       "cases": [
         {
-      "guard": "<9",
+      "guard": "<45",
       "type": "Murden"
       },{
       "guard": ">=9",
@@ -28,12 +28,12 @@
       "label": "Murden",
       "x": 0,
       "y": 0,
-      "width": 618.5
+      "width": 604.5
       },{
       "label": "A",
       "x": 0,
       "y": 0,
-      "width": 618.5
+      "width": 604.5
       }
       ]
     }
