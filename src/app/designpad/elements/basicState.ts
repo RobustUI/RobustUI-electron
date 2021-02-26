@@ -3,7 +3,7 @@ import {Draggable} from "../interactions/draggable";
 import {DoubleClickable, Drawable, Updatable} from "../interactions/p5Core";
 import {Point} from "./point";
 import {Triple} from "./triple";
-import {Event, EventType} from "../eventDispatcher";
+import {Event, EventDispatcher, EventType} from "../eventDispatcher";
 import {Position} from "../../interfaces/position";
 
 export class BasicState extends Draggable implements Drawable, Updatable, DoubleClickable {
@@ -108,6 +108,12 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
     this._snackbarHeight = value;
   }
 
+  protected childrenDrawLevel: number;
+  protected defaultSize: number;
+
+  protected expandedWidth: number;
+  protected expandedHeight: number;
+
   private _isHover = false;
 
   private w: number;
@@ -155,21 +161,20 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
     let yEdgeCenter;
 
     if (side === 't') {
-      xEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.x + this.constrainedDrawInfo.width / 2 : this.xPos + this.width / 2;
-      yEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.y : this.yPos;
+      xEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.x + this.constrainedDrawInfo.width / 2 : (this.xPos + this.translateScaleForMouseInteraction.x) + this.width / 2;
+      yEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.y : this.yPos + this.translateScaleForMouseInteraction.y;
     } else if (side === 'r') {
-      xEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.x + this.constrainedDrawInfo.width : this.xPos + this.width;
-      yEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.y + this.constrainedDrawInfo.height / 2 : this.yPos + this.height / 2;
+      xEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.x + this.constrainedDrawInfo.width : (this.xPos + this.translateScaleForMouseInteraction.x) + this.width;
+      yEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.y + this.constrainedDrawInfo.height / 2 : (this.yPos + this.translateScaleForMouseInteraction.y) + this.height / 2;
     } else if (side === 'b') {
-      xEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.x + this.constrainedDrawInfo.width / 2 : this.xPos + this.width / 2;
-      yEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.y + this.constrainedDrawInfo.height : this.yPos + this.height;
+      xEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.x + this.constrainedDrawInfo.width / 2 : (this.xPos + this.translateScaleForMouseInteraction.x) + this.width / 2;
+      yEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.y + this.constrainedDrawInfo.height : (this.yPos + this.translateScaleForMouseInteraction.y) + this.height;
     } else if (side === 'l') {
-      xEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.x : this.xPos;
-      yEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.y + this.constrainedDrawInfo.width / 2 : this.yPos + this.width / 2;
+      xEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.x : (this.xPos + this.translateScaleForMouseInteraction.x);
+      yEdgeCenter = (this.constrainedDrawInfo) ? this.constrainedDrawInfo.y + this.constrainedDrawInfo.width / 2 : (this.yPos + this.translateScaleForMouseInteraction.y) + this.width / 2;
     } else {
       throw new Error("You didn't specify a recognizable side!");
     }
-
 
     return {x: xEdgeCenter, y: yEdgeCenter};
   }
@@ -191,6 +196,34 @@ export class BasicState extends Draggable implements Drawable, Updatable, Double
   protected move(xPos: number, yPos: number): void {
     this.x = xPos;
     this.y = yPos;
+  }
+
+  protected setDimensionsAndDrawLevel(zoomLevel: number) {
+    if (zoomLevel >= this.childrenDrawLevel && !this.shouldDrawChildren) {
+      this.shouldDrawChildren = true;
+      this.width = this.expandedWidth;
+      this.height = this.expandedHeight;
+      EventDispatcher.getInstance().emit({
+        type: EventType.STATE_EXPANSION,
+        data: {
+          point: {x: this.xPos, y: this.yPos},
+          old: {width: this.defaultSize, height: this.defaultSize},
+          new: {width: this.expandedWidth, height: this.expandedHeight}
+        }
+      });
+    } else if (zoomLevel < this.childrenDrawLevel && this.shouldDrawChildren) {
+      this.shouldDrawChildren = false;
+      this.width = this.defaultSize;
+      this.height = this.defaultSize;
+      EventDispatcher.getInstance().emit({
+        type: EventType.STATE_SHRINK,
+        data: {
+          point: {x: this.xPos, y: this.yPos},
+          old: {width: this.expandedWidth, height: this.expandedHeight},
+          new: {width: this.defaultSize, height: this.defaultSize}
+        }
+      });
+    }
   }
 
   private _drawState() {

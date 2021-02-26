@@ -1,7 +1,6 @@
 import {BasicState} from "./basicState";
 import {Transition} from "./transition";
 import * as P5 from "p5";
-import {DoubleClickable} from "../interactions/p5Core";
 import {Triple} from "./triple";
 import {Event, EventDispatcher, EventType} from "../eventDispatcher";
 
@@ -14,11 +13,6 @@ export class SimpleComponent extends BasicState {
   public getStates(): BasicState[] {
     return this.subStates.slice();
   }
-
-  private childrenDrawLevel: number;
-  private defaultSize: number;
-  private expandedWidth: number;
-  private expandedHeight: number;
 
   constructor(
     pad: P5,
@@ -147,7 +141,7 @@ export class SimpleComponent extends BasicState {
     this.setDimensionsAndDrawLevel(cameraPosition.z);
   }
 
-  private setDimensionsAndDrawLevel(zoomLevel: number) {
+  protected setDimensionsAndDrawLevel(zoomLevel: number): void {
     if (zoomLevel >= this.childrenDrawLevel && !this.shouldDrawChildren && this.constrainedDraw) {
       this.shouldDrawChildren = true;
     } else if (zoomLevel < this.childrenDrawLevel && this.shouldDrawChildren && this.constrainedDraw) {

@@ -25,6 +25,7 @@ import {RobustUiToDesignPad} from "../converters/RobustUiToDesignPad";
 import {CompositeComponent} from "../elements/compositeComponent";
 import {GridBuilder} from "./helpers/GridBuilder";
 import {AddComponentTool} from "../toolings/add-component-tool";
+import {SelectiveComponent} from "../elements/selectiveComponent";
 
 @Component({
   selector: 'app-pad-controller',
@@ -226,7 +227,7 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
       GridBuilder.drawGridLayout(this.p5, {x: 0, y: 0}, (this.elements.length === 1) ? this.elements.length + 1 : this.elements.length, this.p5.width, this.p5.height);
       this.p5.pop();
       GridBuilder.drawElementsInGrid(this.elements, this.p5.width, this.p5.height, {x: 0, y: 0}, this.p5, 1, this.cameraPos);
-    } else if (this._component.type === RobustUiStateTypes.simpleComponent) {
+    } else {
       this.elements.filter((e) => implementsDrawable(e)).forEach(e => e.draw(this.cameraPos));
     }
 
@@ -339,6 +340,8 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
       this.convertAsRobustUiSimpleComponent();
     } else if (this._component.type === RobustUiStateTypes.compositeComponent) {
       this.convertAsRobustUiCompositeComponent();
+    } else if (this._component.type === RobustUiStateTypes.selectiveComponent) {
+      this.convertAsRobustUiSelectiveComponent();
     }
   }
 
@@ -357,6 +360,16 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
       ...obj.getTransitions,
       ...obj.getStates()
     );
+  }
+
+  private convertAsRobustUiSelectiveComponent() {
+    const obj = RobustUiToDesignPad.convert(this._component, this.p5, this.componentRepository) as SelectiveComponent;
+
+    this.elements.push(
+      ... obj.getCases
+    );
+
+    console.log(this.elements);
   }
 
   private storeInTemporaryObject(): void {
