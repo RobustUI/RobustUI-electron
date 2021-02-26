@@ -9,6 +9,7 @@ import {ModelCheckerComponent} from "../model-checker/model-checker.component";
 import {ModalComponent} from "../modals/modal/modal.component";
 import {SimulatorTraceComponent} from "../simulator-trace/simulator-trace.component";
 import {SelectComponentComponent} from "./select-component/select-component.component";
+import { GuardSettingsComponent } from './pad-controller/settings-panes/guard-settings/guard-settings.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import {SelectComponentComponent} from "./select-component/select-component.comp
     ModelCheckerComponent,
     ModalComponent,
     SimulatorTraceComponent,
-    SelectComponentComponent
+    SelectComponentComponent,
+    GuardSettingsComponent
   ],
   exports: [
     DesignpadComponent,
