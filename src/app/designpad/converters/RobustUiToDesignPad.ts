@@ -10,7 +10,8 @@ import {Position} from "../../interfaces/position";
 import {CompositeComponent} from "../elements/compositeComponent";
 import {ComponentRepository} from "../../componentRepository";
 import {RobustUiSelectiveComponent} from "../../entities/robust-ui-selective-component";
-import {caseComponent, SelectiveComponent} from "../elements/selectiveComponent";
+import {CaseComponent, SelectiveComponent} from "../elements/selectiveComponent";
+import {GridBuilder} from "../pad-controller/helpers/GridBuilder";
 
 export class RobustUiToDesignPad {
   public static convert(component: RobustUiComponent, pad: P5, repo: ComponentRepository, position: Position = null): SimpleComponent | CompositeComponent | SelectiveComponent {
@@ -89,7 +90,9 @@ export class RobustUiToDesignPad {
   }
 
   private static convertSelectiveComponent(component: RobustUiSelectiveComponent, pad: P5, position: Position, repo: ComponentRepository): SelectiveComponent {
-    const cases: caseComponent[] = [];
+    const cases: CaseComponent[] = [];
+    const transitions: Transition[] = [];
+    const indicator: BasicState = new BasicState(pad, component.observer.input, 30, 30, 50, true);
 
     component.cases.forEach(e => {
       const comp = repo.snapshot.find(el => el.label === e.type);
@@ -101,6 +104,11 @@ export class RobustUiToDesignPad {
       });
     });
 
+    cases.forEach(obj => {
+      const transition = new Transition(pad, obj.expression, indicator, obj.component, {from: 'r', to:'l'});
+      transitions.push(transition);
+    });
+
     if (position == null) {
       position = {
         x: 0,
@@ -109,7 +117,7 @@ export class RobustUiToDesignPad {
       };
     }
 
-    const obj = new SelectiveComponent(pad, component.label, component.observer, cases, position.x, position.y, position.width);
+    const obj = new SelectiveComponent(pad, component.label, component.observer, cases, transitions, indicator, position.x, position.y, position.width);
     obj.drawLevel = 0;
     return obj;
   }

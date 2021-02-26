@@ -3,7 +3,7 @@ import * as P5 from 'p5';
 import {Point} from "../../elements/point";
 import {BasicState} from "../../elements/basicState";
 import {Transition} from "../../elements/transition";
-import {caseComponent} from "../../elements/selectiveComponent";
+import {CaseComponent} from "../../elements/selectiveComponent";
 
 export interface Grid {
   rows: number,
@@ -48,33 +48,24 @@ export class GridBuilder {
     pad.pop();
   }
 
-  public static drawSelectiveElementsLayout(elements: caseComponent[], canvasWidth: number, canvasHeight: number, startPosition: Point, pad: P5, drawLevel: number, cameraPosition: Triple) {
+  public static drawSelectiveElementsLayout(elements: BasicState[], canvasWidth: number, canvasHeight: number, startPosition: Point, pad: P5, drawLevel: number, cameraPosition: Triple) {
     const padding = 5;
     const length = elements.length;
     const width = (canvasWidth /2) - (2 * padding);
     const height = (canvasHeight/ length);
 
-
     pad.push();
-    pad.translate(startPosition.x, startPosition.y);
-    pad.push();
-    pad.fill("#000000");
-    const indicator = new BasicState(pad, "", 20, 20, 20);
-    indicator.draw(cameraPosition);
-    pad.pop();
     elements.forEach((obj, index) => {
       pad.push();
       pad.textSize(pad.textSize() / drawLevel);
       const translateX = width + padding;
       const translateY = ((height * index) + ((2 * padding) * index)) + padding;
       pad.translate(translateX, translateY);
-      obj.component.position = {x: 0, y: 0, width: width, height: height, drawLevel: drawLevel};
-      obj.component.translateScaleForMouseInteraction = {x: translateX, y: translateY};
-      obj.component.constrainedDraw = true;
-      obj.component.draw(cameraPosition);
+      obj.position = {x: 0, y: 0, width: width, height: height, drawLevel: drawLevel};
+      obj.translateScaleForMouseInteraction = {x: translateX, y: translateY};
+      obj.constrainedDraw = true;
+      obj.draw(cameraPosition);
       pad.pop();
-      const transition = new Transition(pad, obj.expression, indicator, obj.component, 'l');
-      transition.draw(cameraPosition);
     });
     pad.pop();
   }
