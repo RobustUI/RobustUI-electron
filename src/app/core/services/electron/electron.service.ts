@@ -8,8 +8,6 @@ import * as fs from 'fs';
 import {BehaviorSubject} from "rxjs";
 import {JsonRobustUIComponent} from "../../../interfaces/jsonRobustUIComponent";
 import {RobustUiComponent} from "../../../entities/robust-ui-component";
-import {RobustUiStateTypes} from "../../../entities/robust-ui-state-types";
-import {RobustUiSimpleComponent} from "../../../entities/robust-ui-simple-component";
 import {SerializerFactory} from "../../../serializers/SerializerFactory";
 
 @Injectable({
