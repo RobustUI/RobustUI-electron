@@ -12,7 +12,7 @@
           <nav class="mt-5 flex-1 px-2 bg-gray-800 space-y-1">
             <button *ngFor="let component of (components$ | async)" (click)="openComponent(component.label)"
                     draggable="true" (dragstart)="onDrag($event, component)"
-                    class="w-full text-gray-300 hover:bg-gray-700 hover:text-white group flex items-center px-2 py-2 text-base font-medium rounded-md">
+                    class="w-full text-gray-300 hover:bg-gray-700 hover:text-white group flex items-center px-2 py-2 text-base text-left font-medium rounded-md">
               {{component.label}}
             </button>
             <button
