@@ -8,8 +8,6 @@ import * as fs from 'fs';
 import {BehaviorSubject} from "rxjs";
 import {JsonRobustUIComponent} from "../../../interfaces/jsonRobustUIComponent";
 import {RobustUiComponent} from "../../../entities/robust-ui-component";
-import {RobustUiStateTypes} from "../../../entities/robust-ui-state-types";
-import {RobustUiSimpleComponent} from "../../../entities/robust-ui-simple-component";
 import {SerializerFactory} from "../../../serializers/SerializerFactory";
 
 @Injectable({
@@ -71,7 +69,7 @@ export class ElectronService {
       }
     });
     if (hasError) {
-      alert("Some files could not be loaded. Either they do not have the correct schema or something else");
+      alert("Some files could not be loaded");
     }
     return files;
   }
@@ -79,12 +77,19 @@ export class ElectronService {
   public readAllProject(folderPath: string): JsonRobustUIComponent[] {
     const files = this.readAllJSONFilesInFolder<JsonRobustUIComponent>(folderPath);
     const elements: JsonRobustUIComponent[] = [];
-    for (const file of files)  {
+    const componentErrors: string[] = [];
+    for (const file of files) {
       const schema = this.componentSchemas.find(e => e.title == file.type);
 
       if (this.ajv.validate(schema, file)) {
         elements.push(file);
+      } else {
+        componentErrors.push(file.label);
       }
+    }
+
+    if (componentErrors.length > 0) {
+      this.alertComponentsNotCorrectSchemas(componentErrors);
     }
 
     return elements;
@@ -115,5 +120,12 @@ export class ElectronService {
           this.modelCheckerResult.next("Something went wrong");
         }
       }));
+  }
+
+  private alertComponentsNotCorrectSchemas(componentErrors: string[]) {
+    let componentNames = "";
+    componentErrors.forEach(e => componentNames += e + ", ");
+    componentNames = componentNames.slice(0, -2);
+    alert("The following components does not conform to the schemas: " + componentNames);
   }
 }
