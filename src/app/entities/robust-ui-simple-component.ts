@@ -7,7 +7,7 @@ export class RobustUiSimpleComponent extends RobustUiComponent {
   public states = new Map<string, RobustUiState>();
   public initialState: RobustUiState;
   public events: Set<string>;
-  public transitions = new Map<string, RobustUiTransition>();
+  public transitions = new Set<RobustUiTransition>();
 
   constructor(
     label: string,
@@ -27,7 +27,7 @@ export class RobustUiSimpleComponent extends RobustUiComponent {
     this.initialState = this.states.get(initialState);
     this.events = events;
     if (transitions != null) {
-      transitions.forEach(transition => this.transitions.set(transition.label, transition));
+      transitions.forEach(transition => this.transitions.add(transition));
     }
 
     this.validateInitialStateIsInStates(initialState);

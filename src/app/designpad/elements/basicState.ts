@@ -4,7 +4,6 @@ import {DoubleClickable, Drawable, Updatable} from "../interactions/p5Core";
 import {Point} from "./point";
 import {Triple} from "./triple";
 import {Event, EventDispatcher, EventType} from "../eventDispatcher";
-import {Position} from "../../interfaces/position";
 
 export class BasicState extends Draggable implements Drawable, Updatable, DoubleClickable {
   public get xPos(): number {
