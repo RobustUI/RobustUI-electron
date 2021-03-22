@@ -83,14 +83,15 @@
   </div>
   <div class="w-full flex flex-col h-full overflow-y-auto p-4">
     <div class="w-full flex flex-row gap-2 mb-4">
-      <div>
+      <div class="w-1/3">
         <label for="label" class="block text-sm font-medium text-gray-700">Label</label>
         <div class="mt-1">
           <input [readOnly]="activeTool === 'SimulatorTool'" type="text" name="label" id="label"
-                 class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md" (keypress)="updateValue($event)" [(ngModel)]="tempComponentLabel">
+                 class="w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500
+                 sm:text-sm border-gray-300 rounded-md" (keypress)="updateValue($event)" [(ngModel)]="tempComponentLabel">
         </div>
       </div>
-      <div class="" *ngIf="activeComponent.type === 1">
+      <div class="w-1/3" *ngIf="activeComponent.type === 1">
         <label for="initialState" class="block text-sm font-medium text-gray-700">Initial state</label>
         <div class="mt-1">
           <select name="initialState" id="initialState" (change)="updateInitialValue($event.target.value)"
