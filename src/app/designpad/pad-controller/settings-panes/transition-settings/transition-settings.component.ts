@@ -25,6 +25,12 @@ export class TransitionSettingsComponent implements OnInit, OnChanges {
 
   public form: FormGroup;
 
+  public browserEvents: string[] = [
+    "pointerenter",
+    "pointerend",
+    "click"
+  ];
+
   private _item: Transition;
 
   constructor(
@@ -92,7 +98,5 @@ export class TransitionSettingsComponent implements OnInit, OnChanges {
       this.form.controls.inputEvent.setValue('');
       this.form.controls.outputEvent.setValue('');
     }
-
-
   }
 }
