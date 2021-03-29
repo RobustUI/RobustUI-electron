@@ -17,7 +17,11 @@
   <div class="flex gap-2 justify-between">
     <h2 class="block font-medium text-gray-700">Event:</h2>
     <div [ngSwitch]="form.controls.type.value" class="w-full">
-      <input *ngSwitchCase="'Internal'" formControlName="event" type="text" name="event" id="event" class="w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+      <div *ngSwitchCase="'Internal'" class="w-full">
+        <select formControlName="event" name="Event" class="w-full mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+          <option *ngFor="let event of browserEvents" value="{{event}}" >{{event}}</option>
+        </select>
+      </div>
       <div *ngSwitchCase="'Input'" class="w-full">
         <select formControlName="inputEvent" name="Input" class="w-full mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
           <option *ngFor="let event of inputEvents" value="{{event}}" >{{event}}</option>
