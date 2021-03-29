@@ -75,6 +75,7 @@ export class DesignpadComponent implements OnInit {
     if (this.activeComponent.type === RobustUiStateTypes.simpleComponent) {
       (this.activeComponent as RobustUiSimpleComponent).initialState = (this.activeComponent as RobustUiSimpleComponent).states.get(label);
     }
+    this.save();
     this.padController.updateComponent(this.activeComponent);
   }
 
