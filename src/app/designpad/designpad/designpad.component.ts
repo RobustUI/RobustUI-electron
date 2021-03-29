@@ -49,7 +49,7 @@ export class DesignpadComponent implements OnInit {
         (this.activeComponent as RobustUiSimpleComponent).states.set(newComp.label, newComp);
       }
     });
-    this.listenForModelChanges();
+    this.listenForComponentChanges();
   }
 
   public activateTool(toolName: ToolTypes): void {
@@ -93,9 +93,9 @@ export class DesignpadComponent implements OnInit {
     }
   }
 
-  private listenForModelChanges() {
+  private listenForComponentChanges() {
     EventDispatcher.getInstance().stream().subscribe(event => {
-      if (event.type === EventType.CHANGE_MODEL) {
+      if (event.type === EventType.CHANGE_COMPONENT) {
         this.activeComponent = DesignPadToRobustUi.convert(event.data, this.activeComponent);
       } else if (event.type === EventType.RENAME_STATE) {
         const state = event.data.newState as RobustUiState;
