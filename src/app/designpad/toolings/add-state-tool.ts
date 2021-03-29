@@ -16,5 +16,7 @@ export class AddStateTool extends Tool {
     elements.push(new BasicState(this.p5, 'new state', xPos, yPos, 50));
 
     EventDispatcher.getInstance().emit({type: EventType.SWITCH_TOOL, data: 'SelectTool' as ToolTypes});
+    EventDispatcher.getInstance().emit({type: EventType.CHANGE_MODEL, data: elements});
+
   }
 }

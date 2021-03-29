@@ -5,7 +5,9 @@ export enum EventType {
   STATE_SHRINK,
   SWITCH_TOOL,
   SHOW_SETTINGS,
-  SAVE_COMPONENT
+  SAVE_COMPONENT,
+  CHANGE_MODEL,
+  RENAME_STATE
 }
 
 export interface Event {
@@ -23,7 +25,7 @@ export class EventDispatcher {
     return this.instance;
   }
 
-  public emit(event: Event) {
+  public emit(event: Event): void {
     this.eventSubject.next(event);
   }
 
