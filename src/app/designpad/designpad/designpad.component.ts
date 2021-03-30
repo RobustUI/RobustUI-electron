@@ -125,6 +125,28 @@ export class DesignpadComponent implements OnInit {
     }
   }
 
+  public onMouseDownAction(event: MouseEvent, action: string, isOutput: boolean): void {
+    if (event.button === 2) {
+      if (isOutput) {
+        if (confirm(`Do you want to delete ${action} output?`)) {
+          EventDispatcher.getInstance().emit({
+            type: EventType.DELETE_ACTION,
+            data: action + "!"
+          });
+          this.activeComponent.outputs.delete(action);
+        }
+      } else {
+        if (confirm(`Do you want to delete ${action} input?`)) {
+          EventDispatcher.getInstance().emit({
+            type: EventType.DELETE_ACTION,
+            data: action + "?"
+          });
+          this.activeComponent.inputs.delete(action);
+        }
+      }
+    }
+  }
+
   private listenForComponentChanges() {
     EventDispatcher.getInstance().stream().subscribe(event => {
       if (event.type === EventType.CHANGE_COMPONENT) {
