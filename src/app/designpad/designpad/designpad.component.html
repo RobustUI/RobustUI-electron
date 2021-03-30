@@ -112,12 +112,12 @@
     <div class="flex h-full">
       <div class="w-1/5 flex flex-col justify-between py-3 overflow-hidden">
         <div class="flex flex-col overflow-y-auto h-full">
-          <div *ngFor="let label of activeComponent.inputs" (dblclick)="onDoubleClickAction(label, false)"
+          <div *ngFor="let label of activeComponent.inputs" (dblclick)="onDoubleClickAction(label)"
                (keydown)="onKeyDownAction($event, false)"
                class="flex flex-col justify-center items-center w-full">
-            <input *ngIf="selectedRenameInput === label" type="text"
+            <input *ngIf="selectedRenameAction === label" type="text"
                    [(ngModel)]="tempActionName">
-            <h3 *ngIf="selectedRenameInput !== label">{{label}}?</h3>
+            <h3 *ngIf="selectedRenameAction !== label">{{label}}?</h3>
             <svg class="-mt-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 -5 110 10">
               <defs>
                 <marker id='head' orient='auto' markerWidth='2' markerHeight='4'
@@ -142,12 +142,12 @@
       </div>
       <div class="w-1/5 flex flex-col justify-between py-3 overflow-hidden">
         <div class="flex flex-col overflow-y-auto h-full">
-          <div *ngFor="let label of activeComponent.outputs" (dblclick)="onDoubleClickAction(label, true)"
+          <div *ngFor="let label of activeComponent.outputs" (dblclick)="onDoubleClickAction(label)"
                (keydown)="onKeyDownAction($event, true)"
                class="flex flex-col justify-center items-center w-full">
-            <input *ngIf="selectedRenameOutput === label" type="text"
+            <input *ngIf="selectedRenameAction === label" type="text"
                   [(ngModel)]="tempActionName">
-            <h3 *ngIf="selectedRenameOutput !== label">{{label}}!</h3>
+            <h3 *ngIf="selectedRenameAction !== label">{{label}}!</h3>
             <svg class="-mt-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 -5 110 10">
               <defs>
                 <marker id='head' orient='auto' markerWidth='2' markerHeight='4'

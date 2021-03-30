@@ -39,8 +39,7 @@ export class DesignpadComponent implements OnInit {
   public activeComponent: RobustUiComponent;
   public tempComponentLabel;
   public activeTool: ToolTypes = 'SelectTool';
-  public selectedRenameInput = "";
-  public selectedRenameOutput = "";
+  public selectedRenameAction = "";
   public tempActionName = "";
 
   constructor() {
@@ -96,12 +95,8 @@ export class DesignpadComponent implements OnInit {
     }
   }
 
-  public onDoubleClickAction(action: string, isOutput: boolean): void {
-    if (isOutput) {
-      this.selectedRenameOutput = action;
-    } else {
-      this.selectedRenameInput = action;
-    }
+  public onDoubleClickAction(action: string): void {
+    this.selectedRenameAction = action;
     this.tempActionName = action;
   }
 
@@ -111,22 +106,21 @@ export class DesignpadComponent implements OnInit {
         return;
       }
       if (isOutput) {
-        this.activeComponent.outputs.delete(this.selectedRenameOutput);
+        this.activeComponent.outputs.delete(this.selectedRenameAction);
         this.activeComponent.outputs.add(this.tempActionName);
         EventDispatcher.getInstance().emit({
           type: EventType.RENAME_ACTION,
-          data: {prev: this.selectedRenameOutput + "!", new: this.tempActionName + "!"}
+          data: {prev: this.selectedRenameAction + "!", new: this.tempActionName + "!"}
         });
       } else {
-        this.activeComponent.inputs.delete(this.selectedRenameInput);
+        this.activeComponent.inputs.delete(this.selectedRenameAction);
         this.activeComponent.inputs.add(this.tempActionName);
         EventDispatcher.getInstance().emit({
           type: EventType.RENAME_ACTION,
-          data: {prev: this.selectedRenameInput + "?", new: this.tempActionName + "?"}
+          data: {prev: this.selectedRenameAction + "?", new: this.tempActionName + "?"}
         });
       }
-      this.selectedRenameInput = "";
-      this.selectedRenameOutput = "";
+      this.selectedRenameAction = "";
       this.tempActionName = "";
     }
   }
