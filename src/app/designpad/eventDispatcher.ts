@@ -7,7 +7,8 @@ export enum EventType {
   SHOW_SETTINGS,
   SAVE_COMPONENT,
   CHANGE_COMPONENT,
-  RENAME_STATE
+  RENAME_STATE,
+  RENAME_ACTION
 }
 
 export interface Event {
@@ -32,5 +33,4 @@ export class EventDispatcher {
   public stream(): Observable<Event> {
     return this.eventSubject.asObservable();
   }
-
 }

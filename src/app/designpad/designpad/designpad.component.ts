@@ -39,6 +39,9 @@ export class DesignpadComponent implements OnInit {
   public activeComponent: RobustUiComponent;
   public tempComponentLabel;
   public activeTool: ToolTypes = 'SelectTool';
+  public selectedRenameInput = "";
+  public selectedRenameOutput = "";
+  public tempActionName = "";
 
   constructor() {
   }
@@ -90,6 +93,41 @@ export class DesignpadComponent implements OnInit {
   public updateValue(event: any): void {
     if (event.key === "Enter") {
       this.updateComponentLabel.emit({newLabel: this.tempComponentLabel, component: this.activeComponent});
+    }
+  }
+
+  public onDoubleClickAction(action: string, isOutput: boolean): void {
+    if (isOutput) {
+      this.selectedRenameOutput = action;
+    } else {
+      this.selectedRenameInput = action;
+    }
+    this.tempActionName = action;
+  }
+
+  public onKeyDownAction(event: any, isOutput: boolean): void {
+    if (event.key === "Enter") {
+      if (this.tempActionName.trim().length === 0) {
+        return;
+      }
+      if (isOutput) {
+        this.activeComponent.outputs.delete(this.selectedRenameOutput);
+        this.activeComponent.outputs.add(this.tempActionName);
+        EventDispatcher.getInstance().emit({
+          type: EventType.RENAME_ACTION,
+          data: {prev: this.selectedRenameOutput + "!", new: this.tempActionName + "!"}
+        });
+      } else {
+        this.activeComponent.inputs.delete(this.selectedRenameInput);
+        this.activeComponent.inputs.add(this.tempActionName);
+        EventDispatcher.getInstance().emit({
+          type: EventType.RENAME_ACTION,
+          data: {prev: this.selectedRenameInput + "?", new: this.tempActionName + "?"}
+        });
+      }
+      this.selectedRenameInput = "";
+      this.selectedRenameOutput = "";
+      this.tempActionName = "";
     }
   }
 
