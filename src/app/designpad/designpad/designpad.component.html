@@ -112,7 +112,9 @@
     <div class="flex h-full">
       <div class="w-1/5 flex flex-col justify-between py-3 overflow-hidden">
         <div class="flex flex-col overflow-y-auto h-full">
-          <div *ngFor="let label of activeComponent.inputs" (dblclick)="onDoubleClickAction(label)"
+          <div *ngFor="let label of activeComponent.inputs"
+               (mousedown)="onMouseDownAction($event, label, false)"
+               (dblclick)="onDoubleClickAction(label)"
                (keydown)="onKeyDownAction($event, false)"
                class="flex flex-col justify-center items-center w-full">
             <input *ngIf="selectedRenameAction === label" type="text"
@@ -142,7 +144,9 @@
       </div>
       <div class="w-1/5 flex flex-col justify-between py-3 overflow-hidden">
         <div class="flex flex-col overflow-y-auto h-full">
-          <div *ngFor="let label of activeComponent.outputs" (dblclick)="onDoubleClickAction(label)"
+          <div *ngFor="let label of activeComponent.outputs"
+               (mousedown)="onMouseDownAction($event, label, true)"
+               (dblclick)="onDoubleClickAction(label)"
                (keydown)="onKeyDownAction($event, true)"
                class="flex flex-col justify-center items-center w-full">
             <input *ngIf="selectedRenameAction === label" type="text"

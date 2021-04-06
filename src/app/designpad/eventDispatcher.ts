@@ -8,7 +8,8 @@ export enum EventType {
   SAVE_COMPONENT,
   CHANGE_COMPONENT,
   RENAME_STATE,
-  RENAME_ACTION
+  RENAME_ACTION,
+  DELETE_ACTION
 }
 
 export interface Event {
