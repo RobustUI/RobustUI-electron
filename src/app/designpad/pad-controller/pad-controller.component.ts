@@ -84,7 +84,7 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
   @Output()
   public activeToolChange = new EventEmitter<ToolTypes>();
 
-  public selectedComponent$ = new EventEmitter<{name: string, type:string}>();
+  public selectedComponent$ = new EventEmitter<{ name: string, type: string }>();
 
   public get selectComponentModalOpen(): boolean {
     return this._selectComponentModalStatus;
@@ -115,16 +115,16 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
     this.convertComponent();
   }
 
-  public settingsPane: SettingsPane = { open: false, item: null};
+  public settingsPane: SettingsPane = {open: false, item: null};
   public _component: RobustUiComponent;
 
   private cameraPosForComponent = new Map<string, Triple>();
-  private temporaryComponent = new Map<string, {parentComp: any, elements: any}>();
+  private temporaryComponent = new Map<string, { parentComp: any, elements: any }>();
   private zMin = 1;
   private zMax = 9.00;
   private sensativity = 0.005;
   private font: P5.Font;
-  private cameraPos: Triple = {x: 0, y:0, z: 1};
+  private cameraPos: Triple = {x: 0, y: 0, z: 1};
 
   private elements: any[] = [];
   private eventDispatcherSubscription: Subscription;
@@ -136,7 +136,7 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
 
   constructor(private componentRepository: ComponentRepository) {
     this.eventDispatcherSubscription = EventDispatcher.getInstance().stream().subscribe((event: Event) => {
-      if(event.type === EventType.SWITCH_TOOL) {
+      if (event.type === EventType.SWITCH_TOOL) {
         this.setTool(event.data);
       } else if (event.type === EventType.SHOW_SETTINGS) {
         this.settingsPane = {open: true, item: event.data};
@@ -160,7 +160,8 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
   }
 
   public ngAfterViewInit(): void {
-    this.p5 = new P5(() => {});
+    this.p5 = new P5(() => {
+    });
     this.sketch(this.p5);
     this.convertComponent();
     this._tool = new SelectTool(this.p5);
@@ -216,7 +217,7 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
   private setup(): void {
     this.p5.createCanvas(this.parent.clientWidth, this.parent.clientHeight).parent('designPad');
     this.p5.textFont(this.font);
-    this.p5.translate(this.p5.width/2, this.p5.height/2);
+    this.p5.translate(this.p5.width / 2, this.p5.height / 2);
   }
 
   private windowsResized(): void {
@@ -230,12 +231,21 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
     if (this._component.type === RobustUiStateTypes.compositeComponent) {
       this.p5.push();
       this.p5.strokeWeight(5);
-      GridBuilder.drawGridLayout(this.p5, {x: 0, y: 0}, (this.elements.length === 1) ? this.elements.length + 1 : this.elements.length, this.p5.width, this.p5.height);
+      GridBuilder.drawGridLayout(this.p5, {
+        x: 0,
+        y: 0
+      }, (this.elements.length === 1) ? this.elements.length + 1 : this.elements.length, this.p5.width, this.p5.height);
       this.p5.pop();
-      GridBuilder.drawElementsInGrid(this.elements, this.p5.width, this.p5.height, {x: 0, y: 0}, this.p5, 1, this.cameraPos);
+      GridBuilder.drawElementsInGrid(this.elements, this.p5.width, this.p5.height, {
+        x: 0,
+        y: 0
+      }, this.p5, 1, this.cameraPos);
     } else if (this._component.type === RobustUiStateTypes.selectiveComponent) {
       this.p5.push();
-      GridBuilder.drawSelectiveElementsLayout(this.elements.filter(e => (e instanceof BasicState) && !e.isInitial), this.p5.width, this.p5.height, {x:0, y:0}, this.p5, 1, this.cameraPos);
+      GridBuilder.drawSelectiveElementsLayout(this.elements.filter(e => (e instanceof BasicState) && !e.isInitial), this.p5.width, this.p5.height, {
+        x: 0,
+        y: 0
+      }, this.p5, 1, this.cameraPos);
       this.elements.filter(e => (e instanceof Transition) || (e instanceof BasicState) && e.isInitial).forEach(e => e.draw(this.cameraPos));
       this.p5.pop();
     } else {
@@ -253,31 +263,31 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
   }
 
   private mouseClicked(): void {
-    if(this.mouseActionInsidePad()) {
+    if (this.mouseActionInsidePad()) {
       this._tool.mouseClicked(this.elements, this.cameraPos, {x: this.p5.mouseX, y: this.p5.mouseY});
     }
   }
 
   private mousePressed(): void {
-    if(this.mouseActionInsidePad()) {
+    if (this.mouseActionInsidePad()) {
       this._tool.mousePressed(this.elements, this.cameraPos, {x: this.p5.mouseX, y: this.p5.mouseY});
     }
   }
 
   private mouseReleased(): void {
-    if(this.mouseActionInsidePad()) {
+    if (this.mouseActionInsidePad()) {
       this._tool.mouseReleased(this.elements, this.cameraPos, {x: this.p5.mouseX, y: this.p5.mouseY});
     }
   }
 
   private mouseDragged(): void {
-    if(this.mouseActionInsidePad()) {
+    if (this.mouseActionInsidePad()) {
       this._tool.mouseDragged(this.elements, this.cameraPos, {x: this.p5.mouseX, y: this.p5.mouseY});
     }
   }
 
   private doubleClicked(): void {
-    if(this.mouseActionInsidePad()) {
+    if (this.mouseActionInsidePad()) {
       this._tool.doubleClicked(this.elements, this.cameraPos, {x: this.p5.mouseX, y: this.p5.mouseY});
     }
   }
@@ -367,7 +377,7 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
     this.parentDesignPadObj = RobustUiToDesignPad.convert(this._component, this.p5, this.componentRepository) as CompositeComponent;
 
     this.elements.push(
-      ... this.parentDesignPadObj.getComponents
+      ...this.parentDesignPadObj.getComponents
     );
   }
 
@@ -385,8 +395,8 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
 
     this.elements.push(
       this.parentDesignPadObj.initial,
-      ... this.parentDesignPadObj.transitions,
-      ... this.parentDesignPadObj.getCases
+      ...this.parentDesignPadObj.transitions,
+      ...this.parentDesignPadObj.getCases
     );
   }
 

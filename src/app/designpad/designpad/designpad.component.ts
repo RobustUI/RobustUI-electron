@@ -7,6 +7,8 @@ import {PadControllerComponent} from "../pad-controller/pad-controller.component
 import {SimulatorTrace} from "../../interfaces/simulator-trace";
 import {RobustUiStateTypes} from "../../entities/robust-ui-state-types";
 import {RobustUiSimpleComponent} from "../../entities/robust-ui-simple-component";
+import {DesignPadToRobustUi} from "../converters/DesignPadToRobustUi";
+import {RobustUiState} from "../../entities/robust-ui-state";
 
 export interface UpdateComponent {
   newLabel: string;
@@ -43,10 +45,11 @@ export class DesignpadComponent implements OnInit {
 
   public ngOnInit(): void {
     this.addComponentStream.subscribe((newComp: RobustUiComponent) => {
-      if(this.activeComponent.type === RobustUiStateTypes.simpleComponent) {
+      if (this.activeComponent.type === RobustUiStateTypes.simpleComponent) {
         (this.activeComponent as RobustUiSimpleComponent).states.set(newComp.label, newComp);
       }
     });
+    this.listenForComponentChanges();
   }
 
   public activateTool(toolName: ToolTypes): void {
@@ -75,6 +78,7 @@ export class DesignpadComponent implements OnInit {
     if (this.activeComponent.type === RobustUiStateTypes.simpleComponent) {
       (this.activeComponent as RobustUiSimpleComponent).initialState = (this.activeComponent as RobustUiSimpleComponent).states.get(label);
     }
+    this.save();
     this.padController.updateComponent(this.activeComponent);
   }
 
@@ -87,5 +91,22 @@ export class DesignpadComponent implements OnInit {
     if (event.key === "Enter") {
       this.updateComponentLabel.emit({newLabel: this.tempComponentLabel, component: this.activeComponent});
     }
+  }
+
+  private listenForComponentChanges() {
+    EventDispatcher.getInstance().stream().subscribe(event => {
+      if (event.type === EventType.CHANGE_COMPONENT) {
+        this.activeComponent = DesignPadToRobustUi.convert(event.data, this.activeComponent);
+      } else if (event.type === EventType.RENAME_STATE) {
+        const state = event.data.newState as RobustUiState;
+        const component = this.activeComponent as RobustUiSimpleComponent;
+        component.states.set(event.data.previousName, state);
+        if (event.data.previousName === component.initialState.label) {
+          component.initialState = state;
+        }
+        this.activeComponent = component;
+        this.save();
+      }
+    });
   }
 }
