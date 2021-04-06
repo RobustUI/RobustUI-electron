@@ -1,43 +1,71 @@
 {
       "label": "A",
       "type": 1,
-      "initialState": "A_A",
+      "initialState": "new statedsd",
       "states": [
         {
-      "label": "A_A",
+      "label": "A_dsad",
       "type": "0"
       },{
-      "label": "A_B",
+      "label": "Ads",
+      "type": "0"
+      },{
+      "label": "ne",
+      "type": "0"
+      },{
+      "label": "new statedsd",
+      "type": "0"
+      },{
+      "label": "new state",
       "type": "0"
       }
       ],
       "events": [
-        
+        "msg!","ds"
       ],
       "inputs": [
         "awk"
       ],
       "outputs": [
-        "msg"
+        "ms"
       ],
       "transitions": [
        {
-      "from": "A_B",
-      "label": "msg",
-      "to": "A_A"
+      "from": "Ads",
+      "label": "msg!",
+      "to": "A_dsad"
+      },{
+      "from": "new statedsd",
+      "label": "ds",
+      "to": "A_dsad"
       }
       ],
       "positions": [
         {
-      "label": "A_A",
-      "x": 951,
-      "y": 181,
+      "label": "A_dsad",
+      "x": 133,
+      "y": 139,
       "width": 200
       },{
-      "label": "A_B",
+      "label": "Ads",
       "x": 100,
       "y": 40,
       "width": 25
+      },{
+      "label": "ne",
+      "x": 450.8125,
+      "y": 425,
+      "width": 50
+      },{
+      "label": "new statedsd",
+      "x": 312.8125,
+      "y": 491,
+      "width": 50
+      },{
+      "label": "new state",
+      "x": 68.8125,
+      "y": 545,
+      "width": 50
       }
       ]
     }

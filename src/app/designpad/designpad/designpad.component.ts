@@ -39,6 +39,8 @@ export class DesignpadComponent implements OnInit {
   public activeComponent: RobustUiComponent;
   public tempComponentLabel;
   public activeTool: ToolTypes = 'SelectTool';
+  public selectedRenameAction = "";
+  public tempActionName = "";
 
   constructor() {
   }
@@ -90,6 +92,36 @@ export class DesignpadComponent implements OnInit {
   public updateValue(event: any): void {
     if (event.key === "Enter") {
       this.updateComponentLabel.emit({newLabel: this.tempComponentLabel, component: this.activeComponent});
+    }
+  }
+
+  public onDoubleClickAction(action: string): void {
+    this.selectedRenameAction = action;
+    this.tempActionName = action;
+  }
+
+  public onKeyDownAction(event: any, isOutput: boolean): void {
+    if (event.key === "Enter") {
+      if (this.tempActionName.trim().length === 0) {
+        return;
+      }
+      if (isOutput) {
+        this.activeComponent.outputs.delete(this.selectedRenameAction);
+        this.activeComponent.outputs.add(this.tempActionName);
+        EventDispatcher.getInstance().emit({
+          type: EventType.RENAME_ACTION,
+          data: {prev: this.selectedRenameAction + "!", new: this.tempActionName + "!"}
+        });
+      } else {
+        this.activeComponent.inputs.delete(this.selectedRenameAction);
+        this.activeComponent.inputs.add(this.tempActionName);
+        EventDispatcher.getInstance().emit({
+          type: EventType.RENAME_ACTION,
+          data: {prev: this.selectedRenameAction + "?", new: this.tempActionName + "?"}
+        });
+      }
+      this.selectedRenameAction = "";
+      this.tempActionName = "";
     }
   }
 
