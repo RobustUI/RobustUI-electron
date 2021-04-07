@@ -107,17 +107,17 @@ export class DesignpadComponent implements OnInit {
       }
       if (isOutput) {
         this.activeComponent.outputs.delete(this.selectedRenameAction);
-        this.activeComponent.outputs.add(this.tempActionName);
+        this.activeComponent.outputs.add(this.tempActionName.toLowerCase());
         EventDispatcher.getInstance().emit({
           type: EventType.RENAME_ACTION,
-          data: {prev: this.selectedRenameAction + "!", new: this.tempActionName + "!"}
+          data: {prev: this.selectedRenameAction + "!", new: this.tempActionName.toLowerCase() + "!"}
         });
       } else {
         this.activeComponent.inputs.delete(this.selectedRenameAction);
-        this.activeComponent.inputs.add(this.tempActionName);
+        this.activeComponent.inputs.add(this.tempActionName.toLowerCase());
         EventDispatcher.getInstance().emit({
           type: EventType.RENAME_ACTION,
-          data: {prev: this.selectedRenameAction + "?", new: this.tempActionName + "?"}
+          data: {prev: this.selectedRenameAction + "?", new: this.tempActionName.toLowerCase() + "?"}
         });
       }
       this.selectedRenameAction = "";

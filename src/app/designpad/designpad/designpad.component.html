@@ -133,7 +133,7 @@
             </svg>
           </div>
         </div>
-        <div [class.hidden]="activeTool === 'SimulatorTool'" class="h-16">
+        <div  *ngIf="activeComponent.type != 3" [class.hidden]="activeTool === 'SimulatorTool'" class="h-16">
           <input #newInputEvent type="text">
           <button (click)="addNewInput(newInputEvent.value); newInputEvent.value = ''">Add new Input</button>
         </div>
@@ -165,7 +165,7 @@
             </svg>
           </div>
         </div>
-        <div [class.hidden]="activeTool === 'SimulatorTool'" class="h-16">
+        <div *ngIf="activeComponent.type != 3"  [class.hidden]="activeTool === 'SimulatorTool'" class="h-16">
           <input #newOutputEvent type="text">
           <button (click)="addNewOutput(newOutputEvent.value); newOutputEvent.value = ''">Add new Output</button>
         </div>

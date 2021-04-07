@@ -65,6 +65,8 @@ export class TransitionSettingsComponent implements OnInit, OnChanges {
         case 'Internal':
           this._item.setEvent = this.form.controls.event.value.toString();
           break;
+        case 'Compound':
+          this._item.setEvent = this.form.controls.event.value.toString() + '/' + this.form.controls.outputEvent.value.toString() + '!';
       }
       this.close.emit(true);
     }
@@ -75,28 +77,34 @@ export class TransitionSettingsComponent implements OnInit, OnChanges {
       return;
     }
 
+    this.resetForm();
+
     const inOutputLabel = this._item.getEvent.slice(0, -1);
     const isInput = this.inputEvents.has(inOutputLabel);
     const isOutput = this.outputEvents.has(inOutputLabel);
 
-    if (isInput) {
+    const isCompound = this._item.getEvent.indexOf('/') != -1;
+    if (isCompound) {
+      this.form.controls.type.setValue('Compound');
+      const labelSplit = this._item.getEvent.split('/');
+      this.form.controls.event.setValue(labelSplit[0].trim());
+      this.form.controls.outputEvent.setValue(labelSplit[1].trim().slice(0, -1));
+    } else if (isInput) {
       this.form.controls.type.setValue('Input');
       this.form.controls.inputEvent.setValue(inOutputLabel);
-
-      this.form.controls.event.setValue('');
-      this.form.controls.outputEvent.setValue('');
     } else if (isOutput) {
       this.form.controls.type.setValue('Output');
       this.form.controls.outputEvent.setValue(inOutputLabel);
 
-      this.form.controls.event.setValue('');
-      this.form.controls.inputEvent.setValue('');
     } else {
       this.form.controls.type.setValue('Internal');
       this.form.controls.event.setValue(this._item.getEvent);
-
-      this.form.controls.inputEvent.setValue('');
-      this.form.controls.outputEvent.setValue('');
     }
+  }
+
+  private resetForm(): void {
+    this.form.controls.event.setValue('');
+    this.form.controls.outputEvent.setValue('');
+    this.form.controls.inputEvent.setValue('');
   }
 }

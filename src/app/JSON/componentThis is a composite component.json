@@ -9,11 +9,14 @@
       "label": "NotTHeB",
       "type": "B"
       },{
-      "label": "Hello",
+      "label": "Hello2",
       "type": "A"
       },{
       "label": "sdsasa",
       "type": "I am Selective"
+      },{
+      "label": "Hello",
+      "type": "A"
       }
       ],
       "inputs": [
@@ -27,22 +30,27 @@
       "label": "TheLabel",
       "x": 0,
       "y": 0,
-      "width": 618.5
+      "width": 245
       },{
       "label": "NotTHeB",
       "x": 0,
       "y": 0,
-      "width": 618.5
+      "width": 245
       },{
-      "label": "Hello",
+      "label": "Hello2",
       "x": 0,
       "y": 0,
-      "width": 618.5
+      "width": 245
       },{
       "label": "sdsasa",
       "x": 0,
       "y": 0,
-      "width": 618.5
+      "width": 245
+      },{
+      "label": "Hello",
+      "x": 0,
+      "y": 0,
+      "width": 245
       }
       ]
     }

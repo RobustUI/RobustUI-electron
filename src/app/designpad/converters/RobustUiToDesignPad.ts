@@ -98,6 +98,7 @@ export class RobustUiToDesignPad {
       const comp = repo.snapshot.find(el => el.label === e.type);
       const pos = component.position.get(e.type);
       const obj = RobustUiToDesignPad.convert(comp, pad, repo, pos);
+      obj.name = e.label;
       cases.push({
         expression: e.guard,
         component: obj

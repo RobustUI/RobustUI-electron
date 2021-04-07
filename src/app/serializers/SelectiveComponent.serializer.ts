@@ -59,6 +59,7 @@ export class SelectiveComponentSerializer implements RobustUiSerializer {
     component.cases.forEach((e) => {
       cases += `{
       "guard": "${e.guard}",
+      "label": "${e.label}",
       "type": "${e.type}"
       },`;
     });
