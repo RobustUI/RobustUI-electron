@@ -1,0 +1,47 @@
+{
+      "label": "onOffComponent",
+      "type": 1,
+      "initialState": "off",
+      "states": [
+        {
+      "label": "off",
+      "type": "0"
+      },{
+      "label": "on",
+      "type": "0"
+      }
+      ],
+      "events": [
+        "click"
+      ],
+      "inputs": [
+        
+      ],
+      "outputs": [
+        
+      ],
+      "transitions": [
+       {
+      "from": "off",
+      "label": "click",
+      "to": "on"
+      },{
+      "from": "on",
+      "label": "click",
+      "to": "off"
+      }
+      ],
+      "positions": [
+        {
+      "label": "off",
+      "x": -4,
+      "y": -4,
+      "width": 50
+      },{
+      "label": "on",
+      "x": 325.203125,
+      "y": 106,
+      "width": 50
+      }
+      ]
+    }

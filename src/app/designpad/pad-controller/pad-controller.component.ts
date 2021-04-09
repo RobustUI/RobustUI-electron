@@ -148,13 +148,23 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
           alert(e.message);
         }
       } else if (event.type === EventType.RENAME_ACTION) {
-        this.elements.forEach(element => {
-          if (element instanceof Transition) {
-            if (element.getEvent === event.data.prev) {
-              element.setEvent = event.data.new;
+        if (this._component.type === 3) {
+          this.elements.forEach(elem => {
+            if (elem instanceof BasicState) {
+              if (elem.isInitial) {
+                elem.label = event.data.new.slice(0, -1);
+              }
             }
-          }
-        });
+          });
+        } else {
+          this.elements.forEach(element => {
+            if (element instanceof Transition) {
+              if (element.getEvent === event.data.prev) {
+                element.setEvent = event.data.new;
+              }
+            }
+          });
+        }
       } else if (event.type === EventType.DELETE_ACTION) {
         this.elements.forEach(element => {
           if (element instanceof Transition) {

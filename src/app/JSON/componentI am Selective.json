@@ -2,38 +2,46 @@
       "label": "I am Selective",
       "type": 3,
       "observer": {
-      "input": "onSelect",
+      "input": "mikkel?",
       "dataType": "number"
     },
       "cases": [
         {
       "guard": "<45",
+      "label": "foo",
       "type": "Murden"
       },{
       "guard": ">=9",
+      "label": "bar",
       "type": "A"
       },{
       "guard": "asddsa",
+      "label": "foobar",
       "type": "A"
       }
       ],
       "inputs": [
-        "onSelect"
+        "mikkel"
       ],
       "outputs": [
         
       ],
       "positions": [
         {
-      "label": "Murden",
+      "label": "foo",
       "x": 0,
       "y": 0,
-      "width": 604.5
+      "width": 238.5
       },{
-      "label": "A",
+      "label": "bar",
       "x": 0,
       "y": 0,
-      "width": 604.5
+      "width": 238.5
+      },{
+      "label": "foobar",
+      "x": 0,
+      "y": 0,
+      "width": 238.5
       }
       ]
     }

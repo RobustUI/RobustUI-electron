@@ -10,13 +10,7 @@
       "label": "Ads",
       "type": "0"
       },{
-      "label": "ne",
-      "type": "0"
-      },{
       "label": "new statedsd",
-      "type": "0"
-      },{
-      "label": "new state",
       "type": "0"
       }
       ],
@@ -52,19 +46,9 @@
       "y": 40,
       "width": 25
       },{
-      "label": "ne",
-      "x": 450.8125,
-      "y": 425,
-      "width": 50
-      },{
       "label": "new statedsd",
       "x": 312.8125,
       "y": 491,
-      "width": 50
-      },{
-      "label": "new state",
-      "x": 68.8125,
-      "y": 545,
       "width": 50
       }
       ]

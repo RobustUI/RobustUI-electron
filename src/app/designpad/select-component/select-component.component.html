@@ -17,9 +17,7 @@
           </svg>
         </button>
       </div>
-      <div
-        [class.hidden]="activeComp.type === 3"
-      >
+      <div>
         <label for="componentName" class="block text-sm font-medium text-gray-700">Component Alias</label>
         <div class="mt-1">
           <input #componentName type="text" name="componentName" id="componentName"
@@ -33,7 +31,8 @@
         </select>
       </div>
       <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-        <button (click)="selectComponent(componentName.value, component.value)"
+        <button [disabled]="componentName.value == null || componentName.value.trim().length <= 0"
+                (click)="selectComponent(componentName.value, component.value)"
                 type="button"
                 class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm">
           Select component

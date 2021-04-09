@@ -8,6 +8,7 @@
       "cases": [
         {
       "guard": ">10",
+      "label": "undefined",
       "type": "I am Selective"
       }
       ],

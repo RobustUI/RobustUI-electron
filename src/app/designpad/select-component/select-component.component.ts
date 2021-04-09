@@ -38,6 +38,9 @@ export class SelectComponentComponent {
   }
 
   public selectComponent(name: string, type: string) {
+    if (name == null || type == null || name.trim().length <= 0 || type.trim().length <= 0) {
+      return;
+    }
     this.selectedComponent.emit({name, type});
     this.onCloseModal();
   }

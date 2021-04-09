@@ -8,6 +8,7 @@ export interface ObserverData {
 
 export interface Case {
   guard: string;
+  label: string;
   type: string;
 }
 

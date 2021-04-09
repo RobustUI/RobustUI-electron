@@ -74,6 +74,13 @@
             "default": "",
             "pattern": "^.*$"
           },
+          "label": {
+            "$id": "#root/cases/items/label",
+            "title": "Label",
+            "type": "string",
+            "default": "",
+            "pattern": "^.*$"
+          },
           "type": {
             "$id": "#root/cases/items/type",
             "title": "Type",

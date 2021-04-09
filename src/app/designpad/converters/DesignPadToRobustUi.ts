@@ -7,7 +7,7 @@ import {RobustUiTransition} from "../../entities/robust-ui-transition";
 import {Position} from "../../interfaces/position";
 import {RobustUiSimpleComponent} from "../../entities/robust-ui-simple-component";
 import {RobustUiCompositeComponent} from "../../entities/robust-ui-composite-component";
-import {RobustUiSelectiveComponent} from "../../entities/robust-ui-selective-component";
+import {ObserverData, RobustUiSelectiveComponent} from "../../entities/robust-ui-selective-component";
 
 export class DesignPadToRobustUi {
   public static convert(elements: any[], base: RobustUiState): RobustUiComponent {
@@ -30,12 +30,19 @@ export class DesignPadToRobustUi {
 
     const positions = new Map<string, Position>();
 
+    const usedLables = [];
+
     const robustUiStates = states.map(e => {
-      positions.set(e.label, {x: e.xPos, y: e.yPos, width: e.width});
-      return {
-        label: e.label,
-        type: RobustUiStateTypes.baseState
-      } as RobustUiState;
+      if (usedLables.includes(e.label)) {
+        throw Error('State labels needs to be unique');
+      } else {
+        usedLables.push(e.label);
+        positions.set(e.label, {x: e.xPos, y: e.yPos, width: e.width});
+        return {
+          label: e.label,
+          type: RobustUiStateTypes.baseState
+        } as RobustUiState;
+      }
     });
 
     const events = new Set<string>();
@@ -74,9 +81,15 @@ export class DesignPadToRobustUi {
     const positions = new Map<string, Position>();
     const robustUiComponents = new Map<string, string>();
 
+    const usedLabels = [];
     components.map(e => {
-      positions.set(e.label, {x: e.xPos, y: e.yPos, width: e.width});
-      robustUiComponents.set(e.label, e.identifier);
+      if (usedLabels.includes(e.label)) {
+        throw Error("All Components must have an unique name");
+      } else {
+        usedLabels.push(e.label);
+        positions.set(e.label, {x: e.xPos, y: e.yPos, width: e.width});
+        robustUiComponents.set(e.label, e.identifier);
+      }
     });
 
 
@@ -94,15 +107,27 @@ export class DesignPadToRobustUi {
     const positions = new Map<string, Position>();
     const cases = [];
 
+    const initial = states.find(e => e.isInitial);
+    const observer: ObserverData = {
+      dataType: "number",
+      input: initial.label
+    };
 
+    const usedLabels = [];
 
     states.filter(e => !e.isInitial).map(e => {
-      positions.set(e.label, {x: e.xPos, y: e.yPos, width: e.width});
-      const guard = transitions.find(t => t.getTo === e).getEvent;
-      cases.push({
-        guard: guard,
-        type: e.identifier
-      });
+      if (usedLabels.includes(e.label)) {
+        throw Error('All Components must have an unique name!');
+      } else {
+        usedLabels.push(e.label);
+        positions.set(e.label, {x: e.xPos, y: e.yPos, width: e.width});
+        const guard = transitions.find(t => t.getTo === e).getEvent;
+        cases.push({
+          guard: guard,
+          label: e.label,
+          type: e.identifier
+        });
+      }
     });
 
     return new RobustUiSelectiveComponent(
@@ -111,7 +136,7 @@ export class DesignPadToRobustUi {
       base.inputs,
       base.outputs,
       positions,
-      base.observer,
+      observer,
       cases
     );
   }
