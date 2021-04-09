@@ -26,6 +26,7 @@ import {CompositeComponent} from "../elements/compositeComponent";
 import {GridBuilder} from "./helpers/GridBuilder";
 import {AddComponentTool} from "../toolings/add-component-tool";
 import {SelectiveComponent} from "../elements/selectiveComponent";
+import {TempTransition} from "../elements/tempTransition";
 
 @Component({
   selector: 'app-pad-controller',
@@ -46,6 +47,9 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
     if (this._tool == null || value != this._tool.name) {
       if (this._tool != null) {
         this._tool.onDestroy();
+      }
+      if (this._tool != null && this._tool.name === "AddTransitionTool") {
+        this.deleteTempTransitionOnActiveToolChange();
       }
       switch (value) {
         case 'SelectTool':
@@ -217,6 +221,13 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
 
   public closeSettings(): void {
     this.settingsPane = {open: false, item: null};
+  }
+
+  private deleteTempTransitionOnActiveToolChange(): void {
+    const deleteIndex = this.elements.findIndex(e => e instanceof TempTransition);
+    if (deleteIndex !== -1) {
+      this.elements.splice(deleteIndex, 1);
+    }
   }
 
   private sketch(p: P5) {
