@@ -26,6 +26,7 @@ export class DesignpadComponent implements OnInit {
   public set component(value: RobustUiComponent) {
     this.activeComponent = value;
     this.tempComponentLabel = value.label;
+    this.findUsedActions();
   }
 
   @ViewChild(PadControllerComponent) padController: PadControllerComponent;
@@ -54,7 +55,6 @@ export class DesignpadComponent implements OnInit {
         (this.activeComponent as RobustUiSimpleComponent).states.set(newComp.label, newComp);
       }
     });
-    this.findUsedActions();
 
     this.listenForComponentChanges();
   }
@@ -171,11 +171,6 @@ export class DesignpadComponent implements OnInit {
     this.usedInput.add(castedComponent.observer.input);
   }
 
-  private clearUsedAction() {
-    this.usedInput.clear();
-    this.usedOutput.clear();
-  }
-
   private findUsedActionForSimpleComponent(updatedComponent = null) {
     this.clearUsedAction();
     let castedComponent;
@@ -184,6 +179,7 @@ export class DesignpadComponent implements OnInit {
     } else {
       castedComponent = this.activeComponent as RobustUiSimpleComponent;
     }
+
     castedComponent.transitions.forEach(e => {
       if (castedComponent.inputs.has(e.label)) {
         this.usedInput.add(e.label);
@@ -215,5 +211,10 @@ export class DesignpadComponent implements OnInit {
     }
     this.activeComponent = component;
     this.save();
+  }
+
+  private clearUsedAction() {
+    this.usedInput.clear();
+    this.usedOutput.clear();
   }
 }
