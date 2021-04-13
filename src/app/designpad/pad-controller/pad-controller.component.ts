@@ -87,6 +87,8 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
 
   @Output()
   public activeToolChange = new EventEmitter<ToolTypes>();
+  @Output()
+  public savedComponent = new EventEmitter<RobustUiComponent>();
 
   public selectedComponent$ = new EventEmitter<{ name: string, type: string }>();
 
@@ -148,6 +150,7 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
         try {
           const comp = DesignPadToRobustUi.convert(this.elements, event.data);
           this.componentRepository.save(event.data.label, comp);
+          this.savedComponent.emit(comp);
         } catch (e) {
           alert(e.message);
         }
@@ -221,6 +224,7 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
 
   public closeSettings(): void {
     this.settingsPane = {open: false, item: null};
+    EventDispatcher.getInstance().emit({type: EventType.SAVE_COMPONENT, data: this._component});
   }
 
   private deleteTempTransitionOnActiveToolChange(): void {
