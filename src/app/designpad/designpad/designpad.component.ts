@@ -41,6 +41,7 @@ export class DesignpadComponent implements OnInit {
   public activeTool: ToolTypes = 'SelectTool';
   public selectedRenameAction = "";
   public tempActionName = "";
+  public notUsedInput: string[] = [];
 
   constructor() {
   }
@@ -51,11 +52,23 @@ export class DesignpadComponent implements OnInit {
         (this.activeComponent as RobustUiSimpleComponent).states.set(newComp.label, newComp);
       }
     });
+
     this.listenForComponentChanges();
   }
 
   public activateTool(toolName: ToolTypes): void {
     this.activeTool = toolName;
+  }
+
+  public actionInUse(actionName: string): boolean {
+    switch (this.activeComponent.type) {
+      case RobustUiStateTypes.simpleComponent:
+        return this.actionInUseSimpleComponent(actionName);
+      case RobustUiStateTypes.compositeComponent:
+        return true;
+      case RobustUiStateTypes.selectiveComponent:
+        return true;
+    }
   }
 
   public addNewInput(input: string): void {
@@ -145,6 +158,18 @@ export class DesignpadComponent implements OnInit {
         }
       }
     }
+  }
+
+  private actionInUseSimpleComponent(actionName: string): boolean {
+    const castedComponent = this.activeComponent as RobustUiSimpleComponent;
+    let found = false;
+    castedComponent.transitions.forEach(e => {
+      if (e.label === actionName) {
+        found = true;
+      }
+    });
+
+    return found;
   }
 
   private listenForComponentChanges() {
