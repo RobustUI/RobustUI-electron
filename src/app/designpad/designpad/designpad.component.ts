@@ -64,6 +64,8 @@ export class DesignpadComponent implements OnInit {
   }
 
   public findUsedActions(updatedComponent = null): void {
+    this.clearUsedAction();
+
     switch (this.activeComponent.type) {
       case RobustUiStateTypes.simpleComponent:
         this.findUsedActionForSimpleComponent(updatedComponent);
@@ -170,14 +172,11 @@ export class DesignpadComponent implements OnInit {
   }
 
   private findUsedActionForSelectiveComponent() {
-    this.clearUsedAction();
     const castedComponent = this.activeComponent as RobustUiSelectiveComponent;
-
     this.usedInput.add(castedComponent.observer.input);
   }
 
   private findUsedActionForSimpleComponent(updatedComponent = null) {
-    this.clearUsedAction();
     let castedComponent;
     if (updatedComponent != null) {
       castedComponent = updatedComponent;
