@@ -120,27 +120,39 @@
             <input *ngIf="selectedRenameAction === label" type="text"
                    [(ngModel)]="tempActionName">
             <h3 *ngIf="selectedRenameAction !== label">{{label}}?</h3>
-            <svg class="-mt-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 -5 110 10">
+            <svg *ngIf="usedInput.has(label)" class="-mt-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 -5 110 10">
               <defs>
-                <marker id='head' orient='auto' markerWidth='2' markerHeight='4'
+                <marker id='inputHeadUse' orient='auto' markerWidth='2' markerHeight='4'
                         refX='0.1' refY='2'>
                   <path d='M0,0 V4 L2,2 Z' fill='black'/>
                 </marker>
               </defs>
-              <line marker-end="url(#head)"
-                    stroke-width="2" fill="none" stroke="black"
+              <line marker-end="url(#inputHeadUse)"
+                    stroke-width="2" fill="none" stroke='black'
+                    x1="0" x2="100" y1="0" y2="0"></line>
+            </svg>
+            <svg *ngIf="!usedInput.has(label)" class="-mt-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 -5 110 10">
+              <defs>
+                <marker id='inputHeadNotUsed' orient='auto' markerWidth='2' markerHeight='4'
+                        refX='0.1' refY='2'>
+                  <path d='M0,0 V4 L2,2 Z' fill='red'/>
+                </marker>
+              </defs>
+              <line marker-end="url(#inputHeadNotUsed)"
+                    stroke-width="2" fill="none" stroke='red'
                     x1="0" x2="100" y1="0" y2="0"></line>
             </svg>
           </div>
         </div>
-        <div  *ngIf="activeComponent.type != 3" [class.hidden]="activeTool === 'SimulatorTool'" class="h-16">
+        <div *ngIf="activeComponent.type != 3" [class.hidden]="activeTool === 'SimulatorTool'" class="h-16">
           <input #newInputEvent type="text">
           <button (click)="addNewInput(newInputEvent.value); newInputEvent.value = ''">Add new Input</button>
         </div>
       </div>
       <div #designPadWrapper class="border-4 border-black rounded-lg h-full select-none w-3/5">
         <app-pad-controller [simulatorTraceSubject]="simulatorTrance" [(activeTool)]="activeTool"
-                            [component]="activeComponent" [parent]="designPadWrapper"></app-pad-controller>
+                            [component]="activeComponent" [parent]="designPadWrapper"
+        (savedComponent)="findUsedActions($event)"></app-pad-controller>
       </div>
       <div class="w-1/5 flex flex-col justify-between py-3 overflow-hidden">
         <div class="flex flex-col overflow-y-auto h-full">
@@ -150,22 +162,33 @@
                (keydown)="onKeyDownAction($event, true)"
                class="flex flex-col justify-center items-center w-full">
             <input *ngIf="selectedRenameAction === label" type="text"
-                  [(ngModel)]="tempActionName">
+                   [(ngModel)]="tempActionName">
             <h3 *ngIf="selectedRenameAction !== label">{{label}}!</h3>
-            <svg class="-mt-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 -5 110 10">
+            <svg *ngIf="usedOutput.has(label)" class="-mt-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 -5 110 10">
               <defs>
-                <marker id='head' orient='auto' markerWidth='2' markerHeight='4'
+                <marker id='outputHeadUse' orient='auto' markerWidth='2' markerHeight='4'
                         refX='0.1' refY='2'>
                   <path d='M0,0 V4 L2,2 Z' fill='black'/>
                 </marker>
               </defs>
-              <line marker-end="url(#head)"
-                    stroke-width="2" fill="none" stroke="black"
+              <line marker-end="url(#outputHeadUse)"
+                    stroke-width="2" fill="none" stroke='black'
+                    x1="0" x2="100" y1="0" y2="0"></line>
+            </svg>
+            <svg *ngIf="!usedOutput.has(label)" class="-mt-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 -5 110 10">
+              <defs>
+                <marker id='outputHeadNotUsed' orient='auto' markerWidth='2' markerHeight='4'
+                        refX='0.1' refY='2'>
+                  <path d='M0,0 V4 L2,2 Z' fill='red'/>
+                </marker>
+              </defs>
+              <line marker-end="url(#outputHeadNotUsed)"
+                    stroke-width="2" fill="none" stroke='red'
                     x1="0" x2="100" y1="0" y2="0"></line>
             </svg>
           </div>
         </div>
-        <div *ngIf="activeComponent.type != 3"  [class.hidden]="activeTool === 'SimulatorTool'" class="h-16">
+        <div *ngIf="activeComponent.type != 3" [class.hidden]="activeTool === 'SimulatorTool'" class="h-16">
           <input #newOutputEvent type="text">
           <button (click)="addNewOutput(newOutputEvent.value); newOutputEvent.value = ''">Add new Output</button>
         </div>
