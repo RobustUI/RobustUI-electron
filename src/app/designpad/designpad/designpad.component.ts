@@ -90,6 +90,11 @@ export class DesignpadComponent implements OnInit {
   }
 
   public save(): void {
+    const amountOfActionForComponent = this.activeComponent.outputs.size + this.activeComponent.inputs.size;
+    const amountOfUsedActionsForComponent = this.usedInput.size + this.usedOutput.size;
+    if (amountOfActionForComponent !== amountOfUsedActionsForComponent) {
+      alert("You have some inputs or outputs that you do not use");
+    }
     EventDispatcher.getInstance().emit({type: EventType.SAVE_COMPONENT, data: this.activeComponent});
   }
 
