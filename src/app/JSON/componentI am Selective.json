@@ -1,8 +1,9 @@
 {
       "label": "I am Selective",
       "type": 3,
+      "initialCase": "foo",
       "observer": {
-      "input": "mikkel?",
+      "input": "mikkel",
       "dataType": "number"
     },
       "cases": [
@@ -31,17 +32,17 @@
       "label": "foo",
       "x": 0,
       "y": 0,
-      "width": 238.5
+      "width": 299
       },{
       "label": "bar",
       "x": 0,
       "y": 0,
-      "width": 238.5
+      "width": 299
       },{
       "label": "foobar",
       "x": 0,
       "y": 0,
-      "width": 238.5
+      "width": 299
       }
       ]
     }

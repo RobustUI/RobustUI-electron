@@ -1,5 +1,4 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
-import {BasicState} from "../../../elements/basicState";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Transition} from "../../../elements/transition";
 

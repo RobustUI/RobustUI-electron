@@ -7,6 +7,7 @@
   "required": [
     "label",
     "type",
+    "initialCase",
     "observer",
     "cases",
     "inputs",
@@ -26,6 +27,13 @@
       "title": "Type",
       "type": "integer",
       "default": 0
+    },
+    "initialCase": {
+      "$id": "#root/initialCase",
+      "title": "initial Case",
+      "type": "string",
+      "default": "",
+      "pattern": "^.*$"
     },
     "observer": {
       "$id": "#root/observer",

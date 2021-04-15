@@ -69,12 +69,12 @@ export class DesignpadComponent implements OnInit {
 
   public findUsedActions(updatedComponent = null): void {
     this.clearUsedAction();
-
     switch (this.activeComponent.type) {
       case RobustUiStateTypes.simpleComponent:
         this.findUsedActionForSimpleComponent(updatedComponent);
         break;
       case RobustUiStateTypes.compositeComponent:
+        break;
       case RobustUiStateTypes.selectiveComponent:
         this.findUsedActionForSelectiveComponent();
         break;
@@ -110,6 +110,13 @@ export class DesignpadComponent implements OnInit {
     }
     this.save();
     this.padController.updateComponent(this.activeComponent);
+  }
+
+  public updateDefaultCase(event: string): void {
+    if (this.activeComponent.type === RobustUiStateTypes.selectiveComponent) {
+      (this.activeComponent as RobustUiSelectiveComponent).initialCase = event;
+      this.save();
+    }
   }
 
   public activateSimulator(): void {

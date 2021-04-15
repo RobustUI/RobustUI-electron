@@ -1,6 +1,7 @@
 {
       "label": "AwesomeSelective",
       "type": 3,
+      "initialCase": "Lock",
       "observer": {
       "input": "valuestream",
       "dataType": "number"
@@ -27,12 +28,12 @@
       "label": "Light",
       "x": 0,
       "y": 0,
-      "width": 893
+      "width": 299
       },{
       "label": "Lock",
       "x": 0,
       "y": 0,
-      "width": 893
+      "width": 299
       }
       ]
     }
