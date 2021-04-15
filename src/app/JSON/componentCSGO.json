@@ -1,6 +1,7 @@
 {
       "label": "CSGO",
       "type": 3,
+      "initialCase": "undefined",
       "observer": {
       "input": "stream",
       "dataType": "number"

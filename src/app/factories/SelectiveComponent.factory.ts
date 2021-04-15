@@ -9,6 +9,7 @@ export class SelectiveComponentFactory implements ComponentFactoryBuilder {
     return new RobustUiSelectiveComponent(
       label,
       3,
+      "",
       inputs,
       new Set(),
       new Map<string, Position>(),

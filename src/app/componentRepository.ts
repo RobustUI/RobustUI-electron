@@ -46,7 +46,7 @@ export class ComponentRepository {
   }
 
   private saveToFile(component: RobustUiComponent): void {
-    this.electronService.writeComponentToJSON((component as RobustUiSimpleComponent), "src/app/JSON");
+    this.electronService.writeComponentToJSON(component, "src/app/JSON");
   }
 
   public save(name: string, component: RobustUiComponent): void {

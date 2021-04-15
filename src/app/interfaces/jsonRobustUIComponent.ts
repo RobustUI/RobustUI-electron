@@ -9,6 +9,7 @@ export interface JsonRobustUIComponent {
   label: string;
   type: number;
   initialState?: string;
+  initialCase?: string;
   states?: JsonStates[];
   components?: JsonComponentStates[],
   cases?: JsonSelectiveCase[];

@@ -4,6 +4,7 @@ import {Position} from "../interfaces/position";
 
 export abstract class RobustUiComponent implements RobustUiState {
   public label: string;
+  public initialCase: string;
   private _type: number;
   public inputs: Set<string>;
   public outputs: Set<string>;

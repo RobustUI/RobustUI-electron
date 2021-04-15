@@ -108,6 +108,13 @@ export class DesignpadComponent implements OnInit {
     this.padController.updateComponent(this.activeComponent);
   }
 
+  public updateDefaultCase(event: string): void {
+    if (this.activeComponent.type === RobustUiStateTypes.selectiveComponent) {
+      (this.activeComponent as RobustUiSelectiveComponent).initialCase = event;
+      this.save();
+    }
+  }
+
   public activateSimulator(): void {
     this.save();
     this.activateTool('SimulatorTool');

@@ -29,6 +29,7 @@ export class SelectiveComponentSerializer implements RobustUiSerializer {
     return new RobustUiSelectiveComponent(
       json.label,
       json.type,
+      json.initialCase,
       newInput,
       newOutput,
       newPosition,
@@ -75,10 +76,11 @@ export class SelectiveComponentSerializer implements RobustUiSerializer {
     inputs = inputs.slice(0, -1);
     outputs = outputs.slice(0, -1);
     positions = positions.slice(0, -1);
-
+    
     return `{
       "label": "${component.label}",
       "type": ${component.type},
+      "initialCase": "${component.initialCase}",
       "observer": ${observer},
       "cases": [
         ${cases}
