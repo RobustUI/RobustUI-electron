@@ -109,9 +109,9 @@
         </div>
       </div>
       <div class="w-1/3" *ngIf="activeComponent.type === 3">
-        <label for="defaultGuard" class="block text-sm font-medium text-gray-700">Default case</label>
+        <label for="defaultCase" class="block text-sm font-medium text-gray-700">Default case</label>
         <div class="mt-1">
-          <select name="defaultGuard" id="defaultGuard" (change)="updateDefaultCase($event.target.value)"
+          <select name="defaultCase" id="defaultCase" (change)="updateDefaultCase($event.target.value)"
                   class="w-full block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
             <option *ngFor="let caseComponent of activeComponent.cases" value="{{caseComponent.label}}"
                     [selected]="caseComponent.label == activeComponent.initialCase">{{caseComponent.label}}</option>
