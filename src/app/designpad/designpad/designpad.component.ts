@@ -65,12 +65,12 @@ export class DesignpadComponent implements OnInit {
 
   public findUsedActions(updatedComponent = null): void {
     this.clearUsedAction();
-
     switch (this.activeComponent.type) {
       case RobustUiStateTypes.simpleComponent:
         this.findUsedActionForSimpleComponent(updatedComponent);
         break;
       case RobustUiStateTypes.compositeComponent:
+        break;
       case RobustUiStateTypes.selectiveComponent:
         this.findUsedActionForSelectiveComponent();
         break;

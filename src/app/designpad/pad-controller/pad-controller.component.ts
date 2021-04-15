@@ -356,7 +356,7 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
   private deleteAllSelectedElements(): void {
     const deleteIndexes = [];
     this.elements.filter(e => implementsSelectable(e)).filter(e => e.isSelected).forEach(e => {
-      if (this._component.type === RobustUiStateTypes.selectiveComponent && e instanceof BasicState) {
+      if (this._component.type === RobustUiStateTypes.selectiveComponent && e.isInitial) {
         return;
       }
       deleteIndexes.push(this.elements.indexOf(e));
