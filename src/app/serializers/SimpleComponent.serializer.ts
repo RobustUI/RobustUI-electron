@@ -70,7 +70,17 @@ export class SimpleComponentSerializer implements RobustUiSerializer {
       },`;
     });
     component.transitions.forEach(transition => {
+      let anchor = "";
+
+      if (transition.anchorPoint != null) {
+        anchor = `"anchorPoint": {
+          "x": ${transition.anchorPoint.x},
+          "y": ${transition.anchorPoint.y}
+        },`;
+      }
+
       transitions += `{
+      ${anchor}
       "from": "${transition.from}",
       "label": "${transition.label}",
       "to": "${transition.to}"
