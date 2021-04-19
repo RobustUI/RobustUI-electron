@@ -59,6 +59,10 @@ export class DesignpadComponent implements OnInit {
     this.listenForComponentChanges();
   }
 
+  public codeGeneration(): void {
+    console.log("YOU PRESSED CODE GEN BUTTON");
+  }
+
   public activateTool(toolName: ToolTypes): void {
     this.activeTool = toolName;
   }
