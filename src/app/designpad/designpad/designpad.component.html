@@ -87,8 +87,7 @@
       <app-model-checker [component]="activeComponent"></app-model-checker>
     </div>
     <div>
-      <button class="h-12 px-4 m-2 text-sm text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800"
-              (click)="codeGeneration()">Generate component</button>
+      <app-compiler-widget [activeComponent]="activeComponent"></app-compiler-widget>
     </div>
   </div>
   <div class="w-full flex flex-col h-full overflow-y-auto p-4">

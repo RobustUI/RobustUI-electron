@@ -10,6 +10,7 @@ import {RobustUiSimpleComponent} from "../../entities/robust-ui-simple-component
 import {DesignPadToRobustUi} from "../converters/DesignPadToRobustUi";
 import {RobustUiState} from "../../entities/robust-ui-state";
 import {RobustUiSelectiveComponent} from "../../entities/robust-ui-selective-component";
+import {ElectronService} from "../../core/services";
 
 export interface UpdateComponent {
   newLabel: string;
@@ -57,10 +58,6 @@ export class DesignpadComponent implements OnInit {
     });
 
     this.listenForComponentChanges();
-  }
-
-  public codeGeneration(): void {
-    console.log("YOU PRESSED CODE GEN BUTTON");
   }
 
   public activateTool(toolName: ToolTypes): void {

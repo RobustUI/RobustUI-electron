@@ -20,7 +20,8 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/highlight.js/styles/github.css"
             ],
             "scripts": [
               "node_modules/p5/lib/p5.js"
