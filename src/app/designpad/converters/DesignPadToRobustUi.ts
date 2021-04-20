@@ -133,6 +133,7 @@ export class DesignPadToRobustUi {
     return new RobustUiSelectiveComponent(
       base.label,
       base.type,
+      base.initialCase,
       base.inputs,
       base.outputs,
       positions,

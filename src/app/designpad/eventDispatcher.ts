@@ -9,7 +9,8 @@ export enum EventType {
   CHANGE_COMPONENT,
   RENAME_STATE,
   RENAME_ACTION,
-  DELETE_ACTION
+  DELETE_ACTION,
+  REBUILD_AND_SAVE,
 }
 
 export interface Event {

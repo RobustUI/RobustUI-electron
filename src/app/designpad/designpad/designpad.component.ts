@@ -59,6 +59,10 @@ export class DesignpadComponent implements OnInit {
     this.listenForComponentChanges();
   }
 
+  public codeGeneration(): void {
+    console.log("YOU PRESSED CODE GEN BUTTON");
+  }
+
   public activateTool(toolName: ToolTypes): void {
     this.activeTool = toolName;
   }
@@ -106,6 +110,17 @@ export class DesignpadComponent implements OnInit {
     }
     this.save();
     this.padController.updateComponent(this.activeComponent);
+  }
+
+  public updateDefaultCase(event: string): void {
+    if (this.activeComponent.type === RobustUiStateTypes.selectiveComponent) {
+      const comp = this.activeComponent as RobustUiSelectiveComponent;
+      comp.cases.find(e => e.label === comp.initialCase).guard = "";
+      comp.initialCase = event;
+      comp.cases.find(e => e.label === event).guard = "default";
+
+      EventDispatcher.getInstance().emit({type: EventType.REBUILD_AND_SAVE, data: comp});
+    }
   }
 
   public activateSimulator(): void {

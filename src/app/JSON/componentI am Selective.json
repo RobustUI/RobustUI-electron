@@ -1,21 +1,22 @@
 {
       "label": "I am Selective",
       "type": 3,
+      "initialCase": "foobar",
       "observer": {
-      "input": "mikkel?",
+      "input": "mikkel",
       "dataType": "number"
     },
       "cases": [
         {
-      "guard": "<45",
+      "guard": "== 12",
       "label": "foo",
       "type": "Murden"
       },{
-      "guard": ">=9",
+      "guard": "<23",
       "label": "bar",
       "type": "A"
       },{
-      "guard": "asddsa",
+      "guard": "default",
       "label": "foobar",
       "type": "A"
       }
@@ -31,17 +32,17 @@
       "label": "foo",
       "x": 0,
       "y": 0,
-      "width": 238.5
+      "width": 754.5
       },{
       "label": "bar",
       "x": 0,
       "y": 0,
-      "width": 238.5
+      "width": 754.5
       },{
       "label": "foobar",
       "x": 0,
       "y": 0,
-      "width": 238.5
+      "width": 754.5
       }
       ]
     }
