@@ -15,32 +15,48 @@
         "click"
       ],
       "inputs": [
-        
+        "onsettoon"
       ],
       "outputs": [
         
       ],
       "transitions": [
        {
+      "anchorPoint": {
+          "x": 230.01335000000006,
+          "y": 317.49737500000003
+        },
       "from": "off",
       "label": "click",
       "to": "on"
       },{
+      "anchorPoint": {
+          "x": 333.18977499999994,
+          "y": 436.5026250000001
+        },
       "from": "on",
       "label": "click",
       "to": "off"
+      },{
+      "anchorPoint": {
+          "x": 273.01335000000006,
+          "y": 380.49737500000003
+        },
+      "from": "off",
+      "label": "onsettoon",
+      "to": "on"
       }
       ],
       "positions": [
         {
       "label": "off",
-      "x": -4,
-      "y": -4,
+      "x": 89,
+      "y": 362,
       "width": 50
       },{
       "label": "on",
-      "x": 325.203125,
-      "y": 106,
+      "x": 395.203125,
+      "y": 287,
       "width": 50
       }
       ]

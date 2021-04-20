@@ -128,6 +128,31 @@
           "to"
         ],
         "properties": {
+          "anchorPoint":{
+            "$id": "#root/transitions/items/anchorPoint",
+            "title": "anchorPoint",
+            "type": "object",
+            "required": [
+              "x",
+              "y"
+            ],
+            "properties": {
+              "x": {
+                "$id": "#root/transitions/items/x",
+                "title": "x",
+                "type": "number",
+                "default": "",
+                "pattern": "^.*$"
+              },
+              "y": {
+                "$id": "#root/transitions/items/y",
+                "title": "y",
+                "type": "number",
+                "default": "",
+                "pattern": "^.*$"
+              }
+            }
+          },
           "from": {
             "$id": "#root/transitions/items/from",
             "title": "From",

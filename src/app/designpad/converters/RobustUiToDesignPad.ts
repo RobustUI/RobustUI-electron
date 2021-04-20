@@ -44,9 +44,14 @@ export class RobustUiToDesignPad {
       let label = transition.label;
       label += (isInput) ? '?' : '';
       label += (isOutput) ? '!' : '';
+      const trans = new Transition(pad, label, states.get(transition.from), states.get(transition.to));
+
+      if (transition.anchorPoint != null) {
+        trans.setAnchorPoint = transition.anchorPoint;
+      }
 
       transitions.push(
-        new Transition(pad, label, states.get(transition.from), states.get(transition.to))
+        trans
       );
     });
 

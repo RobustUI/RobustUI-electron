@@ -25,10 +25,18 @@
       ],
       "transitions": [
        {
+      "anchorPoint": {
+          "x": 159.8984,
+          "y": 93.2152
+        },
       "from": "Ads",
       "label": "msg!",
       "to": "A_dsad"
       },{
+      "anchorPoint": {
+          "x": 149.84389999999996,
+          "y": 490.5719
+        },
       "from": "new statedsd",
       "label": "ds",
       "to": "A_dsad"
@@ -47,8 +55,8 @@
       "width": 25
       },{
       "label": "new statedsd",
-      "x": 312.8125,
-      "y": 491,
+      "x": 94.8125,
+      "y": 661,
       "width": 50
       }
       ]

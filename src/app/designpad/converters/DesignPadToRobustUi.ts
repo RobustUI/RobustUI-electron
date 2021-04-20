@@ -59,6 +59,7 @@ export class DesignPadToRobustUi {
 
       return {
         label: label,
+        anchorPoint: e.anchorPoint,
         from: e.getFrom.label,
         to: e.getTo.label
       } as RobustUiTransition;

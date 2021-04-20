@@ -22,6 +22,7 @@
       ],
       "transitions": [
        {
+      
       "from": "B_A",
       "label": "click/msg!",
       "to": "B_B_B"
