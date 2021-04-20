@@ -147,13 +147,10 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
       } else if (event.type === EventType.SHOW_SETTINGS) {
         this.settingsPane = {open: true, item: event.data};
       } else if (event.type === EventType.SAVE_COMPONENT) {
-        try {
-          const comp = DesignPadToRobustUi.convert(this.elements, event.data);
-          this.componentRepository.save(event.data.label, comp);
-          this.savedComponent.emit(comp);
-        } catch (e) {
-          alert(e.message);
-        }
+        this.saveComponent(event.data);
+      } else if (event.type === EventType.REBUILD_AND_SAVE) {
+        this._component = event.data;
+        this.convertComponent(true);
       } else if (event.type === EventType.RENAME_ACTION) {
         if (this._component.type === 3) {
           this.elements.forEach(elem => {
@@ -397,9 +394,10 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
     this.activeToolChange.emit(tool);
   }
 
-  private convertComponent() {
+  private convertComponent(force = false) {
     this.elements = [];
-    if (this.temporaryComponent.has(this._component.label)) {
+
+    if (!force && this.temporaryComponent.has(this._component.label)) {
       const cache = this.temporaryComponent.get(this._component.label);
       this.parentDesignPadObj = cache.parentComp;
       this.elements = cache.elements;
@@ -446,5 +444,15 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
 
   private storeInTemporaryObject(): void {
     this.temporaryComponent.set(this._component.label, {parentComp: this.parentDesignPadObj, elements: this.elements});
+  }
+
+  private saveComponent(data: any): void {
+    try {
+      const comp = DesignPadToRobustUi.convert(this.elements, data);
+      this.componentRepository.save(data.label, comp);
+      this.savedComponent.emit(comp);
+    } catch (e) {
+      alert(e.message);
+    }
   }
 }
