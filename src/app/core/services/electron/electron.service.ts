@@ -15,6 +15,7 @@ import {SerializerFactory} from "../../../serializers/SerializerFactory";
 })
 export class ElectronService {
   public modelCheckerResult: BehaviorSubject<string> = new BehaviorSubject<string>("");
+  public compilerResult: BehaviorSubject<string> = new BehaviorSubject<string>("");
   private spinModelFileName = "model.pml";
   private ajv = new Ajv();
   private readonly componentSchemas: any[];
@@ -22,6 +23,7 @@ export class ElectronService {
   ipcRenderer: typeof ipcRenderer;
   webFrame: typeof webFrame;
   remote: typeof remote;
+  process: typeof process;
   childProcess: typeof childProcess;
   fs: typeof fs;
 
@@ -34,7 +36,7 @@ export class ElectronService {
     if (this.isElectron) {
       this.ipcRenderer = window.require('electron').ipcRenderer;
       this.webFrame = window.require('electron').webFrame;
-
+      this.process = window.require('process');
       // If you wan to use remote object, pleanse set enableRemoteModule to true in main.ts
       // this.remote = window.require('electron').remote;
 
@@ -120,6 +122,20 @@ export class ElectronService {
           this.modelCheckerResult.next("Something went wrong");
         }
       }));
+  }
+
+  public executeCompiler(target: 'typescript' | 'treeant' | 'qtree', componentFileName: string) {
+    if (this.process.platform != 'linux') {
+      throw Error("Unsupported platform " + this.process.platform);
+    }
+    const command = `./bin/RobustUi--compiler/bin/RobustUi--compiler -t ${target} -i /home/morten/Projects/RobustUI-electron/src/app/JSON  "${componentFileName}"`;
+    this.childProcess.exec(command, (error, stdout) => {
+      if (error == null) {
+        this.compilerResult.next(stdout);
+      } else {
+        this.compilerResult.next(error.message);
+      }
+    });
   }
 
   private alertComponentsNotCorrectSchemas(componentErrors: string[]) {

@@ -11,6 +11,8 @@ export enum EventType {
   RENAME_ACTION,
   DELETE_ACTION,
   REBUILD_AND_SAVE,
+  ENABLE_MOUSE_EVENTS,
+  DISABLE_MOUSE_EVENTS,
 }
 
 export interface Event {

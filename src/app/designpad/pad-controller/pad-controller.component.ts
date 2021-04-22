@@ -108,6 +108,8 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
   private _tool: Tool;
   private _prevTool: ToolTypes = null;
 
+  private mouseEventsEnabled = true;
+
   @Input()
   public set component(value: RobustUiComponent) {
     this._component = value;
@@ -177,6 +179,10 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
             }
           }
         });
+      } else if(event.type === EventType.DISABLE_MOUSE_EVENTS) {
+        this.mouseEventsEnabled = false;
+      } else if(event.type === EventType.ENABLE_MOUSE_EVENTS) {
+        this.mouseEventsEnabled = true;
       } else {
         this.eventSet.push(event);
       }
@@ -301,36 +307,54 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
   }
 
   private mouseClicked(): void {
+    if (!this.mouseEventsEnabled) {
+      return;
+    }
     if (this.mouseActionInsidePad()) {
       this._tool.mouseClicked(this.elements, this.cameraPos, {x: this.p5.mouseX, y: this.p5.mouseY});
     }
   }
 
   private mousePressed(): void {
+    if (!this.mouseEventsEnabled) {
+      return;
+    }
     if (this.mouseActionInsidePad()) {
       this._tool.mousePressed(this.elements, this.cameraPos, {x: this.p5.mouseX, y: this.p5.mouseY});
     }
   }
 
   private mouseReleased(): void {
+    if (!this.mouseEventsEnabled) {
+      return;
+    }
     if (this.mouseActionInsidePad()) {
       this._tool.mouseReleased(this.elements, this.cameraPos, {x: this.p5.mouseX, y: this.p5.mouseY});
     }
   }
 
   private mouseDragged(): void {
+    if (!this.mouseEventsEnabled) {
+      return;
+    }
     if (this.mouseActionInsidePad()) {
       this._tool.mouseDragged(this.elements, this.cameraPos, {x: this.p5.mouseX, y: this.p5.mouseY});
     }
   }
 
   private doubleClicked(): void {
+    if (!this.mouseEventsEnabled) {
+      return;
+    }
     if (this.mouseActionInsidePad()) {
       this._tool.doubleClicked(this.elements, this.cameraPos, {x: this.p5.mouseX, y: this.p5.mouseY});
     }
   }
 
   private mouseWheel(event: WheelEvent) {
+    if (!this.mouseEventsEnabled) {
+      return;
+    }
     this.cameraPos.z -= this.sensativity * event.deltaY;
     this.cameraPos.z = this.p5.constrain(this.cameraPos.z, this.zMin, this.zMax);
 
@@ -338,6 +362,9 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
   }
 
   private keyPressed(): void {
+    if (!this.mouseEventsEnabled) {
+      return;
+    }
     switch (this.p5.keyCode) {
       case this.p5.DELETE:
         if (this.mouseActionInsidePad()) {
