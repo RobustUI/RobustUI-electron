@@ -1,13 +1,13 @@
 {
-      "label": "Murden",
+      "label": "smallyo",
       "type": 2,
       "components": [
         {
-      "label": "TheA",
+      "label": "ayyy",
       "type": "A"
       },{
-      "label": "yosmall",
-      "type": "smallyo"
+      "label": "byyyy",
+      "type": "B"
       }
       ],
       "inputs": [
@@ -18,15 +18,15 @@
       ],
       "positions": [
         {
-      "label": "TheA",
+      "label": "ayyy",
       "x": 0,
       "y": 0,
-      "width": 888.5
+      "width": 624.5
       },{
-      "label": "yosmall",
+      "label": "byyyy",
       "x": 0,
       "y": 0,
-      "width": 888.5
+      "width": 624.5
       }
       ]
     }

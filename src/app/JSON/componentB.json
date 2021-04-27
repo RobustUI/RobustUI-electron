@@ -12,20 +12,31 @@
       }
       ],
       "events": [
-        "click/msg!"
+        "click","pointerenter/output!"
       ],
       "inputs": [
-        "awk"
+        
       ],
       "outputs": [
-        "msg"
+        "output"
       ],
       "transitions": [
        {
-      
+      "anchorPoint": {
+          "x": 477.0264,
+          "y": 398.30080000000004
+        },
       "from": "B_A",
-      "label": "click/msg!",
+      "label": "click",
       "to": "B_B_B"
+      },{
+      "anchorPoint": {
+          "x": 589.9736,
+          "y": 354.1992
+        },
+      "from": "B_B_B",
+      "label": "pointerenter/output!",
+      "to": "B_A"
       }
       ],
       "positions": [
