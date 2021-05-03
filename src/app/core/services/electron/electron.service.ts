@@ -16,7 +16,6 @@ import {SerializerFactory} from "../../../serializers/SerializerFactory";
 export class ElectronService {
   public modelCheckerResult: BehaviorSubject<string> = new BehaviorSubject<string>("");
   public compilerResult: BehaviorSubject<string> = new BehaviorSubject<string>("");
-  private spinModelFileName = "model.pml";
   private ajv = new Ajv();
   private readonly componentSchemas: any[];
 
@@ -105,26 +104,19 @@ export class ElectronService {
     );
   }
 
-  public writeModelToFile(value: string): void {
-    try {
-      this.fs.writeFileSync(this.spinModelFileName, value, 'utf-8');
-    } catch (e) {
-      alert('Failed to save the file !');
-    }
-  }
-
-  public executeSpinFlow(): void {
-    this.childProcess.exec(`spin -a ${this.spinModelFileName} && gcc -o pan pan.c && pan.exe`, (
+  public executeSpinFlow(componentFileName: string): void {
+    const command = `./bin/RobustUi--compiler/bin/RobustUi--compiler -t promela -i /home/morten/Projects/RobustUI-electron/src/app/JSON  "${componentFileName}" > ./bin/spin/model.pml && ./bin/spin/spin -search ./bin/spin/model.pml`;
+    this.childProcess.exec(command, (
       (error, stdout) => {
         if (error == null) {
           this.modelCheckerResult.next(stdout);
         } else {
-          this.modelCheckerResult.next("Something went wrong");
+          this.modelCheckerResult.next(error.message);
         }
       }));
   }
 
-  public executeCompiler(target: 'typescript' | 'treeant' | 'qtree', componentFileName: string) {
+  public executeCompiler(target: 'typescript' | 'treeant' | 'qtree' | 'promela', componentFileName: string) {
     if (this.process.platform != 'linux') {
       throw Error("Unsupported platform " + this.process.platform);
     }

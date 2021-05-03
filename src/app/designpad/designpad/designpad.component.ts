@@ -112,7 +112,9 @@ export class DesignpadComponent implements OnInit {
   public updateDefaultCase(event: string): void {
     if (this.activeComponent.type === RobustUiStateTypes.selectiveComponent) {
       const comp = this.activeComponent as RobustUiSelectiveComponent;
+      if (comp.initialCase != '') {
       comp.cases.find(e => e.label === comp.initialCase).guard = "";
+      }
       comp.initialCase = event;
       comp.cases.find(e => e.label === event).guard = "default";
 

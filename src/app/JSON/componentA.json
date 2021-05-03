@@ -15,13 +15,13 @@
       }
       ],
       "events": [
-        "msg!","ds"
+        "click/msg!"
       ],
       "inputs": [
         "awk"
       ],
       "outputs": [
-        "ms"
+        "msg"
       ],
       "transitions": [
        {
@@ -30,23 +30,23 @@
           "y": 93.2152
         },
       "from": "Ads",
-      "label": "msg!",
+      "label": "awk",
       "to": "A_dsad"
       },{
       "anchorPoint": {
-          "x": 149.84389999999996,
-          "y": 490.5719
+          "x": 422.84389999999996,
+          "y": 257.5719
         },
       "from": "new statedsd",
-      "label": "ds",
+      "label": "click/msg!",
       "to": "A_dsad"
       }
       ],
       "positions": [
         {
       "label": "A_dsad",
-      "x": 133,
-      "y": 138,
+      "x": 131,
+      "y": 233,
       "width": 200
       },{
       "label": "Ads",
@@ -55,8 +55,8 @@
       "width": 25
       },{
       "label": "new statedsd",
-      "x": 224.71405228758167,
-      "y": 77.77777777777777,
+      "x": 545.7140522875817,
+      "y": 105.77777777777777,
       "width": 50
       }
       ]
