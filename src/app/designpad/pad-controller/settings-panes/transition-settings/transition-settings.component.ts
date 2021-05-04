@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {Transition} from "../../../elements/transition";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 
@@ -27,7 +27,7 @@ export class TransitionSettingsComponent implements OnInit, OnChanges {
 
   public browserEvents: string[] = [
     "pointerenter",
-    "pointerend",
+    "pointerleave",
     "click"
   ];
 

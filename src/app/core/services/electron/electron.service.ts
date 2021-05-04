@@ -108,7 +108,7 @@ export class ElectronService {
     let command = "";
 
     if (this.process.platform === "win32") {
-      command = `"./bin/RobustUi--compiler/bin/RobustUi--compiler" -t promela -i C:\\Users\\mikke\\OneDrive\\Skrivebord\\RobustUI-electron\\src\\app\\JSON "${componentFileName}" > "./bin/spin/model.pml" && cd bin/spin && spin -search model.pml`;
+      command = `"./bin/RobustUi--compiler/bin/RobustUi--compiler" -t promela -i C:\\Users\\mikke\\OneDrive\\Skrivebord\\RobustUI-electron\\src\\app\\JSON "${componentFileName}" > "./bin/spin/model.pml" && "./bin/spin/spin.exe" -search "./bin/spin/model.pml"`;
     } else if (this.process.platform === "linux") {
       command = `./bin/RobustUi--compiler/bin/RobustUi--compiler -t promela -i /home/morten/Projects/RobustUI-electron/src/app/JSON  "${componentFileName}" > ./bin/spin/model.pml && ./bin/spin/spin -search ./bin/spin/model.pml`;
     } else {
