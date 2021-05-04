@@ -1,0 +1,63 @@
+{
+      "label": "dropdown",
+      "type": 1,
+      "initialState": "notShow",
+      "states": [
+        {
+      "label": "notShow",
+      "type": "0"
+      },{
+      "label": "show",
+      "type": "0"
+      }
+      ],
+      "events": [
+        "click"
+      ],
+      "inputs": [
+        "close"
+      ],
+      "outputs": [
+        
+      ],
+      "transitions": [
+       {
+      "anchorPoint": {
+          "x": 270.5499,
+          "y": 393.05645000000004
+        },
+      "from": "notShow",
+      "label": "click",
+      "to": "show"
+      },{
+      "anchorPoint": {
+          "x": 318.85634999999996,
+          "y": 309.94355
+        },
+      "from": "show",
+      "label": "click",
+      "to": "notShow"
+      },{
+      "anchorPoint": {
+          "x": 353.08835,
+          "y": 249.94035000000002
+        },
+      "from": "show",
+      "label": "close",
+      "to": "notShow"
+      }
+      ],
+      "positions": [
+        {
+      "label": "notShow",
+      "x": 162,
+      "y": 278,
+      "width": 50
+      },{
+      "label": "show",
+      "x": 411.40625,
+      "y": 356,
+      "width": 50
+      }
+      ]
+    }

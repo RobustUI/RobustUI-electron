@@ -1,0 +1,48 @@
+{
+      "label": "DropDownComp",
+      "type": 2,
+      "components": [
+        {
+      "label": "toggle",
+      "type": "dropdown"
+      },{
+      "label": "Spin",
+      "type": "dropdownElement"
+      },{
+      "label": "UPPAAL",
+      "type": "dropdownElement"
+      },{
+      "label": "PRISM",
+      "type": "dropdownElement"
+      }
+      ],
+      "inputs": [
+        
+      ],
+      "outputs": [
+        
+      ],
+      "positions": [
+        {
+      "label": "toggle",
+      "x": 0,
+      "y": 0,
+      "width": 619.5
+      },{
+      "label": "Spin",
+      "x": 0,
+      "y": 0,
+      "width": 619.5
+      },{
+      "label": "UPPAAL",
+      "x": 0,
+      "y": 0,
+      "width": 619.5
+      },{
+      "label": "PRISM",
+      "x": 0,
+      "y": 0,
+      "width": 619.5
+      }
+      ]
+    }
