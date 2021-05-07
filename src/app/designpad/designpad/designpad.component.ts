@@ -190,7 +190,7 @@ export class DesignpadComponent implements OnInit {
   }
 
   private findUsedActionForSimpleComponent(updatedComponent = null) {
-    let castedComponent;
+    let castedComponent: RobustUiSimpleComponent;
     if (updatedComponent != null) {
       castedComponent = updatedComponent;
     } else {
@@ -203,6 +203,13 @@ export class DesignpadComponent implements OnInit {
       } else if (castedComponent.outputs.has(e.label)) {
         this.usedOutput.add(e.label);
       }
+      castedComponent.events.forEach(value => {
+        if (e.label.includes("/")) {
+          if (e.label === value) {
+            this.usedOutput.add(e.label.split("/")[1].slice(0, -1));
+          }
+        }
+      });
     });
   }
 
