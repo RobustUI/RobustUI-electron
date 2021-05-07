@@ -38,7 +38,7 @@ export class TransitionSettingsComponent implements OnInit, OnChanges {
   ) {
     this.form = this.formBuilder.group({
       event: [''],
-      type: ['Internal', Validators.required],
+      type: ['BrowserEvent', Validators.required],
       inputEvent: [''],
       outputEvent: ['']
     });
@@ -62,13 +62,28 @@ export class TransitionSettingsComponent implements OnInit, OnChanges {
         case 'Output':
           this._item.setEvent = this.form.controls.outputEvent.value.toString() + '!';
           break;
-        case 'Internal':
+        case 'BrowserEvent':
           this._item.setEvent = this.form.controls.event.value.toString();
           break;
         case 'Compound':
           this._item.setEvent = this.form.controls.event.value.toString() + '/' + this.form.controls.outputEvent.value.toString() + '!';
       }
       this.close.emit(true);
+    }
+  }
+
+  public isDisabled(): boolean {
+    switch (this.form.controls.type.value) {
+      case "BrowserEvent":
+        return this.form.controls.event.value === "";
+      case "Input":
+        return this.form.controls.inputEvent.value === "";
+      case "Output":
+        return this.form.controls.outputEvent.value === "";
+      case "Compound":
+        return this.form.controls.event.value === "" || this.form.controls.outputEvent.value === "";
+      default:
+        return true;
     }
   }
 
@@ -97,7 +112,7 @@ export class TransitionSettingsComponent implements OnInit, OnChanges {
       this.form.controls.outputEvent.setValue(inOutputLabel);
 
     } else {
-      this.form.controls.type.setValue('Internal');
+      this.form.controls.type.setValue('BrowserEvent');
       this.form.controls.event.setValue(this._item.getEvent);
     }
   }
