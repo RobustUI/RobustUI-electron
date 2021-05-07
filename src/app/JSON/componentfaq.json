@@ -1,0 +1,40 @@
+{
+      "label": "faq",
+      "type": 2,
+      "components": [
+        {
+      "label": "Q1",
+      "type": "Toggle"
+      },{
+      "label": "Q2",
+      "type": "Toggle"
+      },{
+      "label": "Q3",
+      "type": "Toggle"
+      }
+      ],
+      "inputs": [
+        
+      ],
+      "outputs": [
+        
+      ],
+      "positions": [
+        {
+      "label": "Q1",
+      "x": 0,
+      "y": 0,
+      "width": 320.6666666666667
+      },{
+      "label": "Q2",
+      "x": 0,
+      "y": 0,
+      "width": 320.6666666666667
+      },{
+      "label": "Q3",
+      "x": 0,
+      "y": 0,
+      "width": 320.6666666666667
+      }
+      ]
+    }

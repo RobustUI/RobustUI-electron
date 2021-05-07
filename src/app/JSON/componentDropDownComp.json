@@ -6,13 +6,13 @@
       "label": "toggle",
       "type": "dropdown"
       },{
-      "label": "Spin",
+      "label": "history",
       "type": "dropdownElement"
       },{
-      "label": "UPPAAL",
+      "label": "contact",
       "type": "dropdownElement"
       },{
-      "label": "PRISM",
+      "label": "jobs",
       "type": "dropdownElement"
       }
       ],
@@ -27,22 +27,22 @@
       "label": "toggle",
       "x": 0,
       "y": 0,
-      "width": 619.5
+      "width": 486
       },{
-      "label": "Spin",
+      "label": "history",
       "x": 0,
       "y": 0,
-      "width": 619.5
+      "width": 486
       },{
-      "label": "UPPAAL",
+      "label": "contact",
       "x": 0,
       "y": 0,
-      "width": 619.5
+      "width": 486
       },{
-      "label": "PRISM",
+      "label": "jobs",
       "x": 0,
       "y": 0,
-      "width": 619.5
+      "width": 486
       }
       ]
     }
