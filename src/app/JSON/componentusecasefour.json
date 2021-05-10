@@ -1,0 +1,39 @@
+{
+      "label": "usecasefour",
+      "type": 3,
+      "initialCase": "dropdown",
+      "observer": {
+      "input": "stream",
+      "dataType": "number"
+    },
+      "cases": [
+        {
+      "guard": "== 1",
+      "label": "FAQ",
+      "type": "Toggle"
+      },{
+      "guard": "default",
+      "label": "dropdown",
+      "type": "DropDownComp"
+      }
+      ],
+      "inputs": [
+        "stream"
+      ],
+      "outputs": [
+        
+      ],
+      "positions": [
+        {
+      "label": "FAQ",
+      "x": 0,
+      "y": 0,
+      "width": 486
+      },{
+      "label": "dropdown",
+      "x": 0,
+      "y": 0,
+      "width": 486
+      }
+      ]
+    }

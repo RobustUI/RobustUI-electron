@@ -1,0 +1,39 @@
+{
+      "label": "usecase",
+      "type": 3,
+      "initialCase": "old",
+      "observer": {
+      "input": "stream",
+      "dataType": "number"
+    },
+      "cases": [
+        {
+      "guard": "== 1",
+      "label": "new",
+      "type": "newcol"
+      },{
+      "guard": "default",
+      "label": "old",
+      "type": "oldcol"
+      }
+      ],
+      "inputs": [
+        "stream"
+      ],
+      "outputs": [
+        
+      ],
+      "positions": [
+        {
+      "label": "new",
+      "x": 0,
+      "y": 0,
+      "width": 486
+      },{
+      "label": "old",
+      "x": 0,
+      "y": 0,
+      "width": 486
+      }
+      ]
+    }

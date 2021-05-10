@@ -1,0 +1,31 @@
+{
+      "label": "oldcol",
+      "type": 1,
+      "initialState": "initial_state",
+      "states": [
+        {
+      "label": "initial_state",
+      "type": "0"
+      }
+      ],
+      "events": [
+        
+      ],
+      "inputs": [
+        
+      ],
+      "outputs": [
+        
+      ],
+      "transitions": [
+       
+      ],
+      "positions": [
+        {
+      "label": "initial_state",
+      "x": 10,
+      "y": 10,
+      "width": 50
+      }
+      ]
+    }

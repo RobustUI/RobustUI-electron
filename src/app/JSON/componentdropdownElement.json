@@ -12,7 +12,7 @@
       }
       ],
       "events": [
-        "pointerenter","/close!","pointerleave"
+        "pointerenter","pointerenter/close!","pointerleave"
       ],
       "inputs": [
         
@@ -35,7 +35,7 @@
           "y": 274.18035000000003
         },
       "from": "Hovered",
-      "label": "/close!",
+      "label": "pointerenter/close!",
       "to": "notSelected"
       },{
       "anchorPoint": {
