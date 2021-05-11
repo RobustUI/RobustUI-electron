@@ -3,8 +3,8 @@
     <h2 class="block font-medium text-gray-700 w-full">Type:</h2>
     <div class="flex gap-2 justify-between">
       <div class="flex flex-col items-center justify-center">
-        <input type="radio" id="Internal" name="type" value="Internal" formControlName="type">
-        <label for="Internal" class="block text-sm font-medium text-gray-700">Browser Events</label>
+        <input type="radio" id="BrowserEvent" name="type" value="BrowserEvent" formControlName="type">
+        <label for="BrowserEvent" class="block text-sm font-medium text-gray-700">Browser Events</label>
       </div>
       <div class="flex flex-col items-center justify-center">
         <input type="radio" id="Input" name="type" value="Input" formControlName="type">
@@ -22,43 +22,50 @@
   </div>
   <div class="flex gap-2 justify-between">
     <div [ngSwitch]="form.controls.type.value" class="w-full">
-      <div *ngSwitchCase="'Internal'" class="w-full">
+      <div *ngSwitchCase="'BrowserEvent'" class="w-full">
         <h2 class="block font-medium text-gray-700">Event:</h2>
-        <select formControlName="event" name="Event" class="w-full mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-          <option *ngFor="let event of browserEvents" value="{{event}}" >{{event}}</option>
+        <select formControlName="event" name="Event"
+                class="w-full mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+          <option *ngFor="let event of browserEvents" value="{{event}}">{{event}}</option>
         </select>
       </div>
       <div *ngSwitchCase="'Input'" class="w-full">
         <h2 class="block font-medium text-gray-700">Event:</h2>
-        <select formControlName="inputEvent" name="Input" class="w-full mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-          <option *ngFor="let event of inputEvents" value="{{event}}" >{{event}}</option>
+        <select formControlName="inputEvent" name="Input"
+                class="w-full mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+          <option *ngFor="let event of inputEvents" value="{{event}}">{{event}}</option>
         </select>
       </div>
       <div *ngSwitchCase="'Output'" class="w-full">
         <h2 class="block font-medium text-gray-700">Event:</h2>
-        <select formControlName="outputEvent" name="Input" class="w-full mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-          <option *ngFor="let event of outputEvents" value="{{event}}" >{{event}}</option>
+        <select formControlName="outputEvent" name="Input"
+                class="w-full mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+          <option *ngFor="let event of outputEvents" value="{{event}}">{{event}}</option>
         </select>
       </div>
       <div *ngSwitchCase="'Compound'" class="w-full flex gap-2 items-end">
         <div class="w-1/2">
           <h2 class="block font-medium text-gray-700">Browser Event:</h2>
-          <select formControlName="event" name="Input" class="w-full mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-            <option *ngFor="let event of browserEvents" value="{{event}}" >{{event}}</option>
+          <select formControlName="event" name="Input"
+                  class="w-full mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+            <option *ngFor="let event of browserEvents" value="{{event}}">{{event}}</option>
           </select>
         </div>
         <div class="text-3xl pb-1">/</div>
         <div class="w-1/2">
           <h2 class="block font-medium text-gray-700">Output Event:</h2>
-          <select formControlName="outputEvent" name="Input" class="w-full mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-            <option *ngFor="let event of outputEvents" value="{{event}}" >{{event}}</option>
+          <select formControlName="outputEvent" name="Input"
+                  class="w-full mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+            <option *ngFor="let event of outputEvents" value="{{event}}">{{event}}</option>
           </select>
         </div>
       </div>
     </div>
   </div>
 
-  <button type="button" (click)="saveChanges()" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+  <button type="button" (click)="saveChanges()" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm
+  text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+          [disabled]="isDisabled()">
     Save changes!
   </button>
 </div>
