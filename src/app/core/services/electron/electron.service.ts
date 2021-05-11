@@ -105,7 +105,15 @@ export class ElectronService {
   }
 
   public executeSpinFlow(componentFileName: string): void {
-    const command = `./bin/RobustUi--compiler/bin/RobustUi--compiler -t promela -i /home/morten/Projects/RobustUI-electron/src/app/JSON  "${componentFileName}" > ./bin/spin/model.pml && ./bin/spin/spin -search ./bin/spin/model.pml`;
+    let command = "";
+
+    if (this.process.platform === "win32") {
+      command = `"./bin/RobustUi--compiler/bin/RobustUi--compiler" -t promela -i C:\\Users\\mikke\\OneDrive\\Skrivebord\\RobustUI-electron\\src\\app\\JSON "${componentFileName}" > "./bin/spin/model.pml" && "./bin/spin/spin.exe" -search "./bin/spin/model.pml"`;
+    } else if (this.process.platform === "linux") {
+      command = `./bin/RobustUi--compiler/bin/RobustUi--compiler -t promela -i /home/morten/Projects/RobustUI-electron/src/app/JSON  "${componentFileName}" > ./bin/spin/model.pml && ./bin/spin/spin -search ./bin/spin/model.pml`;
+    } else {
+      throw Error("Unsupported platform " + this.process.platform);
+    }
     this.childProcess.exec(command, (
       (error, stdout) => {
         if (error == null) {
@@ -117,10 +125,15 @@ export class ElectronService {
   }
 
   public executeCompiler(target: 'typescript' | 'treeant' | 'qtree' | 'promela', componentFileName: string) {
-    if (this.process.platform != 'linux') {
+    let command = "";
+
+    if (this.process.platform === "win32") {
+      command = `"./bin/RobustUi--compiler/bin/RobustUi--compiler" -t ${target} -i C:\\Users\\mikke\\OneDrive\\Skrivebord\\RobustUI-electron\\src\\app\\JSON "${componentFileName}"`;
+    } else if (this.process.platform === 'linux') {
+      command = `./bin/RobustUi--compiler/bin/RobustUi--compiler -t ${target} -i /home/morten/Projects/RobustUI-electron/src/app/JSON "${componentFileName}"`;
+    } else {
       throw Error("Unsupported platform " + this.process.platform);
     }
-    const command = `./bin/RobustUi--compiler/bin/RobustUi--compiler -t ${target} -i /home/morten/Projects/RobustUI-electron/src/app/JSON  "${componentFileName}"`;
     this.childProcess.exec(command, (error, stdout) => {
       if (error == null) {
         this.compilerResult.next(stdout);
