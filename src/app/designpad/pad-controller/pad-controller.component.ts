@@ -154,6 +154,7 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
         this._component = event.data;
         this.convertComponent(true);
       } else if (event.type === EventType.RENAME_ACTION) {
+        console.log(event);
         if (this._component.type === 3) {
           this.elements.forEach(elem => {
             if (elem instanceof BasicState) {
@@ -165,8 +166,14 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
         } else {
           this.elements.forEach(element => {
             if (element instanceof Transition) {
+              console.log(element.getEvent, event.data.prev);
               if (element.getEvent === event.data.prev) {
                 element.setEvent = event.data.new;
+              } else if (element.getEvent.includes("/")) {
+                const action = element.getEvent.split("/");
+                if (action[1] === event.data.prev) {
+                  element.setEvent = action[0] + '/' + event.data.new;
+                }
               }
             }
           });
@@ -179,9 +186,9 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
             }
           }
         });
-      } else if(event.type === EventType.DISABLE_MOUSE_EVENTS) {
+      } else if (event.type === EventType.DISABLE_MOUSE_EVENTS) {
         this.mouseEventsEnabled = false;
-      } else if(event.type === EventType.ENABLE_MOUSE_EVENTS) {
+      } else if (event.type === EventType.ENABLE_MOUSE_EVENTS) {
         this.mouseEventsEnabled = true;
       } else {
         this.eventSet.push(event);
