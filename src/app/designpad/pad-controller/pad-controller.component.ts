@@ -140,7 +140,6 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
   private eventSet: Event[] = [];
 
   private parentDesignPadObj;
-  private addSelectiveComponentTransitions = false;
 
   constructor(private componentRepository: ComponentRepository) {
     this.eventDispatcherSubscription = EventDispatcher.getInstance().stream().subscribe((event: Event) => {
@@ -154,7 +153,6 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
         this._component = event.data;
         this.convertComponent(true);
       } else if (event.type === EventType.RENAME_ACTION) {
-        console.log(event);
         if (this._component.type === 3) {
           this.elements.forEach(elem => {
             if (elem instanceof BasicState) {
@@ -165,17 +163,7 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
           });
         } else {
           this.elements.forEach(element => {
-            if (element instanceof Transition) {
-              console.log(element.getEvent, event.data.prev);
-              if (element.getEvent === event.data.prev) {
-                element.setEvent = event.data.new;
-              } else if (element.getEvent.includes("/")) {
-                const action = element.getEvent.split("/");
-                if (action[1] === event.data.prev) {
-                  element.setEvent = action[0] + '/' + event.data.new;
-                }
-              }
-            }
+            PadControllerComponent.renameAction(element, event);
           });
         }
       } else if (event.type === EventType.DELETE_ACTION) {
@@ -487,6 +475,19 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
       this.savedComponent.emit(comp);
     } catch (e) {
       alert(e.message);
+    }
+  }
+
+  private static renameAction(element: any, event: Event): void {
+    if (element instanceof Transition) {
+      if (element.getEvent === event.data.prev) {
+        element.setEvent = event.data.new;
+      } else if (element.getEvent.includes("/")) {
+        const action = element.getEvent.split("/");
+        if (action[1] === event.data.prev) {
+          element.setEvent = action[0] + '/' + event.data.new;
+        }
+      }
     }
   }
 }
