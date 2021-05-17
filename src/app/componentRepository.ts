@@ -17,11 +17,12 @@ export class ComponentRepository {
   private allComponents$ = new BehaviorSubject<RobustUiComponent[]>([]);
 
   private singleComponentObservableMap: Map<string, BehaviorSubject<RobustUiComponent>>;
-
+  private jsonpath: string;
   constructor(private electronService: ElectronService) {
     this.components = new Map<string, RobustUiComponent>();
     this.singleComponentObservableMap = new Map<string, BehaviorSubject<RobustUiComponent>>();
-    const components = this.electronService.readAllProject("src/app/JSON");
+    this.jsonpath = "/home/morten/Projects/RobustUI-electron/src/app/JSON";
+    const components = this.electronService.readAllProject(this.jsonpath);
 
     components.forEach(component => {
       const comp =  SerializerFactory.forType(component.type).fromJSON(component);
@@ -46,7 +47,7 @@ export class ComponentRepository {
   }
 
   private saveToFile(component: RobustUiComponent): void {
-    this.electronService.writeComponentToJSON(component, "src/app/JSON");
+    this.electronService.writeComponentToJSON(component, this.jsonpath);
   }
 
   public save(name: string, component: RobustUiComponent): void {

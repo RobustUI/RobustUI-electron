@@ -3,6 +3,29 @@
   "directories": {
     "output": "release/"
   },
+  "extraResources": [
+    {
+      "from": "bin",
+      "to": "bin",
+      "filter": [
+        "**/*"
+      ]
+    },
+    {
+      "from": "src/app/schemas",
+      "to": "src/app/schemas",
+      "filter": [
+        "**/*"
+      ]
+    },
+    {
+      "from": "src/app/JSON",
+      "to": "src/app/JSON",
+      "filter": [
+        "**/*"
+      ]
+    }
+  ],
     "files": [
         "**/*",
         "!**/*.ts",

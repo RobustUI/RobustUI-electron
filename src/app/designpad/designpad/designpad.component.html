@@ -104,19 +104,19 @@
       <div class="w-1/3" *ngIf="activeComponent.type === 1">
         <label for="initialState" class="block text-sm font-medium text-gray-700">Initial state</label>
         <div class="mt-1">
-          <select name="initialState" id="initialState" (change)="updateInitialValue($event.target.value)"
+          <select name="initialState" id="initialState" (change)="updateInitialValue($event)"
                   class="w-full block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-            <option *ngFor="let event of activeComponent.states | keyvalue" value="{{event.value.label}}"
-                    [selected]="event.value.label == activeComponent.initialState.label">{{event.value.label}}</option>
+            <option *ngFor="let event of AsSimpleComponent(activeComponent).states | keyvalue" value="{{event.value.label}}"
+                    [selected]="event.value.label == AsSimpleComponent(activeComponent).initialState.label">{{event.value.label}}</option>
           </select>
         </div>
       </div>
       <div class="w-1/3" *ngIf="activeComponent.type === 3">
         <label for="defaultCase" class="block text-sm font-medium text-gray-700">Default case</label>
         <div class="mt-1">
-          <select name="defaultCase" id="defaultCase" (change)="updateDefaultCase($event.target.value)"
+          <select name="defaultCase" id="defaultCase" (change)="updateDefaultCase($event)"
                   class="w-full block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-            <option *ngFor="let caseComponent of activeComponent.cases" value="{{caseComponent.label}}"
+            <option *ngFor="let caseComponent of AsSelectiveComponent(activeComponent).cases" value="{{caseComponent.label}}"
                     [selected]="caseComponent.label == activeComponent.initialCase">{{caseComponent.label}}</option>
           </select>
         </div>

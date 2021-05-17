@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, isDevMode} from '@angular/core';
 import Ajv from "ajv";
 // If you import a module but never use any of the imported values other than as TypeScript types,
 // the resulting javascript file will look as if you never imported the module at all.
@@ -9,6 +9,8 @@ import {BehaviorSubject} from "rxjs";
 import {JsonRobustUIComponent} from "../../../interfaces/jsonRobustUIComponent";
 import {RobustUiComponent} from "../../../entities/robust-ui-component";
 import {SerializerFactory} from "../../../serializers/SerializerFactory";
+import * as path from "path";
+import {Environment} from "@angular/compiler-cli/src/ngtsc/typecheck/src/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +20,7 @@ export class ElectronService {
   public compilerResult: BehaviorSubject<string> = new BehaviorSubject<string>("");
   private ajv = new Ajv();
   private readonly componentSchemas: any[];
+  private projectPath: string;
 
   ipcRenderer: typeof ipcRenderer;
   webFrame: typeof webFrame;
@@ -41,7 +44,8 @@ export class ElectronService {
 
       this.childProcess = window.require('child_process');
       this.fs = window.require('fs');
-      this.componentSchemas = this.readAllJSONFilesInFolder<any>('src/app/schemas/');
+      const path = this.getPath('src', 'app', 'schemas');
+      this.componentSchemas = this.readAllJSONFilesInFolder<any>(path);
     }
   }
 
@@ -59,6 +63,7 @@ export class ElectronService {
   }
 
   public readAllJSONFilesInFolder<T>(folderPath: string): T[] {
+    this.projectPath = folderPath;
     const files: T[] = [];
     let hasError = false;
     this.fs.readdirSync(folderPath).forEach(file => {
@@ -106,11 +111,12 @@ export class ElectronService {
 
   public executeSpinFlow(componentFileName: string): void {
     let command = "";
-
+    const compilerPath = this.getPath('bin', 'RobustUi--compiler', 'bin', 'RobustUi--compiler');
+    const spinPath = this.getPath('bin', 'spin');
     if (this.process.platform === "win32") {
-      command = `"./bin/RobustUi--compiler/bin/RobustUi--compiler" -t promela -i C:\\Users\\mikke\\OneDrive\\Skrivebord\\RobustUI-electron\\src\\app\\JSON "${componentFileName}" > "./bin/spin/model.pml" && "./bin/spin/spin.exe" -search "./bin/spin/model.pml"`;
+      command = `"${compilerPath}" -t promela -i ${this.projectPath} "${componentFileName}" > "${spinPath}/model.pml" && "${spinPath}/spin.exe" -search "${spinPath}/model.pml"`;
     } else if (this.process.platform === "linux") {
-      command = `./bin/RobustUi--compiler/bin/RobustUi--compiler -t promela -i /home/morten/Projects/RobustUI-electron/src/app/JSON  "${componentFileName}" > ./bin/spin/model.pml && ./bin/spin/spin -search ./bin/spin/model.pml`;
+      command = `${compilerPath} -t promela -i ${this.projectPath}  "${componentFileName}" > ${spinPath}/model.pml && ${spinPath}/spin -search ${spinPath}/model.pml`;
     } else {
       throw Error("Unsupported platform " + this.process.platform);
     }
@@ -141,6 +147,14 @@ export class ElectronService {
         this.compilerResult.next(error.message);
       }
     });
+  }
+
+  public getPath(...paths: string[]): string {
+    if (isDevMode()){
+      return path.join(... paths);
+    } else {
+      return path.join(path.dirname(__dirname), '../',... paths);
+    }
   }
 
   private alertComponentsNotCorrectSchemas(componentErrors: string[]) {

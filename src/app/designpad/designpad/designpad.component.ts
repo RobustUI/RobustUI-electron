@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {RobustUiComponent} from "../../entities/robust-ui-component";
 import {Subject} from "rxjs";
-import {Event, EventDispatcher, EventType} from "../eventDispatcher";
+import {EventDispatcher, Event as DispatcherEvent, EventType} from "../eventDispatcher";
 import {ToolTypes} from "../toolings/toolTypes";
 import {PadControllerComponent} from "../pad-controller/pad-controller.component";
 import {SimulatorTrace} from "../../interfaces/simulator-trace";
@@ -100,7 +100,8 @@ export class DesignpadComponent implements OnInit {
     EventDispatcher.getInstance().emit({type: EventType.SAVE_COMPONENT, data: this.activeComponent});
   }
 
-  public updateInitialValue(label: string): void {
+  public updateInitialValue(event: Event): void {
+    const label = (event.target as HTMLSelectElement).value;
     if (this.activeComponent.type === RobustUiStateTypes.simpleComponent) {
       (this.activeComponent as RobustUiSimpleComponent).initialState = (this.activeComponent as RobustUiSimpleComponent).states.get(label);
     }
@@ -108,7 +109,8 @@ export class DesignpadComponent implements OnInit {
     this.padController.updateComponent(this.activeComponent);
   }
 
-  public updateDefaultCase(event: string): void {
+  public updateDefaultCase($event: Event): void {
+    const event = ($event.target as HTMLSelectElement).value;
     if (this.activeComponent.type === RobustUiStateTypes.selectiveComponent) {
       const comp = this.activeComponent as RobustUiSelectiveComponent;
       if (comp.initialCase != '') {
@@ -226,7 +228,7 @@ export class DesignpadComponent implements OnInit {
     });
   }
 
-  private updateStateName(event: Event) {
+  private updateStateName(event: DispatcherEvent) {
     const state = event.data.newState as RobustUiState;
     const component = this.activeComponent as RobustUiSimpleComponent;
     component.states.set(event.data.previousName, state);
@@ -240,5 +242,13 @@ export class DesignpadComponent implements OnInit {
   private clearUsedAction() {
     this.usedInput.clear();
     this.usedOutput.clear();
+  }
+
+  public AsSimpleComponent(activeComponent: RobustUiComponent): RobustUiSimpleComponent {
+    return activeComponent as RobustUiSimpleComponent;
+  }
+
+  AsSelectiveComponent(activeComponent: RobustUiComponent): RobustUiSelectiveComponent {
+    return activeComponent as RobustUiSelectiveComponent;
   }
 }
