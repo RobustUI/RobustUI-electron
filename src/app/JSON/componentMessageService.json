@@ -1,0 +1,55 @@
+{
+      "label": "MessageService",
+      "type": 1,
+      "initialState": "wait_for_message",
+      "states": [
+        {
+      "label": "wait_for_message",
+      "type": "0"
+      },{
+      "label": "loading",
+      "type": "0"
+      }
+      ],
+      "events": [
+        
+      ],
+      "inputs": [
+        "msg"
+      ],
+      "outputs": [
+        "ack"
+      ],
+      "transitions": [
+       {
+      "anchorPoint": {
+          "x": 321.8918,
+          "y": 328.40090000000004
+        },
+      "from": "wait_for_message",
+      "label": "ack",
+      "to": "loading"
+      },{
+      "anchorPoint": {
+          "x": 353.9207,
+          "y": 368.5991
+        },
+      "from": "loading",
+      "label": "msg",
+      "to": "wait_for_message"
+      }
+      ],
+      "positions": [
+        {
+      "label": "wait_for_message",
+      "x": 301,
+      "y": 207,
+      "width": 50
+      },{
+      "label": "loading",
+      "x": 324.8125,
+      "y": 440,
+      "width": 50
+      }
+      ]
+    }

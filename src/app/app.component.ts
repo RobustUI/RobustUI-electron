@@ -1,4 +1,4 @@
-import {ApplicationRef, Component, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ElectronService} from './core/services';
 import {TranslateService} from '@ngx-translate/core';
 import {AppConfig} from '../environments/environment';
@@ -6,7 +6,6 @@ import {RobustUiComponent} from "./entities/robust-ui-component";
 import {Observable, Subject} from "rxjs";
 import {ComponentRepository} from "./componentRepository";
 import {UpdateComponent} from "./designpad/designpad/designpad.component";
-import {filter} from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',

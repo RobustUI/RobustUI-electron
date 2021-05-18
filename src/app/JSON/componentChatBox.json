@@ -1,0 +1,55 @@
+{
+      "label": "ChatBox",
+      "type": 1,
+      "initialState": "compose_message",
+      "states": [
+        {
+      "label": "compose_message",
+      "type": "0"
+      },{
+      "label": "loading",
+      "type": "0"
+      }
+      ],
+      "events": [
+        "click/msg!"
+      ],
+      "inputs": [
+        "ack"
+      ],
+      "outputs": [
+        "msg"
+      ],
+      "transitions": [
+       {
+      "anchorPoint": {
+          "x": 292.42310000000003,
+          "y": 388.92550000000006
+        },
+      "from": "loading",
+      "label": "click/msg!",
+      "to": "compose_message"
+      },{
+      "anchorPoint": {
+          "x": 202.38939999999997,
+          "y": 380.07450000000006
+        },
+      "from": "compose_message",
+      "label": "ack",
+      "to": "loading"
+      }
+      ],
+      "positions": [
+        {
+      "label": "compose_message",
+      "x": 238,
+      "y": 264,
+      "width": 50
+      },{
+      "label": "loading",
+      "x": 263.8125,
+      "y": 459,
+      "width": 50
+      }
+      ]
+    }

@@ -1,6 +1,6 @@
 import {RobustUiComponent} from "./entities/robust-ui-component";
-import {ApplicationRef, Injectable, OnDestroy} from "@angular/core";
-import {BehaviorSubject, Observable, Subject, Subscription} from "rxjs";
+import {ApplicationRef, Injectable, OnDestroy, OnInit} from "@angular/core";
+import {BehaviorSubject, Observable, Subscription} from "rxjs";
 import {UpdateComponent} from "./designpad/designpad/designpad.component";
 import {ElectronService} from "./core/services";
 import {RobustUiStateTypes} from "./entities/robust-ui-state-types";
@@ -10,7 +10,7 @@ import {ComponentFactory} from "./factories/ComponentFactory";
 @Injectable({
   providedIn: "root"
 })
-export class ComponentRepository implements OnDestroy{
+export class ComponentRepository implements OnDestroy {
   private allComponents$ = new BehaviorSubject<RobustUiComponent[]>([]);
   private components: Map<string, RobustUiComponent>;
   private singleComponentObservableMap: Map<string, BehaviorSubject<RobustUiComponent>>;
@@ -24,7 +24,7 @@ export class ComponentRepository implements OnDestroy{
       if (path !== "") {
         this.JSONPath = path;
         this.retrieveComponentsFromPath();
-        appRef.tick();
+        this.appRef.tick();
       }
     });
   }
@@ -86,12 +86,13 @@ export class ComponentRepository implements OnDestroy{
     components.forEach(component => {
       const comp = SerializerFactory.forType(component.type).fromJSON(component);
       if (comp != null) {
-        this.save(comp.label, comp)
-        //this.components.set(comp.label, comp);
+        this.components.set(comp.label, comp);
       } else {
         console.error("Something went wrong while trying to parse the component: ", component);
       }
     });
+
     this.allComponents$.next(Array.from(this.components.values()));
+
   }
 }

@@ -1,0 +1,32 @@
+{
+      "label": "Chat",
+      "type": 2,
+      "components": [
+        {
+      "label": "ChatBox",
+      "type": "ChatBox"
+      },{
+      "label": "MessageService",
+      "type": "MessageService"
+      }
+      ],
+      "inputs": [
+        
+      ],
+      "outputs": [
+        
+      ],
+      "positions": [
+        {
+      "label": "ChatBox",
+      "x": 0,
+      "y": 0,
+      "width": 491
+      },{
+      "label": "MessageService",
+      "x": 0,
+      "y": 0,
+      "width": 491
+      }
+      ]
+    }
