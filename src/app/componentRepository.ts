@@ -21,7 +21,7 @@ export class ComponentRepository {
   constructor(private electronService: ElectronService) {
     this.components = new Map<string, RobustUiComponent>();
     this.singleComponentObservableMap = new Map<string, BehaviorSubject<RobustUiComponent>>();
-    this.jsonpath = "/home/morten/Projects/RobustUI-electron/src/app/JSON";
+    this.jsonpath = "C:\\Users\\mikke\\OneDrive\\Skrivebord\\RobustUI-electron\\src\\app\\JSON";
     const components = this.electronService.readAllProject(this.jsonpath);
 
     components.forEach(component => {

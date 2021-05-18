@@ -10,7 +10,6 @@ import {JsonRobustUIComponent} from "../../../interfaces/jsonRobustUIComponent";
 import {RobustUiComponent} from "../../../entities/robust-ui-component";
 import {SerializerFactory} from "../../../serializers/SerializerFactory";
 import * as path from "path";
-import {Environment} from "@angular/compiler-cli/src/ngtsc/typecheck/src/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -113,6 +112,7 @@ export class ElectronService {
     let command = "";
     const compilerPath = this.getPath('bin', 'RobustUi--compiler', 'bin', 'RobustUi--compiler');
     const spinPath = this.getPath('bin', 'spin');
+
     if (this.process.platform === "win32") {
       command = `"${compilerPath}" -t promela -i ${this.projectPath} "${componentFileName}" > "${spinPath}/model.pml" && "${spinPath}/spin.exe" -search "${spinPath}/model.pml"`;
     } else if (this.process.platform === "linux") {
@@ -130,13 +130,14 @@ export class ElectronService {
       }));
   }
 
-  public executeCompiler(target: 'typescript' | 'treeant' | 'qtree' | 'promela', componentFileName: string) {
+  public executeCompiler(target: 'typescript' | 'treeant' | 'qtree' | 'promela', componentFileName: string): void {
     let command = "";
+    const compilerPath = this.getPath('bin', 'RobustUi--compiler', 'bin', 'RobustUi--compiler');
 
     if (this.process.platform === "win32") {
-      command = `"./bin/RobustUi--compiler/bin/RobustUi--compiler" -t ${target} -i C:\\Users\\mikke\\OneDrive\\Skrivebord\\RobustUI-electron\\src\\app\\JSON "${componentFileName}"`;
+      command = `"${compilerPath}" -t ${target} -i ${this.projectPath} "${componentFileName}"`;
     } else if (this.process.platform === 'linux') {
-      command = `./bin/RobustUi--compiler/bin/RobustUi--compiler -t ${target} -i /home/morten/Projects/RobustUI-electron/src/app/JSON "${componentFileName}"`;
+      command = `${compilerPath} -t ${target} -i ${this.projectPath} "${componentFileName}"`;
     } else {
       throw Error("Unsupported platform " + this.process.platform);
     }
@@ -150,10 +151,10 @@ export class ElectronService {
   }
 
   public getPath(...paths: string[]): string {
-    if (isDevMode()){
-      return path.join(... paths);
+    if (isDevMode()) {
+      return path.join(...paths);
     } else {
-      return path.join(path.dirname(__dirname), '../',... paths);
+      return path.join(path.dirname(__dirname), '../', ...paths);
     }
   }
 
