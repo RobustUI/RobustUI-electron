@@ -149,14 +149,14 @@ export class DesignpadComponent implements OnInit {
         this.activeComponent.outputs.add(this.tempActionName.toLowerCase());
         EventDispatcher.getInstance().emit({
           type: EventType.RENAME_ACTION,
-          data: {prev: this.selectedRenameAction + "!", new: this.tempActionName.toLowerCase() + "!"}
+          data: {prev: this.selectedRenameAction + "!", new: this.tempActionName.toLowerCase() + "!", type: "output"}
         });
       } else {
         this.activeComponent.inputs.delete(this.selectedRenameAction);
         this.activeComponent.inputs.add(this.tempActionName.toLowerCase());
         EventDispatcher.getInstance().emit({
           type: EventType.RENAME_ACTION,
-          data: {prev: this.selectedRenameAction + "?", new: this.tempActionName.toLowerCase() + "?"}
+          data: {prev: this.selectedRenameAction + "?", new: this.tempActionName.toLowerCase() + "?", type: "input"}
         });
       }
       this.selectedRenameAction = "";
@@ -222,8 +222,13 @@ export class DesignpadComponent implements OnInit {
       } else if (event.type === EventType.RENAME_STATE) {
         this.updateStateName(event);
       } else if (event.type === EventType.RENAME_ACTION) {
-        this.usedInput.delete(event.data.prev.slice(0, -1));
-        this.usedInput.add(event.data.new.slice(0, -1));
+        if (event.data.type === "input") {
+          this.usedInput.delete(event.data.prev.slice(0, -1));
+          this.usedInput.add(event.data.new.slice(0, -1));
+        } else if (event.data.type === "output") {
+          this.usedOutput.delete(event.data.prev.slice(0, -1));
+          this.usedOutput.add(event.data.new.slice(0, -1));
+        }
       }
     });
   }
