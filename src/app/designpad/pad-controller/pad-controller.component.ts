@@ -140,7 +140,6 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
   private eventSet: Event[] = [];
 
   private parentDesignPadObj;
-  private addSelectiveComponentTransitions = false;
 
   constructor(private componentRepository: ComponentRepository) {
     this.eventDispatcherSubscription = EventDispatcher.getInstance().stream().subscribe((event: Event) => {
@@ -164,11 +163,7 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
           });
         } else {
           this.elements.forEach(element => {
-            if (element instanceof Transition) {
-              if (element.getEvent === event.data.prev) {
-                element.setEvent = event.data.new;
-              }
-            }
+            PadControllerComponent.renameAction(element, event);
           });
         }
       } else if (event.type === EventType.DELETE_ACTION) {
@@ -179,9 +174,9 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
             }
           }
         });
-      } else if(event.type === EventType.DISABLE_MOUSE_EVENTS) {
+      } else if (event.type === EventType.DISABLE_MOUSE_EVENTS) {
         this.mouseEventsEnabled = false;
-      } else if(event.type === EventType.ENABLE_MOUSE_EVENTS) {
+      } else if (event.type === EventType.ENABLE_MOUSE_EVENTS) {
         this.mouseEventsEnabled = true;
       } else {
         this.eventSet.push(event);
@@ -480,6 +475,19 @@ export class PadControllerComponent implements AfterViewInit, OnDestroy {
       this.savedComponent.emit(comp);
     } catch (e) {
       alert(e.message);
+    }
+  }
+
+  private static renameAction(element: any, event: Event): void {
+    if (element instanceof Transition) {
+      if (element.getEvent === event.data.prev) {
+        element.setEvent = event.data.new;
+      } else if (element.getEvent.includes("/")) {
+        const action = element.getEvent.split("/");
+        if (action[1] === event.data.prev) {
+          element.setEvent = action[0] + '/' + event.data.new;
+        }
+      }
     }
   }
 }
