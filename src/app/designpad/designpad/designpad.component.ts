@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {RobustUiComponent} from "../../entities/robust-ui-component";
 import {Subject} from "rxjs";
-import {EventDispatcher, Event as DispatcherEvent, EventType} from "../eventDispatcher";
+import {Event as DispatcherEvent, EventDispatcher, EventType} from "../eventDispatcher";
 import {ToolTypes} from "../toolings/toolTypes";
 import {PadControllerComponent} from "../pad-controller/pad-controller.component";
 import {SimulatorTrace} from "../../interfaces/simulator-trace";

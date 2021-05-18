@@ -14,7 +14,6 @@ export class SimulatorTraceComponent {
     if (value != null) {
       this.traces.push(value);
     }
-    console.log(this.traces);
   }
 
   constructor() {

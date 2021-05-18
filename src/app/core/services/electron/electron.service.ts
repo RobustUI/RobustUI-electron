@@ -9,6 +9,7 @@ import {BehaviorSubject} from "rxjs";
 import {JsonRobustUIComponent} from "../../../interfaces/jsonRobustUIComponent";
 import {RobustUiComponent} from "../../../entities/robust-ui-component";
 import {SerializerFactory} from "../../../serializers/SerializerFactory";
+
 import * as path from "path";
 
 @Injectable({
@@ -17,9 +18,11 @@ import * as path from "path";
 export class ElectronService {
   public modelCheckerResult: BehaviorSubject<string> = new BehaviorSubject<string>("");
   public compilerResult: BehaviorSubject<string> = new BehaviorSubject<string>("");
+  public JSONPath: BehaviorSubject<string> = new BehaviorSubject<string>("");
   private ajv = new Ajv();
   private readonly componentSchemas: any[];
   private projectPath: string;
+  private tempPath: string;
 
   ipcRenderer: typeof ipcRenderer;
   webFrame: typeof webFrame;
@@ -40,11 +43,13 @@ export class ElectronService {
       this.process = window.require('process');
       // If you wan to use remote object, pleanse set enableRemoteModule to true in main.ts
       // this.remote = window.require('electron').remote;
-
       this.childProcess = window.require('child_process');
       this.fs = window.require('fs');
       const path = this.getPath('src', 'app', 'schemas');
       this.componentSchemas = this.readAllJSONFilesInFolder<any>(path);
+
+      this.getTempPath();
+      this.getSelectedJSONPathFromDialog();
     }
   }
 
@@ -98,6 +103,10 @@ export class ElectronService {
     }
 
     return elements;
+  }
+
+  public openDialogForSelectingJSONPath(): void {
+    this.ipcRenderer.send('OpenDialog');
   }
 
   public writeComponentToJSON(component: RobustUiComponent, path: string): void {
@@ -163,5 +172,21 @@ export class ElectronService {
     componentErrors.forEach(e => componentNames += e + ", ");
     componentNames = componentNames.slice(0, -2);
     alert("The following components does not conform to the schemas: " + componentNames);
+  }
+
+  private getSelectedJSONPathFromDialog() {
+    this.ipcRenderer.on("selectedPath", (event, arg) => {
+      console.log("SelectedPath got information", arg.filePaths[0]);
+      this.JSONPath.next(arg.filePaths[0]);
+    });
+  }
+
+  private getTempPath() {
+    this.ipcRenderer.send('sendTempPath');
+
+    this.ipcRenderer.on('sendTempPath', (event, arg) => {
+      console.log("SendTempPath getting information", arg);
+      this.tempPath = arg;
+    });
   }
 }

@@ -1,4 +1,4 @@
-import { app, BrowserWindow, screen } from 'electron';
+import {app, BrowserWindow, dialog, ipcMain, screen} from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 
@@ -21,7 +21,7 @@ function createWindow(): BrowserWindow {
       nodeIntegration: true,
       allowRunningInsecureContent: (serve) ? true : false,
       contextIsolation: false,  // false if you want to run 2e2 test with Spectron
-      enableRemoteModule : true // true if you want to run 2e2 test  with Spectron or use remote module in renderer context (ie. Angular)
+      enableRemoteModule: true // true if you want to run 2e2 test  with Spectron or use remote module in renderer context (ie. Angular)
     },
   });
 
@@ -81,3 +81,14 @@ try {
   // Catch Error
   // throw e;
 }
+ipcMain.on("sendTempPath", (event) => {
+  event.sender.send("sendTempPath", app.getPath("temp"));
+});
+ipcMain.on("OpenDialog", ((event) => {
+  dialog.showOpenDialog(win, {
+    properties: ['openDirectory']
+  }).then((path) => {
+    event.sender.send("selectedPath", path);
+  });
+}));
+

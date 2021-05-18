@@ -17,7 +17,6 @@ export class CompilerWidgetComponent {
     this.compilerResult = this.electronService.compilerResult;
   }
 
-
   public codeGeneration(): void {
     this.electronService.executeCompiler("typescript", `component${this.activeComponent.label}.json`);
   }
