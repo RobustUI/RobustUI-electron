@@ -123,9 +123,9 @@ export class ElectronService {
     const spinPath = this.getPath('bin', 'spin');
 
     if (this.process.platform === "win32") {
-      command = `"${compilerPath}" -t promela -i ${this.projectPath} "${componentFileName}" > "${spinPath}/model.pml" && "${spinPath}/spin.exe" -search "${spinPath}/model.pml"`;
+      command = `"${compilerPath}" -t promela -i ${this.projectPath} "${componentFileName}" > "${this.tempPath}/model.pml" && "${spinPath}/spin.exe" -search "${this.tempPath}/model.pml"`;
     } else if (this.process.platform === "linux") {
-      command = `${compilerPath} -t promela -i ${this.projectPath}  "${componentFileName}" > ${spinPath}/model.pml && ${spinPath}/spin -search ${spinPath}/model.pml`;
+      command = `${compilerPath} -t promela -i ${this.projectPath}  "${componentFileName}" > ${this.tempPath}/model.pml && ${spinPath}/spin -search ${this.tempPath}/model.pml`;
     } else {
       throw Error("Unsupported platform " + this.process.platform);
     }
