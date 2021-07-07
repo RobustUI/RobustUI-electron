@@ -1,13 +1,10 @@
 {
-      "label": "Mikkel",
+      "label": "oldcol",
       "type": 1,
       "initialState": "initial_state",
       "states": [
         {
       "label": "initial_state",
-      "type": "0"
-      },{
-      "label": "new state",
       "type": "0"
       }
       ],
@@ -26,13 +23,8 @@
       "positions": [
         {
       "label": "initial_state",
-      "x": 248,
-      "y": 188,
-      "width": 50
-      },{
-      "label": "new state",
-      "x": 271.203125,
-      "y": 347,
+      "x": 10,
+      "y": 10,
       "width": 50
       }
       ]

@@ -1,5 +1,5 @@
 {
-      "label": "onOffComponent",
+      "label": "Toggle",
       "type": 1,
       "initialState": "off",
       "states": [
@@ -15,7 +15,7 @@
         "click"
       ],
       "inputs": [
-        "onsettoon"
+        
       ],
       "outputs": [
         
@@ -23,40 +23,32 @@
       "transitions": [
        {
       "anchorPoint": {
-          "x": 280.01335000000006,
-          "y": 242.49737500000003
+          "x": 227.88639999999998,
+          "y": 366.8672000000001
         },
       "from": "off",
       "label": "click",
       "to": "on"
       },{
       "anchorPoint": {
-          "x": 327.18977499999994,
-          "y": 415.5026250000001
+          "x": 363.1136,
+          "y": 278.13280000000003
         },
       "from": "on",
       "label": "click",
       "to": "off"
-      },{
-      "anchorPoint": {
-          "x": 307.01335000000006,
-          "y": 312.49737500000003
-        },
-      "from": "off",
-      "label": "onsettoon",
-      "to": "on"
       }
       ],
       "positions": [
         {
       "label": "off",
-      "x": 115,
-      "y": 345,
+      "x": 147,
+      "y": 194,
       "width": 50
       },{
       "label": "on",
-      "x": 402.203125,
-      "y": 246,
+      "x": 390,
+      "y": 383,
       "width": 50
       }
       ]

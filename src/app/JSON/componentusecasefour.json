@@ -1,20 +1,20 @@
 {
-      "label": "TestThisSelective",
+      "label": "usecasefour",
       "type": 3,
-      "initialCase": "ThisIsBComp",
+      "initialCase": "dropdown",
       "observer": {
       "input": "stream",
       "dataType": "number"
     },
       "cases": [
         {
-      "guard": "< 20",
-      "label": "ThisIsAComp",
-      "type": "A"
+      "guard": "== 1",
+      "label": "FAQ",
+      "type": "Toggle"
       },{
       "guard": "default",
-      "label": "ThisIsBComp",
-      "type": "B"
+      "label": "dropdown",
+      "type": "DropDownComp"
       }
       ],
       "inputs": [
@@ -25,15 +25,15 @@
       ],
       "positions": [
         {
-      "label": "ThisIsAComp",
+      "label": "FAQ",
       "x": 0,
       "y": 0,
-      "width": 888.5
+      "width": 486
       },{
-      "label": "ThisIsBComp",
+      "label": "dropdown",
       "x": 0,
       "y": 0,
-      "width": 888.5
+      "width": 486
       }
       ]
     }
