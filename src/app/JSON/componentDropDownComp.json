@@ -1,0 +1,48 @@
+{
+      "label": "DropDownComp",
+      "type": 2,
+      "components": [
+        {
+      "label": "toggle",
+      "type": "dropdown"
+      },{
+      "label": "history",
+      "type": "dropdownElement"
+      },{
+      "label": "contact",
+      "type": "dropdownElement"
+      },{
+      "label": "jobs",
+      "type": "dropdownElement"
+      }
+      ],
+      "inputs": [
+        
+      ],
+      "outputs": [
+        
+      ],
+      "positions": [
+        {
+      "label": "toggle",
+      "x": 0,
+      "y": 0,
+      "width": 486
+      },{
+      "label": "history",
+      "x": 0,
+      "y": 0,
+      "width": 486
+      },{
+      "label": "contact",
+      "x": 0,
+      "y": 0,
+      "width": 486
+      },{
+      "label": "jobs",
+      "x": 0,
+      "y": 0,
+      "width": 486
+      }
+      ]
+    }
